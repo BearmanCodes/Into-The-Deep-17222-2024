@@ -20,7 +20,7 @@ import java.util.List;
 public class PS4 extends LinearOpMode {
     GamepadCore gamepadCore = new GamepadCore();
     ColorSensor colorSensor;
-    List<Integer> sensorRGB = new ArrayList<>(4);
+    List<Integer> sensorRGB = new ArrayList<>(3);
     @Override
     public void runOpMode() throws InterruptedException {
         Init();
@@ -31,8 +31,9 @@ public class PS4 extends LinearOpMode {
             } catch (RobotCoreException e) {
                 throw new RuntimeException(e);
             }
-            sensorRGB = Arrays.asList(colorSensor.red(), colorSensor.green(), colorSensor.blue());
-            gamepadSetColorSensor(gamepad1, sensorRGB);
+            //sensorRGB = Arrays.asList(colorSensor.red(), colorSensor.green(), colorSensor.blue());
+            //gamepadSetColorSensor(gamepad1, sensorRGB);
+            gamepadColorRGB(gamepad1, 255, 0, 255);
         }
     }
 
@@ -40,6 +41,7 @@ public class PS4 extends LinearOpMode {
         colorSensor = hardwareMap.get(ColorSensor.class, "color");
     }
 
+    //Unused for now
     private void gamepadColorString(Gamepad gpad, String color){
         switch(color.toUpperCase()) {
             case "RED":
@@ -52,6 +54,10 @@ public class PS4 extends LinearOpMode {
                 gpad.setLedColor(0, 0, 255, Gamepad.LED_DURATION_CONTINUOUS);
                 break;
         }
+    }
+
+    private void gamepadColorRGB(Gamepad gpad, int red, int green, int blue){
+        gpad.setLedColor(red, green, blue, Gamepad.LED_DURATION_CONTINUOUS);
     }
 
     private void gamepadSetColorSensor(Gamepad gpad, List<Integer> rgb){
