@@ -7,12 +7,14 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 @TeleOp(name="Hi :P")
 public class COreHedx extends LinearOpMode {
-
+    float motorPower;
     @Override
     public void runOpMode() throws InterruptedException {
         DcMotorEx Motor = hardwareMap.get(DcMotorEx.class,"Motor");
+        waitForStart();
         while(opModeIsActive()){
-            Motor.setPower(gamepad1.right_trigger);
+            motorPower = (gamepad1.right_trigger - gamepad1.left_trigger);
+            Motor.setPower(motorPower);
         }
     }
 }
