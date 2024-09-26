@@ -23,7 +23,7 @@ public class PS4 extends LinearOpMode {
     List<Integer> sensorRGB = new ArrayList<>(3);
     @Override
     public void runOpMode() throws InterruptedException {
-        Init(); //Git test add
+        Init(); //Git Test To Add
         waitForStart();
         while (opModeIsActive()) {
             try {
