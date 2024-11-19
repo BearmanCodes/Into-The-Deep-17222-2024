@@ -18,7 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 //NOTE, IF THERE'S A PROBLEM WITH MOTOR(S) FASTER THAN THE OTHER(S) CHECK THE ENCODER CABLE
 public class DrivetrainCore{
 
-    public DcMotorEx frontleft, frontright, backleft, backright, tetrix; //Declare the drivetrian motors
+    public DcMotorEx frontleft, frontright, backleft, backright; //Declare the drivetrian motors
     public double reducer = /*0.85*/1; //Change for reducing drive power
 
     YawPitchRollAngles robotOrientation; //IMU YPR Angles
@@ -31,7 +31,6 @@ public class DrivetrainCore{
         frontright = hwMap.get(DcMotorEx.class, "frontright");
         backleft = hwMap.get(DcMotorEx.class, "backleft");
         backright = hwMap.get(DcMotorEx.class, "backright");
-        tetrix = hwMap.get(DcMotorEx.class, "tetrix");
 
         imu = hwMap.get(IMU.class, "imu");
         imuparams = new IMU.Parameters(new RevHubOrientationOnRobot
@@ -63,11 +62,6 @@ public class DrivetrainCore{
         backright.setPower(backRightPower);
     }
 
-    public void tPully(Gamepad gamepad1){
-        double tetrixPower = (gamepad1.right_trigger - gamepad1.left_trigger) * 0.75;
-        tetrix.setPower(tetrixPower);
-    }
-
     public void allMotorPower(double power){
         frontright.setPower(power);
         frontleft.setPower(power);
@@ -80,26 +74,22 @@ public class DrivetrainCore{
         frontright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        tetrix.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         frontright.setDirection(DcMotorSimple.Direction.FORWARD);
         frontleft.setDirection(DcMotorSimple.Direction.REVERSE); //Change these directions for your drive
         backright.setDirection(DcMotorSimple.Direction.FORWARD);
         backleft.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        tetrix.setDirection(DcMotorSimple.Direction.FORWARD);
 
         frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        tetrix.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        tetrix.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     //below are functions of convenience that apply to all the motors in just one line of code

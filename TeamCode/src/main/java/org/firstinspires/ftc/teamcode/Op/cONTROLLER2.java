@@ -20,7 +20,7 @@ public class cONTROLLER2 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "Motor");
         Servo servo = hardwareMap.get(Servo.class, "clawy");
-        servo.setPosition(0.15);
+        //servo.setPosition(0.15);
         waitForStart();
         while (opModeIsActive()){
             try {

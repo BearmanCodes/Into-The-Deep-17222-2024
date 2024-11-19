@@ -11,27 +11,36 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 //This is the core arm class every single TeleOp uses to access functions pertaining to the arm
 public class ArmCore {
 
-    public DcMotorEx actualArm;
-    public DcMotorEx extender; //Declare the 2 arm motors, this one is the extender
-    public double reducerActualArm = /*0.4*/1; //Change this depending on how much you want to reduce your arm
-    public double actualArmPower;
-    public double extenderArmPower;
+    public DcMotorEx fndtlArm;
+    public DcMotorEx pvtArm; //Declare the 2 arm motors, this one is the extender
+    public double reducerActualArm = 0.4; //Change this depending on how much you want to reduce your arm
+    public double reducerPvt = 1; //Change this depending on how much you want to reduce your arm
+    public double fndtlPower;
+    public double pvtPower;
 
     public void init(HardwareMap hwMap){
-        extender = hwMap.get(DcMotorEx.class, "Extend".toLowerCase()); //Servo for the Linear extender thing
-        actualArm = hwMap.get(DcMotorEx.class, "left".toLowerCase()); //Change the string to name in config
+        fndtlArm = hwMap.get(DcMotorEx.class, "fndtl");
+        pvtArm = hwMap.get(DcMotorEx.class, "pvt");
 
-        actualArm.setDirection(DcMotorSimple.Direction.REVERSE);
-        actualArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        actualArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        fndtlArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        pvtArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        fndtlArm.setDirection(DcMotorSimple.Direction.REVERSE);
+        fndtlArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fndtlArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        pvtArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     //This uses the triggers to move the arm as used in Mason M.'s op mode
     public void trigger(Gamepad gamepad2){
-        actualArmPower = ((gamepad2.right_trigger + -gamepad2.left_trigger) * reducerActualArm) - 0.00225; //the -0.0025 counteracts gravity
-        actualArm.setPower(actualArmPower);
+        pvtPower = ((gamepad2.right_trigger + -gamepad2.left_trigger) * reducerPvt); //might need something to counteract gravity
+        fndtlPower = (gamepad2.right_stick_y * reducerActualArm); //might need something to counteract gravity
+        pvtArm.setPower(pvtPower);
+        fndtlArm.setPower(fndtlPower);
     }
 
+    /*
     //This uses the right stick to move the arm as used in Mason S.'s op mode
     public void rStick(Gamepad gamepad2){
         if (actualArm.getCurrentPosition() >= 415) actualArmPower = ((gamepad2.right_stick_y) * reducerActualArm) - 0.00450;
@@ -51,4 +60,5 @@ public class ArmCore {
         extenderArmPower = (gamepad2.left_trigger + -gamepad2.right_trigger);
         extender.setPower(extenderArmPower);
     }
+     */
 }

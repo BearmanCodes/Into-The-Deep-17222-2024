@@ -27,9 +27,12 @@ public class PS4 extends LinearOpMode {
             } catch (RobotCoreException e) {
                 throw new RuntimeException(e);
             }
-            //sensorRGB = Arrays.asList(colorSensor.red(), colorSensor.green(), colorSensor.blue());
-            //gamepadSetColorSensor(gamepad1, sensorRGB);
-            gamepadColorRGB(gamepad1, 255, 0, 255);
+            sensorRGB = Arrays.asList(colorSensor.red(), colorSensor.green(), colorSensor.blue());
+            //telemetry.addData("color: ", sensorRGB);
+            //telemetry.update();
+            //gamepadColorRGB(gamepad1, 255, 255, 0);
+            //gamepadColorRGB(gamepad1, 255, 0, 255);
+            gamepadSetColorSensor(gamepad1, sensorRGB);
         }
     }
 
@@ -53,11 +56,11 @@ public class PS4 extends LinearOpMode {
     }
 
     private void gamepadColorRGB(Gamepad gpad, int red, int green, int blue){
-        gpad.setLedColor(red, green, blue, Gamepad.LED_DURATION_CONTINUOUS);
+        gpad.setLedColor(red, green, blue, 1000);
     }
 
     private void gamepadSetColorSensor(Gamepad gpad, List<Integer> rgb){
-        gpad.setLedColor(rgb.get(0), rgb.get(1), rgb.get(2), Gamepad.LED_DURATION_CONTINUOUS);
+        gpad.setLedColor(rgb.get(0), rgb.get(1), rgb.get(2), 1);
     }
 }
 
