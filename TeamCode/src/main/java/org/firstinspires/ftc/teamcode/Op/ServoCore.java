@@ -25,7 +25,7 @@ public class ServoCore {
         claw3 = hwMap.get(Servo.class, "claw3".toLowerCase());
         claw4 = hwMap.get(Servo.class, "claw4".toLowerCase());
         //brake = hwMap.get(Servo.class, "brake".toLowerCase());
-
+ 
         claw1.setDirection(Servo.Direction.REVERSE);
         claw2.setDirection(Servo.Direction.FORWARD);
         claw3.setDirection(Servo.Direction.FORWARD);
@@ -35,7 +35,7 @@ public class ServoCore {
         claw2.setPosition(0);
         claw3.setPosition(0);
         claw4.setPosition(0);
-        brake.setPosition(0);
+        //brake.setPosition(0);
     }
 
     //Dpad control used in Mason S.'s op mode

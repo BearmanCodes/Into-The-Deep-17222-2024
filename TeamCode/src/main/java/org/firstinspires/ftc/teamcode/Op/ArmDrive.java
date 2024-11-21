@@ -7,20 +7,21 @@ import com.qualcomm.robotcore.exception.RobotCoreException;
 @TeleOp
 public class ArmDrive extends LinearOpMode {
     ArmCore armCore = new ArmCore();
-    //ServoCore servoCore = new ServoCore();
+    ServoCore servoCore = new ServoCore();
 
     @Override
     public void runOpMode() throws InterruptedException {
         Init();
         waitForStart();
         while (opModeIsActive()) {
-            //try {
-                //servoCore.edgeDetector(gamepad1, gamepad2);
-            //} catch (RobotCoreException e) {
-            //    throw new RuntimeException(e);
-            //}
+            try {
+                servoCore.edgeDetector(gamepad1, gamepad2);
+            } catch (RobotCoreException e) {
+                throw new RuntimeException(e);
+            }
 
             armCore.trigger(gamepad2);
+            servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2);
 
            // servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2);
 
@@ -31,6 +32,6 @@ public class ArmDrive extends LinearOpMode {
 
     private void Init(){
         armCore.init(hardwareMap);
-        //servoCore.init(hardwareMap);
+        servoCore.init(hardwareMap);
     }
 }
