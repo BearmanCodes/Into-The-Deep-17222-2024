@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.exception.RobotCoreException;
 public class ArmDrive extends LinearOpMode {
     ArmCore armCore = new ArmCore();
     ServoCore servoCore = new ServoCore();
+    DrivetrainCore drivetrainCore = new DrivetrainCore();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -22,6 +23,7 @@ public class ArmDrive extends LinearOpMode {
 
             armCore.trigger(gamepad2);
             servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2);
+            drivetrainCore.run(gamepad1);
 
            // servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2);
 
@@ -33,5 +35,6 @@ public class ArmDrive extends LinearOpMode {
     private void Init(){
         armCore.init(hardwareMap);
         servoCore.init(hardwareMap);
+        drivetrainCore.init(hardwareMap);
     }
 }
