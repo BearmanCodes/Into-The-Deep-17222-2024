@@ -21,10 +21,10 @@ public class servoTest extends LinearOpMode {
     @Override
 
     public void runOpMode() throws InterruptedException {
-        servo1 = hardwareMap.get(Servo.class, "servo1".toLowerCase());
-        servo2 = hardwareMap.get(Servo.class, "servo2".toLowerCase());
-        servo3 = hardwareMap.get(Servo.class, "servo3".toLowerCase());
-        servo4 = hardwareMap.get(Servo.class, "servo4".toLowerCase());
+        servo1 = hardwareMap.get(Servo.class, "claw1".toLowerCase());
+        servo2 = hardwareMap.get(Servo.class, "claw2".toLowerCase());
+        servo3 = hardwareMap.get(Servo.class, "claw3".toLowerCase());
+        servo4 = hardwareMap.get(Servo.class, "claw4".toLowerCase());
 
         servo1.setDirection(Servo.Direction.REVERSE);
         servo2.setDirection(Servo.Direction.FORWARD);
