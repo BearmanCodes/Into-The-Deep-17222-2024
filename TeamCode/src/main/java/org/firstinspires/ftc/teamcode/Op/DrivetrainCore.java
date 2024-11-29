@@ -75,10 +75,10 @@ public class DrivetrainCore{
         backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        frontright.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontleft.setDirection(DcMotorSimple.Direction.REVERSE); //Change these directions for your drive
-        backright.setDirection(DcMotorSimple.Direction.FORWARD);
-        backleft.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontright.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontleft.setDirection(DcMotorSimple.Direction.FORWARD); //Change these directions for your drive
+        backright.setDirection(DcMotorSimple.Direction.REVERSE);
+        backleft.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
