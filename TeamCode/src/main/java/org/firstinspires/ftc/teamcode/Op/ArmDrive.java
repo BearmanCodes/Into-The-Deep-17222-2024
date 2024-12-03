@@ -4,8 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.exception.RobotCoreException;
 
-@TeleOp(name="Main Drive", group="Critical" +
-        "")
+@TeleOp(name="Main Drive", group="Critical")
 public class ArmDrive extends LinearOpMode {
     ArmCore armCore = new ArmCore();
     ServoCore servoCore = new ServoCore();

@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -70,8 +69,8 @@ public class servoTest extends LinearOpMode {
                 telemetryUpdate();
             }
             if (currentGamepad.start && !previousGamepad.start){
-                //servo1.setPosition(servo1Pos); //0.04 open, 0 closed
-                //servo2.setPosition(servo2Pos); //0.04 open, 0 closed
+                servo1.setPosition(servo1Pos); //0.04 open, 0 closed
+                servo2.setPosition(servo2Pos); //0.04 open, 0 closed
                 servo3.setPosition(servo3Pos);
                 servo4.setPosition(servo4Pos); //0.10 flipped, 0 init
                 telemetryUpdate();

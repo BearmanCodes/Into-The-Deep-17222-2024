@@ -6,30 +6,50 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class ArmAutoCore {
-    public DcMotorEx arm;
-    public int armDown = 1700;
-    public int armLay = 15;
-    public int armBoard = 1450;
+    public DcMotorEx fndtlArm;
+    public DcMotorEx pvtArm;
+
 
     public void init(HardwareMap hwMap){
-        arm = hwMap.get(DcMotorEx.class, "left".toLowerCase()); //Change depending on config
+        fndtlArm = hwMap.get(DcMotorEx.class, "fndtl");
+        pvtArm = hwMap.get(DcMotorEx.class, "pvt");
 
-        arm.setDirection(DcMotorSimple.Direction.REVERSE);
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        fndtlArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        pvtArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        fndtlArm.setDirection(DcMotorSimple.Direction.REVERSE);
+        fndtlArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fndtlArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        pvtArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void move(double velocity, int ticks, boolean active, int timeout) throws InterruptedException {
-        arm.setTargetPosition(ticks);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setVelocity(velocity);
+    public void fndtlMove(double velocity, int ticks, boolean active, int timeout) throws InterruptedException {
+        fndtlArm.setTargetPosition(ticks);
+        fndtlArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        fndtlArm.setVelocity(velocity);
 
-        while (active && arm.isBusy()){
+        while (active && fndtlArm.isBusy()){
 
         }
-        arm.setVelocity(0);
+        fndtlArm.setVelocity(0);
 
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        fndtlArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        Thread.sleep(timeout);
+    }
+
+    public void pvtMove(double velocity, int ticks, boolean active, int timeout) throws InterruptedException {
+        pvtArm.setTargetPosition(ticks);
+        pvtArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        pvtArm.setVelocity(velocity);
+
+        while (active && pvtArm.isBusy()){
+
+        }
+        pvtArm.setVelocity(0);
+
+        pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         Thread.sleep(timeout);
     }

@@ -61,6 +61,16 @@ public class ServoCore {
                     claw2.setPosition(0); //close
                 }
         }
+
+        if (currentGamepad2.dpad_down && !previousGamepad2.dpad_down && !currentGamepad2.start) {
+            claw3Stat = !claw3Stat;
+            if (claw3Stat) {
+                claw4.setPosition(0.05); //Up
+            } else {
+                claw4.setPosition(0); //Down            }
+            }
+        }
+
         if (currentGamepad2.x && !previousGamepad2.x) {
             double currPos = claw3.getPosition();
             claw3.setPosition(currPos + 0.05);

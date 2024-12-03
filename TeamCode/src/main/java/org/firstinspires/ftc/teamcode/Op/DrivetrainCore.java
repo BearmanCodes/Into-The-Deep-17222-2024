@@ -47,7 +47,7 @@ public class DrivetrainCore{
     public void run(Gamepad gamepad1){ //Main running function, TeleOp's will use this function.
         double Vertical = gamepad1.left_stick_y;
         double Horizontal = gamepad1.left_stick_x;
-        double Pivot = gamepad1.right_stick_x;
+        double Pivot = -gamepad1.right_stick_x;
         double denominator = Math.max(Math.abs(Vertical) + Math.abs(Horizontal) + Math.abs(Pivot), 1);
 
         double frontLeftPower = (-Pivot + (Vertical - Horizontal)) * reducer;

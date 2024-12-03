@@ -14,8 +14,8 @@ public class ArmCore {
     public DcMotorEx fndtlArm;
     public DcMotorEx pvtArm; //Declare the 2 arm motors, this one is the extender
 
-    public double reducerActualArm = 0.25; //Change this depending on how much you want to reduce your arm
-    public double reducerPvt = 1; //Change this depending on how much you want to reduce your arm
+    public double reducerActualArm = 0.45; //Change this depending on how much you want to reduce your arm
+    public double reducerPvt = (0.75); //Change this depending on how much you want to reduce your arm
     public double fndtlPower;
     public double pvtPower;
 
@@ -35,8 +35,8 @@ public class ArmCore {
 
     //This uses the triggers to move the arm as used in Mason M.'s op mode
     public void trigger(Gamepad gamepad2){
-        pvtPower = ((gamepad2.right_trigger + -gamepad2.left_trigger) * reducerPvt); //might need something to counteract gravity
-        fndtlPower = (gamepad2.right_stick_y * reducerActualArm); //might need something to counteract gravity
+        pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt); //might need something to counteract gravity
+        fndtlPower = (gamepad2.left_stick_y * reducerActualArm); //might need something to counteract gravity
         pvtArm.setPower(pvtPower);
         fndtlArm.setPower(fndtlPower);
     }
