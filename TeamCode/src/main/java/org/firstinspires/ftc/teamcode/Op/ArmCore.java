@@ -26,6 +26,8 @@ public class ArmCore {
         fndtlArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pvtArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        pvtArm.setDirection(DcMotorSimple.Direction.REVERSE);
+
         fndtlArm.setDirection(DcMotorSimple.Direction.REVERSE);
         fndtlArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         fndtlArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -35,8 +37,9 @@ public class ArmCore {
 
     //This uses the triggers to move the arm as used in Mason M.'s op mode
     public void trigger(Gamepad gamepad2){
-        pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt); //might need something to counteract gravity
+        pvtPower = ((gamepad2.left_trigger - gamepad2.right_trigger) * reducerPvt); //might need something to counteract gravity
         fndtlPower = (gamepad2.left_stick_y * reducerActualArm); //might need something to counteract gravity
+        if (pvtArm.getCurrentPosition() >= 1400) pvtPower = ((gamepad2.left_trigger - gamepad2.right_trigger) * reducerPvt) - 0.045;
         pvtArm.setPower(pvtPower);
         fndtlArm.setPower(fndtlPower);
     }

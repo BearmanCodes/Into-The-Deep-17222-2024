@@ -33,7 +33,6 @@ public class ServoCore {
         //brake.setDirection(Servo.Direction.FORWARD);
         claw1.setPosition(0);
         claw2.setPosition(0);
-        claw3.setPosition(0.6);
         claw4.setPosition(0);
         //brake.setPosition(0);
     }
