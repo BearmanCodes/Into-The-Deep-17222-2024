@@ -17,7 +17,7 @@ public class ServoCore {
 
     public Servo claw1, claw2, claw3, claw4, brake; //Declare servo variables
 
-    boolean claw1Stat, claw2Stat, claw3Stat, claw4Stat;
+    boolean claw1Stat, claw2Stat, claw3Stat, claw4Stat, brakeStat;
 
     public void init(HardwareMap hwMap) {
         claw1 = hwMap.get(Servo.class, "claw1".toLowerCase());
@@ -67,6 +67,15 @@ public class ServoCore {
                 claw4.setPosition(0.05); //Up
             } else {
                 claw4.setPosition(0); //Down            }
+            }
+        }
+
+        if (currentGamepad2.dpad_up && !previousGamepad2.dpad_up && !currentGamepad2.start) {
+            brakeStat = !brakeStat;
+            if (brakeStat) {
+                claw3.setPosition(1); //Up
+            } else {
+                claw3.setPosition(0); //Down            }
             }
         }
 

@@ -14,6 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 public class DriveAutoCore {
 
     public DcMotorEx frontLeft, frontRight, backLeft, backRight;
+    ArmAutoCore armCore = new ArmAutoCore();
+
 
     YawPitchRollAngles robotOrientation;
     public IMU imu;
@@ -57,11 +59,50 @@ public class DriveAutoCore {
         }
     }
 
+    public void ArmColqDrive(double velocity, double armVelo,
+                      double frontLeftInches, double frontRightInches,
+                      double backLeftInches, double backRightInches, int armTicks, boolean active,
+                      long timeout) throws InterruptedException {
+        int frontLeftTarget;
+        int frontRightTarget;
+        int backLeftTarget;
+        int backRightTarget;
+
+        // Ensure that the opmode is still active
+        if (active) {
+            frontLeftTarget = frontLeft.getCurrentPosition() + (int) (frontLeftInches * TicksPerIn);
+            frontRightTarget = frontRight.getCurrentPosition() + (int) (frontRightInches * TicksPerIn);
+            backLeftTarget = backLeft.getCurrentPosition() + (int) (backLeftInches * TicksPerIn);
+            backRightTarget = backRight.getCurrentPosition() + (int) (backRightInches * TicksPerIn);
+
+            allTargetPosition(frontLeftTarget, frontRightTarget, backLeftTarget, backRightTarget);
+            armCore.pvtArm.setTargetPosition(armTicks);
+
+            allMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armCore.pvtArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            allMotorVelocity(Math.abs(velocity));
+            armCore.pvtArm.setVelocity(Math.abs(armVelo));
+
+            while (active && frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy() && armCore.pvtArm.isBusy()) {
+            }
+
+            allMotorVelocity(0);
+            armCore.pvtArm.setVelocity(0);
+
+            allMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            armCore.pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            Thread.sleep(timeout);
+        }
+    }
+
     public void init(HardwareMap hwMap){
         frontLeft = hwMap.get(DcMotorEx.class, "frontLeft".toLowerCase());
         frontRight = hwMap.get(DcMotorEx.class, "frontRight".toLowerCase());
         backLeft = hwMap.get(DcMotorEx.class, "backLeft".toLowerCase());
         backRight = hwMap.get(DcMotorEx.class, "backRight".toLowerCase());
+
 
         imu = hwMap.get(IMU.class, "imu");
         imuparams = new IMU.Parameters(new RevHubOrientationOnRobot
@@ -82,6 +123,7 @@ public class DriveAutoCore {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         allMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armCore.init(hwMap);
     }
 
     public void allMotorMode(DcMotor.RunMode mode) {

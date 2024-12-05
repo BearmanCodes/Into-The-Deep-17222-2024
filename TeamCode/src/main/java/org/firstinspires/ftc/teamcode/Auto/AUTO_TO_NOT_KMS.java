@@ -18,14 +18,13 @@ public class AUTO_TO_NOT_KMS extends LinearOpMode {
 
         waitForStart();
 
+        drivetrainCore.fwdDrive(800, 9, opModeIsActive(), 250);
+        servoCore.claw3.setPosition(1);
+        servoCore.claw4.setPosition(0.1);
         drivetrainCore.strafeRight(800, 30, opModeIsActive(), 250);
-        drivetrainCore.fwdDrive(800, 13, opModeIsActive(), 250);
-        armCore.pvtMove(250, 500, opModeIsActive(), 250, telemetry);
-        servoCore.claw3.setPosition(0.6); //Unfold claw
-        servoCore.claw4.setPosition(0.1); //Do pivot
-        armCore.pvtMove(250, 2500, opModeIsActive(), 250, telemetry);
-        drivetrainCore.fwdDrive(800, 11.5, opModeIsActive(), 250);
-        armCore.pvtMove(800, 2000, opModeIsActive(), 250, telemetry);
+        armCore.pvtMove(500, 1750, opModeIsActive(), 250, telemetry);
+        drivetrainCore.revDrive(800, 8.5, opModeIsActive(), 250);
+        armCore.pvtMove(800, 0, opModeIsActive(), 250, telemetry);
         servoCore.claw1.setPosition(0.04); //(open)
         servoCore.claw2.setPosition(0.04);
         drivetrainCore.revDrive(800, 8, opModeIsActive(), 250);

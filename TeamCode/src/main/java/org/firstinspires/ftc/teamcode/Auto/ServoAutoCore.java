@@ -24,7 +24,7 @@ public class ServoAutoCore {
             claw1.setPosition(0);
             claw2.setPosition(0);
             //claw3.setPosition(0.6);
-            //claw4.setPosition(0);
+            claw4.setPosition(0);
             //brake.setPosition(0);
         }
 

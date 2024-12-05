@@ -20,7 +20,7 @@ public class ArmAutoCore {
         pvtArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         fndtlArm.setDirection(DcMotorSimple.Direction.REVERSE);
-        pvtArm.setDirection(DcMotorSimple.Direction.REVERSE);
+        pvtArm.setDirection(DcMotorSimple.Direction.FORWARD);
         fndtlArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         fndtlArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pvtArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
