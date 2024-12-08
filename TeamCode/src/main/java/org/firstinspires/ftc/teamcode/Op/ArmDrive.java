@@ -27,16 +27,25 @@ public class ArmDrive extends LinearOpMode {
             }
 
             armCore.trigger(gamepad2);
-            servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2);
             drivetrainCore.run(gamepad1);
-
+            if (armCore.pvtArm.getCurrentPosition() >= 1000
+            ){
+                servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2);
+            } else{
+                servoCore.claw3.setPosition(1);
+            }
             dashTele.addData("We are: ", "Running");
-            dashTele.addData("Arm Position: ", armCore.pvtArm.getCurrentPosition());
-            dashTele.addData("Motor Power: ", armCore.pvtPower);
+            dashTele.addData("PVT Position: ", armCore.pvtArm.getCurrentPosition());
+            dashTele.addData("PVT Power: ", armCore.pvtPower);
+            dashTele.addData("FNDTL Position: ", armCore.fndtlArm.getCurrentPosition());
+            dashTele.addData("FNDTL Power: ", armCore.pvtPower);
             dashTele.update();
             telemetry.addData("We are: ", "Running");
-            telemetry.addData("Arm Position: ", armCore.pvtArm.getCurrentPosition());
-            telemetry.addData("Motor Power: ", armCore.pvtPower);
+            telemetry.addData("PVT Position: ", armCore.pvtArm.getCurrentPosition());
+            telemetry.addData("PVT Power: ", armCore.pvtPower);
+            telemetry.addData("FNDTL Position: ", armCore.fndtlArm.getCurrentPosition());
+            telemetry.addData("FNDTL Power: ", armCore.pvtPower);
+            telemetry.addData("SERVO Pos: ", servoCore.claw3.getPosition());
             telemetry.update();
         }
     }

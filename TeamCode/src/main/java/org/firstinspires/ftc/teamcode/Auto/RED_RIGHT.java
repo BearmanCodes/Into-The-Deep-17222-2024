@@ -3,10 +3,8 @@ package org.firstinspires.ftc.teamcode.Auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Op.ArmCore;
-
-@Autonomous(name = "Test Auto", group = "Autos")
-public class AUTO_TO_NOT_KMS extends LinearOpMode {
+@Autonomous(name = "RED RIGHT", group = "BLUE")
+public class RED_RIGHT extends LinearOpMode {
     ArmAutoCore armCore = new ArmAutoCore();
     DriveAutoCore drivetrainCore = new DriveAutoCore();
     ServoAutoCore servoCore = new ServoAutoCore();
@@ -18,6 +16,9 @@ public class AUTO_TO_NOT_KMS extends LinearOpMode {
 
         waitForStart();
 
+        drivetrainCore.strafeRight(800, 36, opModeIsActive(), 0);
+
+        /*
         drivetrainCore.fwdDrive(800, 9, opModeIsActive(), 250);
         servoCore.claw3.setPosition(1);
         servoCore.claw4.setPosition(0.1);
@@ -28,6 +29,7 @@ public class AUTO_TO_NOT_KMS extends LinearOpMode {
         servoCore.claw1.setPosition(0.04); //(open)
         servoCore.claw2.setPosition(0.04);
         drivetrainCore.revDrive(800, 8, opModeIsActive(), 250);
+         */
     }
 
     private void Init(){

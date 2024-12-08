@@ -38,11 +38,13 @@ public class ArmCore {
     //This uses the triggers to move the arm as used in Mason M.'s op mode
     public void trigger(Gamepad gamepad2){
         pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt); //might need something to counteract gravity
-        fndtlPower = (gamepad2.left_stick_y * reducerActualArm); //might need something to counteract gravity
-        if (pvtArm.getCurrentPosition() >= 1150) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0125;
+        //fndtlPower = (gamepad2.left_stick_y * reducerActualArm); //might need something to counteract gravity
+        if (pvtArm.getCurrentPosition() >= 1150) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0075;
         if (pvtArm.getCurrentPosition() >= 1650) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0055;
+        if (pvtArm.getCurrentPosition() <= 950) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) + 0.0037;
+        if (pvtArm.getCurrentPosition() <= 450) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) + 0.0025;
         pvtArm.setPower(pvtPower);
-        fndtlArm.setPower(fndtlPower);
+        //fndtlArm.setPower(fndtlPower);
     }
 
     /*

@@ -8,9 +8,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.text.DecimalFormat;
+
 public class ServoCore {
     Gamepad currentGamepad = new Gamepad();
     Gamepad previousGamepad = new Gamepad();
+    private static final DecimalFormat dformat = new DecimalFormat("0.00");
 
     Gamepad currentGamepad2 = new Gamepad();
     Gamepad previousGamepad2 = new Gamepad(); //Set up gamepad variables allowing for rising edge detector
@@ -33,6 +36,7 @@ public class ServoCore {
         //brake.setDirection(Servo.Direction.FORWARD);
         claw1.setPosition(0);
         claw2.setPosition(0);
+        claw3.setPosition(1);
         claw4.setPosition(0);
         //brake.setPosition(0);
     }
@@ -85,7 +89,9 @@ public class ServoCore {
         }
         if (currentGamepad2.y && !previousGamepad2.y) {
             double currPos = claw3.getPosition();
-            claw3.setPosition(currPos - 0.05);
+            if (currPos - 0.05 > 0.75){
+                claw3.setPosition(currPos - 0.05);
+            }
         }
     }
     public void edgeDetector(Gamepad gamepad1, Gamepad gamepad2) throws RobotCoreException {
