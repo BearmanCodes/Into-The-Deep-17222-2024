@@ -18,7 +18,8 @@ public class BLUE_LEFT extends LinearOpMode {
 
         sleep(4000);
         drivetrainCore.strafeRight(800, 100, opModeIsActive(), 0);
-
+        armCore.pvtMove(800, 201, opModeIsActive(), 250, telemetry);
+        servoCore.claw1.setPosition(0.04);
         /*
         drivetrainCore.fwdDrive(800, 9, opModeIsActive(), 250);
         servoCore.claw3.setPosition(1);

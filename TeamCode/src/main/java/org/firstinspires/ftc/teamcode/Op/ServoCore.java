@@ -18,39 +18,28 @@ public class ServoCore {
     Gamepad currentGamepad2 = new Gamepad();
     Gamepad previousGamepad2 = new Gamepad(); //Set up gamepad variables allowing for rising edge detector
 
-    public Servo claw1, claw2, claw3, claw4, brake; //Declare servo variables
+    public Servo claw1, claw2, claw3, brake; //Declare servo variables
 
-    boolean claw1Stat, claw2Stat, claw3Stat, claw4Stat, brakeStat;
+    boolean claw1Stat, claw2Stat, claw3Stat, brakeStat, MMStat;
 
     public void init(HardwareMap hwMap) {
         claw1 = hwMap.get(Servo.class, "claw1".toLowerCase());
         claw2 = hwMap.get(Servo.class, "claw2".toLowerCase());
         claw3 = hwMap.get(Servo.class, "claw3".toLowerCase());
-        claw4 = hwMap.get(Servo.class, "claw4".toLowerCase());
         //brake = hwMap.get(Servo.class, "brake".toLowerCase());
  
         claw1.setDirection(Servo.Direction.REVERSE);
         claw2.setDirection(Servo.Direction.FORWARD);
         claw3.setDirection(Servo.Direction.FORWARD);
-        claw4.setDirection(Servo.Direction.FORWARD);
         //brake.setDirection(Servo.Direction.FORWARD);
         claw1.setPosition(0);
         claw2.setPosition(0);
-        claw3.setPosition(1);
-        claw4.setPosition(0);
+        //claw3.setPosition(1);
         //brake.setPosition(0);
     }
 
     //Dpad control used in Mason S.'s op mode
     public void dpadRun(Gamepad currentGamepad2, Gamepad previousGamepad2) {
-        if (currentGamepad2.a && !previousGamepad2.a && !currentGamepad2.start) {
-            claw4Stat = !claw4Stat;
-            if (claw4Stat) {
-                claw4.setPosition(0.1); //Up
-            } else {
-                claw4.setPosition(0); //Down            }
-            }
-        }
         if (currentGamepad2.b && !previousGamepad2.b && !currentGamepad2.start) {
                 claw1Stat = !claw1Stat;
                 claw2Stat = !claw2Stat;
@@ -65,14 +54,6 @@ public class ServoCore {
                 }
         }
 
-        if (currentGamepad2.dpad_down && !previousGamepad2.dpad_down && !currentGamepad2.start) {
-            claw3Stat = !claw3Stat;
-            if (claw3Stat) {
-                claw4.setPosition(0.05); //Up
-            } else {
-                claw4.setPosition(0); //Down            }
-            }
-        }
 
         if (currentGamepad2.dpad_up && !previousGamepad2.dpad_up && !currentGamepad2.start) {
             brakeStat = !brakeStat;
@@ -83,13 +64,19 @@ public class ServoCore {
             }
         }
 
+        if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left && !currentGamepad2.start) {
+            claw3.setPosition(0.8);
+            claw1.setPosition(0.04); //(open)
+            claw2.setPosition(0.04); //open
+        }
+
         if (currentGamepad2.x && !previousGamepad2.x) {
-            double currPos = claw3.getPosition();
+            double currPos = Math.round(claw3.getPosition() * 100.00) / 100.00;
             claw3.setPosition(currPos + 0.05);
         }
         if (currentGamepad2.y && !previousGamepad2.y) {
-            double currPos = claw3.getPosition();
-            if (currPos - 0.05 > 0.75){
+            double currPos = Math.round(claw3.getPosition() * 100.00) / 100.00;
+            if (currPos - 0.05 >= 0.75){
                 claw3.setPosition(currPos - 0.05);
             }
         }

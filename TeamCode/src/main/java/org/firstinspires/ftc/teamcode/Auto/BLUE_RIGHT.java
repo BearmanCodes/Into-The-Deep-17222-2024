@@ -17,20 +17,30 @@ public class BLUE_RIGHT extends LinearOpMode {
         waitForStart();
 
 
-        drivetrainCore.strafeRight(800, 36, opModeIsActive(), 0);
-
-        /*
-        drivetrainCore.fwdDrive(800, 9, opModeIsActive(), 250);
-        servoCore.claw3.setPosition(1);
-        servoCore.claw4.setPosition(0.1);
-        drivetrainCore.strafeRight(800, 30, opModeIsActive(), 250);
-        armCore.pvtMove(500, 1750, opModeIsActive(), 250, telemetry);
-        drivetrainCore.revDrive(800, 8.5, opModeIsActive(), 250);
-        armCore.pvtMove(800, 0, opModeIsActive(), 250, telemetry);
-        servoCore.claw1.setPosition(0.04); //(open)
+        //drivetrainCore.strafeRight(800, 36, opModeIsActive(), 0);
+        drivetrainCore.fwdDrive(800, 20.5, opModeIsActive(), 250);
+        armCore.pvtMove(800, 1250, opModeIsActive(), 250, telemetry);
+        servoCore.claw3.setPosition(0);
+        drivetrainCore.fwdDrive(800, 2, opModeIsActive(), 250);
+        servoCore.claw3.getController().pwmDisable();
+        servoCore.claw1.setPosition(0.04);
         servoCore.claw2.setPosition(0.04);
-        drivetrainCore.revDrive(800, 8, opModeIsActive(), 250);
-         */
+        sleep(100);
+        armCore.pvtMove(800, 25, opModeIsActive(), 250, telemetry);
+        //drivetrainCore.fwdDrive(1000, 10.5, opModeIsActive(), 250);
+        drivetrainCore.revDrive(1000, 10, opModeIsActive(), 250);
+        servoCore.claw3.getController().pwmEnable();
+        servoCore.claw3.setPosition(1);
+        drivetrainCore.strafeRight(1000, 26, opModeIsActive(), 250);
+        drivetrainCore.fwdDrive(1000, 37, opModeIsActive(), 250);
+        drivetrainCore.strafeRight(1000, 10, opModeIsActive(), 250);
+        drivetrainCore.revDrive(1000, 45, opModeIsActive(), 250);
+        drivetrainCore.fwdDrive(1000, 45, opModeIsActive(), 250);
+        drivetrainCore.strafeRight(1000, 10, opModeIsActive(), 250);
+        drivetrainCore.revDrive(1000, 45, opModeIsActive(), 250);
+        //drivetrainCore.fwdDrive(1000, 45, opModeIsActive(), 250);
+        //drivetrainCore.strafeRight(1000, 7, opModeIsActive(), 250);
+        //drivetrainCore.revDrive(1000, 45, opModeIsActive(), 250);
     }
 
     private void Init(){
