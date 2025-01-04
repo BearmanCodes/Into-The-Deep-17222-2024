@@ -39,7 +39,7 @@ public class ServoCore {
     }
 
     //Dpad control used in Mason S.'s op mode
-    public void dpadRun(Gamepad currentGamepad2, Gamepad previousGamepad2) {
+    public void  dpadRun(Gamepad currentGamepad2, Gamepad previousGamepad2) {
         if (currentGamepad2.b && !previousGamepad2.b && !currentGamepad2.start) {
                 claw1Stat = !claw1Stat;
                 claw2Stat = !claw2Stat;

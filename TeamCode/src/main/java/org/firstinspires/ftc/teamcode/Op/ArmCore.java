@@ -15,7 +15,7 @@ public class ArmCore {
     public DcMotorEx pvtArm; //Declare the 2 arm motors, this one is the extender
 
     public double reducerActualArm = 0.45; //Change this depending on how much you want to reduce your arm
-    public double reducerPvt = (1); //Change this depending on how much you want to reduce your arm
+    public double reducerPvt = (0.8); //Change this depending on how much you want to reduce your arm
     public double fndtlPower;
     public double pvtPower;
 
@@ -36,13 +36,13 @@ public class ArmCore {
     }
 
     //This uses the triggers to move the arm as used in Mason M.'s op mode
-    public void trigger(Gamepad gamepad2){
+    public void trigger(Gamepad gamepad2, int currPos){
         pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt); //might need something to counteract gravity
         //fndtlPower = (gamepad2.left_stick_y * reducerActualArm); //might need something to counteract gravity
-        if (pvtArm.getCurrentPosition() >= 1150) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0075;
-        if (pvtArm.getCurrentPosition() >= 1650) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0055;
-        if (pvtArm.getCurrentPosition() <= 950) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) + 0.0037;
-        if (pvtArm.getCurrentPosition() <= 450) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) + 0.0025;
+        if (currPos >= 1150) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0075;
+        if (currPos >= 1650) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0055;
+        if (currPos <= 950) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) + 0.0037;
+        if (currPos <= 450) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) + 0.0025;
         pvtArm.setPower(pvtPower);
         //fndtlArm.setPower(fndtlPower);
     }
