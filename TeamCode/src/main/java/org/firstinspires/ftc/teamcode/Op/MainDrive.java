@@ -19,7 +19,6 @@ public class MainDrive extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashTele = dashboard.getTelemetry();
 
-    //RUNNING_MODE MODE = RUNNING_MODE.NORMAL_MODE;
     public int errTolerance = 20;
     public double freedomPower = 0.25;
     public int servoActionTol = 1000;
