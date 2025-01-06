@@ -14,23 +14,28 @@ public class ModeCore {
     } //This isn't needed. But enum's are cool for switch statements so...
 
     public RUNNING_MODE MODE = RUNNING_MODE.NORMAL_MODE;
-    public int armTarget, armVelocity;
+    public static int armTarget, armVelocity;
 
-    public void modeHandler(Gamepad currGamepad1, Gamepad prevGamepad1){
-        if (currGamepad1.x && !prevGamepad1.x) { //Demonstrative variables used, replace later please.
+    public void modeHandler(Gamepad currGamepad2, Gamepad prevGamepad2, ServoCore servoCore){
+        if (currGamepad2.dpad_down && !prevGamepad2.dpad_down) { //Demonstrative variables used, replace later please.
             //BAR HANDLER
-            armTarget = 700;
-            armVelocity = 800;
+            armTarget = 6750;
+            armVelocity = 2000;
+            servoCore.wrist.setPosition(0.88);
+            servoCore.pincer.setPosition(0.05);
             MODE = RUNNING_MODE.MOVE_MODE;
         }
-        if (currGamepad1.a && !prevGamepad1.a) {
+        if (currGamepad2.dpad_up && !prevGamepad2.dpad_up) {
             //SPECIMEN FLOOR HANDLER
-            armTarget = 2000;
-            armVelocity = 800;
+            armTarget = 5800;
+            armVelocity = 2000;
+            servoCore.wrist.setPosition(0.85);
             MODE = RUNNING_MODE.MOVE_MODE;
         }
-        if (currGamepad1.y && !prevGamepad1.y) { //Demonstrative variables used, replace later please. Bar
+        if (currGamepad2.y && !prevGamepad2.y) { //Demonstrative variables used, replace later please. Bar
             //CUSTOM HANDLER
+            armTarget = armTarget;
+            armVelocity = armVelocity;
             MODE = RUNNING_MODE.MOVE_MODE;
         }
     }

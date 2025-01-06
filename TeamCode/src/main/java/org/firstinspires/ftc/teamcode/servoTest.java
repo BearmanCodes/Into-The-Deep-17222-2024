@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "ServoTest")
 public class servoTest extends LinearOpMode {
-    Servo servo1, servo2, servo3, servo4;
+    Servo servo1, pincer, wrist;
           //1        2        4       3
     Gamepad currentGamepad =  new Gamepad();
     Gamepad previousGamepad = new Gamepad();
@@ -21,14 +21,12 @@ public class servoTest extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
         servo1 = hardwareMap.get(Servo.class, "claw1".toLowerCase());
-        servo2 = hardwareMap.get(Servo.class, "claw2".toLowerCase());
-        servo3 = hardwareMap.get(Servo.class, "claw3".toLowerCase());
-        servo4 = hardwareMap.get(Servo.class, "claw4".toLowerCase());
+        pincer = hardwareMap.get(Servo.class, "claw2".toLowerCase());
+        wrist = hardwareMap.get(Servo.class, "claw4".toLowerCase());
 
         servo1.setDirection(Servo.Direction.REVERSE);
-        servo2.setDirection(Servo.Direction.FORWARD);
-        servo3.setDirection(Servo.Direction.FORWARD);
-        servo4.setDirection(Servo.Direction.FORWARD);
+        pincer.setDirection(Servo.Direction.FORWARD);
+        wrist.setDirection(Servo.Direction.REVERSE);
         waitForStart();
         while (opModeIsActive()){
             try {
@@ -70,9 +68,8 @@ public class servoTest extends LinearOpMode {
             }
             if (currentGamepad.start && !previousGamepad.start){
                 servo1.setPosition(servo1Pos); //0.04 open, 0 closed
-                servo2.setPosition(servo2Pos); //0.04 open, 0 closed
-                servo3.setPosition(servo3Pos);
-                servo4.setPosition(servo4Pos); //0.10 flipped, 0 init
+                pincer.setPosition(servo2Pos); //0.04 open, 0 closed
+                wrist.setPosition(servo3Pos); // servo 1 port 2, servo 3 port 4
                 telemetryUpdate();
             }
         }
@@ -82,11 +79,10 @@ public class servoTest extends LinearOpMode {
         telemetry.addData("First Servo Position", dformat.format(servo1Pos));
         telemetry.addData("Current First Servo Position", dformat.format(servo1.getPosition()));
         telemetry.addData("Second Servo Position", dformat.format(servo2Pos));
-        telemetry.addData("Current Second Servo Position", dformat.format(servo2.getPosition()));
+        telemetry.addData("Current Second Servo Position", dformat.format(pincer.getPosition()));
         telemetry.addData("Third Servo Position", dformat.format(servo3Pos));
-        telemetry.addData("Current Third Servo Position", dformat.format(servo3.getPosition()));
-        telemetry.addData("Fourth Servo Position", dformat.format(servo4Pos));
-        telemetry.addData("Current Fourth Servo Position", dformat.format(servo4.getPosition()));
+        telemetry.addData("Current Third Servo Position", dformat.format(wrist.getPosition()));
+
         telemetry.update();
     }
 

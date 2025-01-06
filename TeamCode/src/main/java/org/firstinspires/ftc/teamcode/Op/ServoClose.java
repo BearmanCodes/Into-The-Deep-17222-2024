@@ -27,7 +27,7 @@ public class ServoClose extends LinearOpMode {
             }
 
             servoCore.claw1.setPosition(0);
-            servoCore.claw2.setPosition(0);
+            servoCore.pincer.setPosition(0);
             telemetry.addData("Arm Pos: ", armCore.pvtArm.getCurrentPosition());
             telemetry.update();
         }

@@ -20,10 +20,8 @@ public class BLUE_RIGHT extends LinearOpMode {
         //drivetrainCore.strafeRight(800, 36, opModeIsActive(), 0);
         drivetrainCore.fwdDrive(800, 20.5, opModeIsActive(), 250);
         armCore.pvtMove(800, 1250, opModeIsActive(), 250, telemetry);
-        servoCore.claw3.setPosition(0);
-        drivetrainCore.fwdDrive(800, 2, opModeIsActive(), 250);
-        servoCore.claw3.getController().pwmDisable();
-        servoCore.claw1.setPosition(0.04);
+        servoCore.claw3.setPosition(1);
+        drivetrainCore.fwdDrive(800, 3, opModeIsActive(), 250);
         servoCore.claw2.setPosition(0.04);
         sleep(100);
         armCore.pvtMove(800, 25, opModeIsActive(), 250, telemetry);

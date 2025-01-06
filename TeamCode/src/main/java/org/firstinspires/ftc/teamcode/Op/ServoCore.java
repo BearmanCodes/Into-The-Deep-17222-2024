@@ -18,68 +18,63 @@ public class ServoCore {
     Gamepad currentGamepad2 = new Gamepad();
     Gamepad previousGamepad2 = new Gamepad(); //Set up gamepad variables allowing for rising edge detector
 
-    public Servo claw1, claw2, claw3, brake; //Declare servo variables
+    public Servo claw1, pincer, wrist, brake; //Declare servo variables
 
-    boolean claw1Stat, claw2Stat, claw3Stat, brakeStat, MMStat;
+    boolean claw1Stat, pincerStat, wristStat, brakeStat, MMStat;
 
     public void init(HardwareMap hwMap) {
-        claw1 = hwMap.get(Servo.class, "claw1".toLowerCase());
-        claw2 = hwMap.get(Servo.class, "claw2".toLowerCase());
-        claw3 = hwMap.get(Servo.class, "claw3".toLowerCase());
+        pincer = hwMap.get(Servo.class, "claw2".toLowerCase());
+        wrist = hwMap.get(Servo.class, "claw4".toLowerCase());
         //brake = hwMap.get(Servo.class, "brake".toLowerCase());
  
-        claw1.setDirection(Servo.Direction.REVERSE);
-        claw2.setDirection(Servo.Direction.FORWARD);
-        claw3.setDirection(Servo.Direction.FORWARD);
+        pincer.setDirection(Servo.Direction.FORWARD);
+        wrist.setDirection(Servo.Direction.REVERSE);
         //brake.setDirection(Servo.Direction.FORWARD);
-        claw1.setPosition(0);
-        claw2.setPosition(0);
-        //claw3.setPosition(1);
+        pincer.setPosition(0);
+        wrist.setPosition(.96);
         //brake.setPosition(0);
     }
 
     //Dpad control used in Mason S.'s op mode
-    public void  dpadRun(Gamepad currentGamepad2, Gamepad previousGamepad2) {
+    public void  dpadRun(Gamepad currentGamepad2, Gamepad previousGamepad2, Telemetry dashTele) {
         if (currentGamepad2.b && !previousGamepad2.b && !currentGamepad2.start) {
-                claw1Stat = !claw1Stat;
-                claw2Stat = !claw2Stat;
-                claw1.setPosition(0); //(close)
-                claw2.setPosition(0); //(close)
-                if (claw1Stat && claw2Stat) {
-                    claw1.setPosition(0.04); //(open)
-                    claw2.setPosition(0.04); //open
-                } else if (!claw1Stat && !claw2Stat) {
-                    claw1.setPosition(0); //(close)
-                    claw2.setPosition(0); //close
+                pincerStat = !pincerStat;
+                pincer.setPosition(0); //(close)
+                if (pincerStat) {
+                    pincer.setPosition(0.05); //open
+                } else {
+                    pincer.setPosition(0); //close
                 }
         }
 
 
-        if (currentGamepad2.dpad_up && !previousGamepad2.dpad_up && !currentGamepad2.start) {
+        if (currentGamepad2.dpad_right && !previousGamepad2.dpad_right && !currentGamepad2.start) {
             brakeStat = !brakeStat;
             if (brakeStat) {
-                claw3.setPosition(1); //Up
+                wrist.setPosition(.96); //Up
             } else {
-                claw3.setPosition(0); //Down            }
+                wrist.setPosition(.83); //Down            }
             }
         }
 
         if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left && !currentGamepad2.start) {
-            claw3.setPosition(0.8);
-            claw1.setPosition(0.04); //(open)
-            claw2.setPosition(0.04); //open
+            wrist.setPosition(0.94);
+            pincer.setPosition(0.05); //open
         }
 
         if (currentGamepad2.x && !previousGamepad2.x) {
-            double currPos = Math.round(claw3.getPosition() * 100.00) / 100.00;
-            claw3.setPosition(currPos + 0.05);
+            double currPos = Math.round(wrist.getPosition() * 100.00) / 100.00;
+            wrist.setPosition(currPos + 0.01);
         }
         if (currentGamepad2.y && !previousGamepad2.y) {
-            double currPos = Math.round(claw3.getPosition() * 100.00) / 100.00;
-            if (currPos - 0.05 >= 0.75){
-                claw3.setPosition(currPos - 0.05);
+            double currPos = Math.round(wrist.getPosition() * 100.00) / 100.00;
+            if (currPos - 0.01 >= 0.75){
+                wrist.setPosition(currPos - 0.01);
             }
         }
+
+        dashTele.addData("Wrist Pos: ", wrist.getPosition());
+        dashTele.addData("Pincer Pos: ", pincer.getPosition());
     }
     public void edgeDetector(Gamepad gamepad1, Gamepad gamepad2) throws RobotCoreException {
         previousGamepad.copy(currentGamepad);

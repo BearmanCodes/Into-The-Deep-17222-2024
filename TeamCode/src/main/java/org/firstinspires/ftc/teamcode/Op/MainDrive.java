@@ -19,9 +19,9 @@ public class MainDrive extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashTele = dashboard.getTelemetry();
 
-    public int errTolerance = 20;
-    public double freedomPower = 0.25;
-    public int servoActionTol = 1000;
+    public static int errTolerance = 10;
+    public static double freedomPower = 0.25;
+    public static int servoActionTol = 3000;
     @Override
     public void runOpMode() throws InterruptedException {
         Init();
@@ -35,16 +35,24 @@ public class MainDrive extends LinearOpMode {
             int armCurrPos = armCore.pvtArm.getCurrentPosition(); //Keeps var of arm pos for ref
             drivetrainCore.run(gamepad1);
             if (armCurrPos >= servoActionTol) {
-                servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2);
+                servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
             }
             switch (modeCore.MODE){ //Based on the mode set the arm to be in control or moving auto
                 case NORMAL_MODE:
                     armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
-                    modeCore.modeHandler(servoCore.currentGamepad, servoCore.previousGamepad); //Handle variables for reaching the top bar position (X)
+                    telemetry.addData("Arm Position: ", armCurrPos);
+                    telemetry.addData("Arm Power: ", armCore.pvtPower);
+                    telemetry.addData("Arm Velocity: ", armCore.pvtArm.getVelocity());
+                    dashTele.addData("Arm Position: ", armCurrPos);
+                    dashTele.addData("Arm Power: ", armCore.pvtPower);
+                    dashTele.addData("Arm Velocity: ", armCore.pvtArm.getVelocity());
+                    telemetry.update();
+                    dashTele.update();
+                    modeCore.modeHandler(servoCore.currentGamepad2, servoCore.previousGamepad2, servoCore); //Handle variables for reaching the top bar position (X)
                     break; //Why I picked switch statements. Keeps you out of while loop hell
                 case MOVE_MODE:
                     modeCore.initMove(armCore); //init for running to position
-                    int err = Math.abs(armCurrPos - modeCore.armTarget); //amount of ticks to go to target
+                    int err = Math.abs(armCurrPos - ModeCore.armTarget); //amount of ticks to go to target
                     boolean BREAKFREE = Math.abs((gamepad2.right_trigger - gamepad2.left_trigger)) >= freedomPower;
                     dashTele.addData("FREEDOM POWER: ", freedomPower);
                     dashTele.addData("BREAKFREE?: ", BREAKFREE);

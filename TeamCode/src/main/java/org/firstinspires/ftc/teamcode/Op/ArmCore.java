@@ -26,7 +26,7 @@ public class ArmCore {
         fndtlArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pvtArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        pvtArm.setDirection(DcMotorSimple.Direction.FORWARD);
+        pvtArm.setDirection(DcMotorSimple.Direction.REVERSE);
 
         fndtlArm.setDirection(DcMotorSimple.Direction.REVERSE);
         fndtlArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -39,10 +39,10 @@ public class ArmCore {
     public void trigger(Gamepad gamepad2, int currPos){
         pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt); //might need something to counteract gravity
         //fndtlPower = (gamepad2.left_stick_y * reducerActualArm); //might need something to counteract gravity
-        if (currPos >= 1150) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0075;
-        if (currPos >= 1650) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0055;
-        if (currPos <= 950) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) + 0.0037;
-        if (currPos <= 450) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) + 0.0025;
+        if (currPos >= 5700) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0050;
+        if (currPos >= 6250) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0025;
+        if (currPos >= 6800) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0045;
+
         pvtArm.setPower(pvtPower);
         //fndtlArm.setPower(fndtlPower);
     }
