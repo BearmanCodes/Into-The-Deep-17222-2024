@@ -20,7 +20,7 @@ public class MainDrive extends LinearOpMode {
     Telemetry dashTele = dashboard.getTelemetry();
 
     public static int errTolerance = 10;
-    public static double freedomPower = 0.25;
+    public static double freedomPower = 0.01;
     public static int servoActionTol = 3000;
     @Override
     public void runOpMode() throws InterruptedException {
@@ -51,11 +51,15 @@ public class MainDrive extends LinearOpMode {
                     modeCore.modeHandler(servoCore.currentGamepad2, servoCore.previousGamepad2, servoCore); //Handle variables for reaching the top bar position (X)
                     break; //Why I picked switch statements. Keeps you out of while loop hell
                 case MOVE_MODE:
-                    modeCore.initMove(armCore); //init for running to position
+                    armCore.pvtArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armCore.pvtArm.setTargetPosition(ModeCore.armTarget);
+                    armCore.pvtArm.setVelocity(ModeCore.armVelocity);
+                    if (armCurrPos >= servoActionTol) {
+                        servoCore.wrist.setPosition(ModeCore.wristPos);
+                        servoCore.pincer.setPosition(ModeCore.pincerPos);
+                    }
                     int err = Math.abs(armCurrPos - ModeCore.armTarget); //amount of ticks to go to target
                     boolean BREAKFREE = Math.abs((gamepad2.right_trigger - gamepad2.left_trigger)) >= freedomPower;
-                    dashTele.addData("FREEDOM POWER: ", freedomPower);
-                    dashTele.addData("BREAKFREE?: ", BREAKFREE);
                     modeCore.teleMove(dashTele, err);
                     //This boolean decides whether or not to give control back to the driver
                     if (err <= errTolerance || BREAKFREE) {

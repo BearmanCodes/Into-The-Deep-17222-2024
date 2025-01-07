@@ -15,21 +15,23 @@ public class ModeCore {
 
     public RUNNING_MODE MODE = RUNNING_MODE.NORMAL_MODE;
     public static int armTarget, armVelocity;
+    public static double wristPos, pincerPos;
 
     public void modeHandler(Gamepad currGamepad2, Gamepad prevGamepad2, ServoCore servoCore){
         if (currGamepad2.dpad_down && !prevGamepad2.dpad_down) { //Demonstrative variables used, replace later please.
             //BAR HANDLER
             armTarget = 6750;
             armVelocity = 2000;
-            servoCore.wrist.setPosition(0.88);
-            servoCore.pincer.setPosition(0.05);
+            wristPos = 0.88;
+            pincerPos = 0.05;
             MODE = RUNNING_MODE.MOVE_MODE;
         }
         if (currGamepad2.dpad_up && !prevGamepad2.dpad_up) {
             //SPECIMEN FLOOR HANDLER
             armTarget = 5800;
             armVelocity = 2000;
-            servoCore.wrist.setPosition(0.85);
+            wristPos = 0.85;
+            pincerPos = 0;
             MODE = RUNNING_MODE.MOVE_MODE;
         }
         if (currGamepad2.y && !prevGamepad2.y) { //Demonstrative variables used, replace later please. Bar
@@ -38,12 +40,6 @@ public class ModeCore {
             armVelocity = armVelocity;
             MODE = RUNNING_MODE.MOVE_MODE;
         }
-    }
-
-    public void initMove(ArmCore armCore){
-        armCore.pvtArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armCore.pvtArm.setTargetPosition(armTarget);
-        armCore.pvtArm.setVelocity(armVelocity);
     }
 
     public void teleMove(Telemetry dashTele, int err){
