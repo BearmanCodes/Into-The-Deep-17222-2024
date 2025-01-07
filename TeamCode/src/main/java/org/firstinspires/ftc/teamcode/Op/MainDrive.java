@@ -51,8 +51,8 @@ public class MainDrive extends LinearOpMode {
                     modeCore.modeHandler(servoCore.currentGamepad2, servoCore.previousGamepad2, servoCore); //Handle variables for reaching the top bar position (X)
                     break; //Why I picked switch statements. Keeps you out of while loop hell
                 case MOVE_MODE:
-                    armCore.pvtArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     armCore.pvtArm.setTargetPosition(ModeCore.armTarget);
+                    armCore.pvtArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     armCore.pvtArm.setVelocity(ModeCore.armVelocity);
                     if (armCurrPos >= servoActionTol) {
                         servoCore.wrist.setPosition(ModeCore.wristPos);

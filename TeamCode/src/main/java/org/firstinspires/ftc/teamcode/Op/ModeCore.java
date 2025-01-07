@@ -19,7 +19,7 @@ public class ModeCore {
 
     public void modeHandler(Gamepad currGamepad2, Gamepad prevGamepad2, ServoCore servoCore){
         if (currGamepad2.dpad_down && !prevGamepad2.dpad_down) { //Demonstrative variables used, replace later please.
-            //BAR HANDLER
+            //SPECIMEN FLOOR HANDLER
             armTarget = 6750;
             armVelocity = 2000;
             wristPos = 0.88;
@@ -27,19 +27,19 @@ public class ModeCore {
             MODE = RUNNING_MODE.MOVE_MODE;
         }
         if (currGamepad2.dpad_up && !prevGamepad2.dpad_up) {
-            //SPECIMEN FLOOR HANDLER
+            //BAR HANDLER
             armTarget = 5800;
             armVelocity = 2000;
             wristPos = 0.85;
             pincerPos = 0;
             MODE = RUNNING_MODE.MOVE_MODE;
         }
-        if (currGamepad2.y && !prevGamepad2.y) { //Demonstrative variables used, replace later please. Bar
+        //if (currGamepad2.y && !prevGamepad2.y) { //Demonstrative variables used, replace later please. Bar
             //CUSTOM HANDLER
-            armTarget = armTarget;
-            armVelocity = armVelocity;
-            MODE = RUNNING_MODE.MOVE_MODE;
-        }
+          //  armTarget = armTarget;
+            //armVelocity = armVelocity;
+            //MODE = RUNNING_MODE.MOVE_MODE;
+        //}
     }
 
     public void teleMove(Telemetry dashTele, int err){
