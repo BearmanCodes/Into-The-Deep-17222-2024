@@ -43,6 +43,7 @@ public class BLUE_RIGHT extends LinearOpMode {
         //drivetrainCore.fwdDrive(1000, 45, opModeIsActive(), 250);
         //drivetrainCore.strafeRight(1000, 7, opModeIsActive(), 250);
         //drivetrainCore.revDrive(1000, 45, opModeIsActive(), 250);
+
     }
 
     private void Init(){

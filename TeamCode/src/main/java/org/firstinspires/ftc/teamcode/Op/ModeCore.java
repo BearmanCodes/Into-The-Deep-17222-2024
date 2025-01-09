@@ -19,6 +19,7 @@ public class ModeCore {
 
     public void modeHandler(Gamepad currGamepad2, Gamepad prevGamepad2, ServoCore servoCore){
         if (currGamepad2.dpad_down && !prevGamepad2.dpad_down) { //Demonstrative variables used, replace later please.
+                                                                //I did not, in fact, replace them later.
             //SPECIMEN FLOOR HANDLER
             armTarget = 6750;
             armVelocity = 2000;
@@ -34,12 +35,12 @@ public class ModeCore {
             pincerPos = 0;
             MODE = RUNNING_MODE.MOVE_MODE;
         }
-        //if (currGamepad2.y && !prevGamepad2.y) { //Demonstrative variables used, replace later please. Bar
-            //CUSTOM HANDLER
-          //  armTarget = armTarget;
-            //armVelocity = armVelocity;
-            //MODE = RUNNING_MODE.MOVE_MODE;
-        //}
+        if (currGamepad2.dpad_right && !prevGamepad2.dpad_right) {
+            //HANGING HANDLER
+            armTarget = 4100;
+            armVelocity = 2000;
+            MODE = RUNNING_MODE.MOVE_MODE;
+        }
     }
 
     public void teleMove(Telemetry dashTele, int err){

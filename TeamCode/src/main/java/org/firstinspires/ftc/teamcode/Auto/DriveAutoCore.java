@@ -107,7 +107,7 @@ public class DriveAutoCore {
         imu = hwMap.get(IMU.class, "imu");
         imuparams = new IMU.Parameters(new RevHubOrientationOnRobot
                 (RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+                        RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
 
         imu.initialize(imuparams);
         imu.resetYaw();
@@ -212,7 +212,7 @@ public class DriveAutoCore {
             if (active) {
                 if (target < 0) {
                     while (Yaw > target) {
-                        setMotorVelocity(850, -850, 850, -850);
+                        setMotorVelocity(-850, 850, -850, 850);
                         robotOrientation = imu.getRobotYawPitchRollAngles();
                         Yaw = robotOrientation.getYaw(AngleUnit.DEGREES);
                         telemetry.addData("Yaw: ", Yaw);
@@ -235,7 +235,7 @@ public class DriveAutoCore {
                         telemetry.addData("Error: ", error);
                         telemetry.update();
                         while (Math.abs(error) > 0.2) {
-                            setMotorVelocity(-850, 850, -850, 850);
+                            setMotorVelocity(850, -850, 850, -850);
                             robotOrientation = imu.getRobotYawPitchRollAngles();
                             Yaw = robotOrientation.getYaw(AngleUnit.DEGREES);
                             error = Yaw - target;
