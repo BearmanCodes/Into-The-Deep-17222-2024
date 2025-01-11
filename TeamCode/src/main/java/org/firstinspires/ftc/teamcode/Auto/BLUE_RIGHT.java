@@ -21,7 +21,6 @@ public class BLUE_RIGHT extends LinearOpMode {
 
         waitForStart();
 
-
         drivetrainCore.fwdDrive(800, initalFwd, opModeIsActive(), 250);
         armCore.pvtMove(armVel, armBarPos, opModeIsActive(), 250, telemetry);
         servoCore.wrist.setPosition(0.88);
@@ -43,7 +42,6 @@ public class BLUE_RIGHT extends LinearOpMode {
         //drivetrainCore.fwdDrive(1000, 45, opModeIsActive(), 250);
         //drivetrainCore.strafeRight(1000, 7, opModeIsActive(), 250);
         //drivetrainCore.revDrive(1000, 45, opModeIsActive(), 250);
-
     }
 
     private void Init(){
