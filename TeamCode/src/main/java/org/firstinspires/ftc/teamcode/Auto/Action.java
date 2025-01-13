@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import com.acmerobotics.dashboard.DashboardCore;
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.List;
 
@@ -21,9 +25,15 @@ public class Action {
         SW,
         SE
     }
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+    Telemetry dashTele = dashboard.getTelemetry();
+    public static double driveTol = 25;
+    public static double armTol = 10;
     public interface Executable {
         void run();
         double getPeriod();
+        boolean getRunCondition();
+        void setupParams();
     }
     public static class Drive implements Executable {
         private DriveTestCore driveCore = new DriveTestCore();
@@ -34,6 +44,11 @@ public class Action {
         private double inches;
         private double velocity;
         public double period;
+        int frontLeftTarget;
+        int frontRightTarget;
+        int backLeftTarget;
+        int backRightTarget;
+        public boolean canRun = true;
 
         public Drive setDir(DriveDirection dir){
             this.dir = dir;
@@ -66,12 +81,17 @@ public class Action {
         }
 
         @Override
-        public void run(){
+        public boolean getRunCondition(){
+            return this.canRun;
+        }
+
+        @Override
+        public void setupParams(){
             inches *= TicksPerIn;
-            int frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) inches;
-            int frontRightTarget = driveCore.frontRight.getCurrentPosition() + (int) inches;
-            int backLeftTarget = driveCore.backLeft.getCurrentPosition() + (int) inches;
-            int backRightTarget = driveCore.backRight.getCurrentPosition() + (int) inches;
+            frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) inches;
+            frontRightTarget = driveCore.frontRight.getCurrentPosition() + (int) inches;
+            backLeftTarget = driveCore.backLeft.getCurrentPosition() + (int) inches;
+            backRightTarget = driveCore.backRight.getCurrentPosition() + (int) inches;
             switch (dir){
                 case NW:
                     driveCore.allTargetPosition(0, frontRightTarget, backLeftTarget, 0);
@@ -104,7 +124,18 @@ public class Action {
                     driveCore.allTargetPosition(0, -frontRightTarget, -backLeftTarget, 0);
                     break;
             }
-            driveCore.allMotorVelocity(velocity);
+        }
+
+        @Override
+        public void run(){
+            int err = Math.abs(frontLeftTarget - driveCore.frontLeft.getCurrentPosition());
+            if (err > driveTol){
+                driveCore.allMotorVelocity(velocity);
+            } else {
+                driveCore.allMotorVelocity(0);
+                driveCore.allMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                canRun = false;
+            }
         }
     }
     public static class Arm implements Executable{
@@ -112,6 +143,7 @@ public class Action {
         public double velocity;
         public double period;
         public ArmTestCore armCore;
+        boolean canRun = true;
 
         public Arm setVelocity(double vel){
             this.velocity = vel;
@@ -138,18 +170,56 @@ public class Action {
             return this.period;
         }
 
+        public boolean getRunCondition(){
+            return this.canRun;
+        }
+
         @Override
-        public void run(){
+        public void setupParams(){
             armCore.pvtArm.setTargetPosition(ticks);
             armCore.pvtArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            armCore.pvtArm.setVelocity(velocity);
+        }
+
+        @Override
+        public void run(){
+            int err = Math.abs(ticks - armCore.pvtArm.getCurrentPosition());
+
+            if (err > armTol){
+                armCore.pvtArm.setVelocity(velocity);
+            } else {
+                armCore.pvtArm.setVelocity(0);
+                armCore.pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                canRun = false;
+            }
         }
     }
 
     public void run(Executable... Actions){
-        while (true){
+        boolean work = true;
+        int count = 0;
+        for (Executable action: Actions){
+            action.setupParams();
+        }
+        while (work){
+            count = 0;
             for (Executable action: Actions){
-                action.run();
+                if (action.getRunCondition()){
+                    action.run();
+                } else {
+                    for (Executable actionCheck: Actions){
+                        dashTele.addData("Run?: ", actionCheck.getRunCondition());
+                        dashTele.update();
+                        if (actionCheck.getRunCondition()){
+                            dashTele.addData("Count: ", count);
+                            dashTele.update();
+                            count++;
+                            dashTele.addData("Count: ", count);
+                            dashTele.update();
+                            if (count >= Actions.length) work = false;
+                        }
+                    }
+                    break;
+                }
             }
         }
     }

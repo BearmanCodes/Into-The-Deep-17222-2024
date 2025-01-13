@@ -35,7 +35,7 @@ public class BLUE_TEST extends LinearOpMode {
                             .setVelocity(800)
                             .setPeriod(firstWaitPeriod),
                     new Action.Arm()
-                            .setVelocity(800)
+                            .setVelocity(2000)
                             .setCore(armCore)
                             .setTicks(armBarPos)
                             .setPeriod(0));
@@ -47,6 +47,7 @@ public class BLUE_TEST extends LinearOpMode {
         //Ability to wait a certain period of time after an action to start another one
         //Ability for one action to end before another and keep going until they're all done
         //Class stuff?
+        /*
         servoCore.wrist.setPosition(0.88);
         drivetrainCore.drive(DriveTestCore.DriveDirection.FWD, 800, nudgeFwd, opModeIsActive(), 250);
         servoCore.pincer.setPosition(0.05);
@@ -63,6 +64,7 @@ public class BLUE_TEST extends LinearOpMode {
         drivetrainCore.drive(DriveTestCore.DriveDirection.FWD, 1000, 45, opModeIsActive(), 250);
         drivetrainCore.drive(DriveTestCore.DriveDirection.STRAFE_RIGHT, 1000, 10, opModeIsActive(), 250);
         drivetrainCore.drive(DriveTestCore.DriveDirection.REV, 1000, 45, opModeIsActive(), 250);
+         */
     }
 
     private void Init(){
