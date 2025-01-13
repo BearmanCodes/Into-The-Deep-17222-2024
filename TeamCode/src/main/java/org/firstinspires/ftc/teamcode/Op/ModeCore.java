@@ -21,7 +21,7 @@ public class ModeCore {
         if (currGamepad2.dpad_down && !prevGamepad2.dpad_down) { //Demonstrative variables used, replace later please.
                                                                 //I did not, in fact, replace them later.
             //SPECIMEN FLOOR HANDLER
-            armTarget = 6750;
+            armTarget = 6800;
             armVelocity = 2000;
             wristPos = 0.88;
             pincerPos = 0.05;
@@ -29,7 +29,7 @@ public class ModeCore {
         }
         if (currGamepad2.dpad_up && !prevGamepad2.dpad_up) {
             //BAR HANDLER
-            armTarget = 5800;
+            armTarget = 5785;
             armVelocity = 2000;
             wristPos = 0.85;
             pincerPos = 0;

@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.List;
 
+@Config
 public class Action {
     private ElapsedTime timer = new ElapsedTime();
     public enum DriveDirection {
@@ -50,6 +52,11 @@ public class Action {
 
         public Drive setPeriod(double period){
             this.period = period;
+            return this;
+        }
+
+        public Drive setCore(DriveTestCore core){
+            this.driveCore = core;
             return this;
         }
 
@@ -104,7 +111,7 @@ public class Action {
         public int ticks;
         public double velocity;
         public double period;
-        private ArmTestCore armCore = new ArmTestCore();
+        public ArmTestCore armCore;
 
         public Arm setVelocity(double vel){
             this.velocity = vel;
@@ -118,6 +125,11 @@ public class Action {
 
         public Arm setPeriod(double period){
             this.period = period;
+            return this;
+        }
+
+        public Arm setCore(ArmTestCore core){
+            this.armCore = core;
             return this;
         }
 
@@ -135,12 +147,10 @@ public class Action {
     }
 
     public void run(Executable... Actions){
-        for (Executable action: Actions){
-            timer.reset();
-            do {
+        while (true){
+            for (Executable action: Actions){
                 action.run();
-            } while (!(timer.seconds() >= action.getPeriod()));
+            }
         }
     }
-
 }

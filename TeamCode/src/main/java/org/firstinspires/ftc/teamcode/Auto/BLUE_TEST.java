@@ -20,6 +20,7 @@ public class BLUE_TEST extends LinearOpMode {
     public static double nudgeFwd = 3;
     public static int armBackPos = 25;
     public static double armVel = 3000;
+    public static double firstWaitPeriod = 0.5;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -29,17 +30,19 @@ public class BLUE_TEST extends LinearOpMode {
         if (opModeIsActive()){
             action.run(new Action.Drive().
                             setDir(Action.DriveDirection.FWD)
+                            .setCore(drivetrainCore)
                             .setInches(initalFwd)
                             .setVelocity(800)
-                            .setPeriod(0.5),
+                            .setPeriod(firstWaitPeriod),
                     new Action.Arm()
                             .setVelocity(800)
+                            .setCore(armCore)
                             .setTicks(armBarPos)
                             .setPeriod(0));
         }
 
-        drivetrainCore.drive(DriveTestCore.DriveDirection.FWD, 800, initalFwd, opModeIsActive(), 250);
-        armCore.pvtMove(armVel, armBarPos, opModeIsActive(), 250, telemetry);
+        //drivetrainCore.drive(DriveTestCore.DriveDirection.FWD, 800, initalFwd, opModeIsActive(), 250);
+        //armCore.pvtMove(armVel, armBarPos, opModeIsActive(), 250, telemetry);
         //Ability to start an action
         //Ability to wait a certain period of time after an action to start another one
         //Ability for one action to end before another and keep going until they're all done
