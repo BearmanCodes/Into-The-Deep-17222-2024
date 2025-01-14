@@ -8,12 +8,23 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class BLUE_RIGHT extends LinearOpMode {
     ArmAutoCore armCore = new ArmAutoCore();
     DriveAutoCore drivetrainCore = new DriveAutoCore();
+    Action action = new Action();
     ServoAutoCore servoCore = new ServoAutoCore();
-    public static double initalFwd = 19.5;
+    public static double initalFwd = 18.5;
+    public static double firstWaitPeriod = 0.125;
+    public static double initialStrafe = 25;
+    public static double intialRev = 0;
     public static int armBarPos = 4500;
+    public static double strafeBarClear = 30;
+    public static double straightSpeeds = 1250;
+    public static double fwdHangAlign = 25;
+    public static double hangNudge = 8;
     public static double nudgeFwd = 3;
     public static int armBackPos = 25;
     public static double armVel = 3000;
+    public static int turnAmount = -90;
+    public static double sampleAlign = 10;
+    public static double netZonePos = 43;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -21,27 +32,45 @@ public class BLUE_RIGHT extends LinearOpMode {
 
         waitForStart();
 
-        drivetrainCore.fwdDrive(800, initalFwd, opModeIsActive(), 250);
-        armCore.pvtMove(armVel, armBarPos, opModeIsActive(), 250, telemetry);
-        servoCore.wrist.setPosition(0.88);
-        drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), 250);
-        servoCore.pincer.setPosition(0.05);
-        servoCore.wrist.getController().pwmDisable();
-        sleep(100);
-        armCore.pvtMove(armVel, armBackPos, opModeIsActive(), 250, telemetry);
-        drivetrainCore.revDrive(1000, 9, opModeIsActive(), 250);
-        servoCore.wrist.getController().pwmEnable();
-        servoCore.wrist.setPosition(0.96);
-        drivetrainCore.strafeRight(1000, 26, opModeIsActive(), 250);
-        drivetrainCore.fwdDrive(1000, 37, opModeIsActive(), 250);
-        drivetrainCore.strafeRight(1000, 10, opModeIsActive(), 250);
-        drivetrainCore.revDrive(1000, 45, opModeIsActive(), 250);
-        drivetrainCore.fwdDrive(1000, 45, opModeIsActive(), 250);
-        drivetrainCore.strafeRight(1000, 10, opModeIsActive(), 250);
-        drivetrainCore.revDrive(1000, 45, opModeIsActive(), 250);
-        //drivetrainCore.fwdDrive(1000, 45, opModeIsActive(), 250);
-        //drivetrainCore.strafeRight(1000, 7, opModeIsActive(), 250);
-        //drivetrainCore.revDrive(1000, 45, opModeIsActive(), 250);
+
+        if (opModeIsActive()){
+            action.run(new Action.Drive().
+                            setDir(Action.DriveDirection.FWD)
+                            .setCore(drivetrainCore)
+                            .setInches(initalFwd)
+                            .setVelocity(straightSpeeds)
+                            .setPeriod(0),
+                    new Action.Arm()
+                            .setVelocity(armVel)
+                            .setCore(armCore)
+                            .setTicks(armBarPos)
+                            .setPeriod(firstWaitPeriod));
+            servoCore.wrist.setPosition(0.88);
+            drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), 250);
+            servoCore.pincer.setPosition(0.05);
+            servoCore.wrist.getController().pwmDisable();
+            action.run(new Action.Arm()
+                            .setCore(armCore)
+                            .setVelocity(armVel)
+                            .setTicks(armBackPos),
+                    new Action.Drive()
+                            .setDir(Action.DriveDirection.STRAFE_RIGHT)
+                            .setCore(drivetrainCore)
+                            .setVelocity(1000)
+                            .setInches(26)
+                            .setPeriod(0.250));
+            servoCore.wrist.getController().pwmEnable();
+            servoCore.wrist.setPosition(0.96);
+            drivetrainCore.fwdDrive(straightSpeeds, 28, opModeIsActive(), 250);
+            drivetrainCore.strafeRight(straightSpeeds, 10, opModeIsActive(), 250);
+            drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), 250);
+            drivetrainCore.fwdDrive(straightSpeeds, 45, opModeIsActive(), 250);
+            drivetrainCore.strafeRight(1000, 10, opModeIsActive(), 250);
+            drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), 250);
+            drivetrainCore.fwdDrive(straightSpeeds, 45, opModeIsActive(), 250);
+            drivetrainCore.strafeRight(1000, 7, opModeIsActive(), 250);
+            drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), 250);
+        }
     }
 
     private void Init(){

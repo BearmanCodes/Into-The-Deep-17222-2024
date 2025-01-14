@@ -35,9 +35,13 @@ public class BLUE_LEFT extends LinearOpMode {
         action.run(new Action.Drive()
                 .setDir(Action.DriveDirection.STRAFE_RIGHT)
                 .setCore(drivetrainCore)
-                .setDir())
-        drivetrainCore.strafeRight(800, initialStrafe, opModeIsActive(), 250);
-        armCore.pvtMove(armVel, armBarPos, opModeIsActive(), 250, telemetry);
+                .setVelocity(800)
+                .setInches(initialStrafe),
+                new Action.Arm()
+                        .setCore(armCore)
+                        .setTicks(armBarPos)
+                        .setVelocity(armVel)
+                        .setPeriod(0.450));
         servoCore.wrist.setPosition(0.88);
         drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), 250);
         servoCore.pincer.setPosition(0.05);
@@ -54,7 +58,9 @@ public class BLUE_LEFT extends LinearOpMode {
         drivetrainCore.fwdDrive(straightSpeeds, netZonePos, opModeIsActive(), 250);
         drivetrainCore.turnAmount(turnAmount, opModeIsActive(), telemetry);
         drivetrainCore.fwdDrive(straightSpeeds, hangNudge + sampleAlign, opModeIsActive(), 250);
-        armCore.pvtMove(armVel, armBarPos, opModeIsActive(), 250, telemetry);
+        drivetrainCore.fwdDrive(550, 5, opModeIsActive(), 200);
+        servoCore.wrist.getController().pwmDisable();
+        armCore.pvtMove(9999, 9100, opModeIsActive(), 250, telemetry);
         /*
         drivetrainCore.fwdDrive(800, 9, opModeIsActive(), 250);
         servoCore.claw3.setPosition(1);

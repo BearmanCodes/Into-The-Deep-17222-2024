@@ -53,12 +53,12 @@ public class BLUE_TEST extends LinearOpMode {
             servoCore.pincer.setPosition(0.05);
             servoCore.wrist.getController().pwmDisable();
             action.run(new Action.Arm()
-                    .setCore(armCore)
+                    //.setCore(armCore)
                     .setVelocity(armVel)
                     .setTicks(armBackPos),
                     new Action.Drive()
                             .setDir(Action.DriveDirection.STRAFE_RIGHT)
-                            .setCore(drivetrainCore)
+                            //.setCore(drivetrainCore)
                             .setVelocity(1000)
                             .setInches(26)
                             .setPeriod(0.250));

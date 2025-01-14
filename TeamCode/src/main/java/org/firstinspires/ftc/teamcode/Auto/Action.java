@@ -170,7 +170,7 @@ public class Action {
         public int ticks;
         public double velocity;
         public double period = 0;
-        public ArmTestCore armCore;
+        public ArmAutoCore armCore;
         boolean canRun = true;
 
         public Arm setVelocity(double vel){
@@ -188,7 +188,7 @@ public class Action {
             return this;
         }
 
-        public Arm setCore(ArmTestCore core){
+        public Arm setCore(ArmAutoCore core){
             this.armCore = core;
             return this;
         }
