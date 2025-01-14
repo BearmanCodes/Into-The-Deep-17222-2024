@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
-import com.acmerobotics.dashboard.DashboardCore;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import java.util.List;
 
 @Config
 public class Action {
@@ -25,32 +22,32 @@ public class Action {
         SW,
         SE
     }
-    FtcDashboard dashboard = FtcDashboard.getInstance();
-    Telemetry dashTele = dashboard.getTelemetry();
-    public static double driveTol = 25;
-    public static double armTol = 10;
+    static FtcDashboard dashboard = FtcDashboard.getInstance();
+    static Telemetry dashTele = dashboard.getTelemetry();
+    public static double driveTol = 1;
+    public static double armTol = 1;
     public interface Executable {
-        void run();
+        void run(ElapsedTime time);
         double getPeriod();
         boolean getRunCondition();
         void setupParams();
     }
     public static class Drive implements Executable {
-        private DriveTestCore driveCore = new DriveTestCore();
+        private DriveAutoCore driveCore = new DriveAutoCore();
         static final double TicksPerRev = 560;
         static final double WheelInches = (75 / 25.4);
         static final double TicksPerIn = TicksPerRev / (WheelInches * Math.PI);
-        private DriveDirection dir;
+        private Action.DriveDirection dir;
         private double inches;
         private double velocity;
-        public double period;
+        public double period = 0;
         int frontLeftTarget;
         int frontRightTarget;
         int backLeftTarget;
         int backRightTarget;
         public boolean canRun = true;
 
-        public Drive setDir(DriveDirection dir){
+        public Drive setDir(Action.DriveDirection dir){
             this.dir = dir;
             return this;
         }
@@ -70,7 +67,7 @@ public class Action {
             return this;
         }
 
-        public Drive setCore(DriveTestCore core){
+        public Drive setCore(DriveAutoCore core){
             this.driveCore = core;
             return this;
         }
@@ -87,61 +84,92 @@ public class Action {
 
         @Override
         public void setupParams(){
-            inches *= TicksPerIn;
-            frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) inches;
-            frontRightTarget = driveCore.frontRight.getCurrentPosition() + (int) inches;
-            backLeftTarget = driveCore.backLeft.getCurrentPosition() + (int) inches;
-            backRightTarget = driveCore.backRight.getCurrentPosition() + (int) inches;
+            dashTele.addData("Dir: ", this.dir);
+            dashTele.update();
             switch (dir){
                 case NW:
-                    driveCore.allTargetPosition(0, frontRightTarget, backLeftTarget, 0);
+                    frontLeftTarget = 0;
+                    frontRightTarget = driveCore.frontRight.getCurrentPosition() + (int) (inches * TicksPerIn);
+                    backLeftTarget = driveCore.backLeft.getCurrentPosition() + (int) (inches * TicksPerIn);
+                    backRightTarget = 0;
                     break;
                 case FWD:
-                    driveCore.allTargetPosition(frontLeftTarget, frontRightTarget, backLeftTarget, backRightTarget);
+                    frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) (inches * TicksPerIn);
+                    frontRightTarget = driveCore.frontRight.getCurrentPosition() + (int) (inches * TicksPerIn);
+                    backLeftTarget = driveCore.backLeft.getCurrentPosition() + (int) (inches * TicksPerIn);
+                    backRightTarget = driveCore.backRight.getCurrentPosition() + (int) (inches * TicksPerIn);
                     break;
                 case REV:
-                    driveCore.allTargetPosition(-frontLeftTarget, -frontRightTarget, -backLeftTarget, -backRightTarget);
-                    break;
+                    frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) (-inches * TicksPerIn);
+                    frontRightTarget = driveCore.frontRight.getCurrentPosition() + (int) (-inches * TicksPerIn);
+                    backLeftTarget = driveCore.backLeft.getCurrentPosition() + (int) (-inches * TicksPerIn);
+                    backRightTarget = driveCore.backRight.getCurrentPosition() + (int) (-inches * TicksPerIn);                    break;
                 case NE:
-                    driveCore.allTargetPosition(frontLeftTarget, 0, 0, backRightTarget);
+                    frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) (inches * TicksPerIn);
+                    frontRightTarget = 0;
+                    backLeftTarget = 0;
+                    backRightTarget = driveCore.backRight.getCurrentPosition() + (int) (inches * TicksPerIn);
                     break;
                 case STRAFE_LEFT:
-                    driveCore.allTargetPosition(-frontLeftTarget, frontRightTarget, backLeftTarget, -backRightTarget);
+                    frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) (-inches * TicksPerIn);
+                    frontRightTarget = driveCore.frontRight.getCurrentPosition() + (int) (inches * TicksPerIn);
+                    backLeftTarget = driveCore.backLeft.getCurrentPosition() + (int) (inches * TicksPerIn);
+                    backRightTarget = driveCore.backRight.getCurrentPosition() + (int) (-inches * TicksPerIn);
                     break;
                 case STRAFE_RIGHT:
-                    driveCore.allTargetPosition(frontLeftTarget, -frontRightTarget, -backLeftTarget, backRightTarget);
+                    frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) (inches * TicksPerIn);
+                    frontRightTarget = driveCore.frontRight.getCurrentPosition() + (int) (-inches * TicksPerIn);
+                    backLeftTarget = driveCore.backLeft.getCurrentPosition() + (int) (-inches * TicksPerIn);
+                    backRightTarget = driveCore.backRight.getCurrentPosition() + (int) (inches * TicksPerIn);
                     break;
                 case TURN_CC:
-                    driveCore.allTargetPosition(-frontLeftTarget, frontRightTarget, -backLeftTarget, backRightTarget);
-                    break;
+                    frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) (-inches * TicksPerIn);
+                    frontRightTarget = driveCore.frontRight.getCurrentPosition() + (int) (inches * TicksPerIn);
+                    backLeftTarget = driveCore.backLeft.getCurrentPosition() + (int) (-inches * TicksPerIn);
+                    backRightTarget = driveCore.backRight.getCurrentPosition() + (int) (inches * TicksPerIn);                       break;
                 case TURN_CW:
-                    driveCore.allTargetPosition(frontLeftTarget, -frontRightTarget, backLeftTarget, -backRightTarget);
+                    frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) (inches * TicksPerIn);
+                    frontRightTarget = driveCore.frontRight.getCurrentPosition() + (int) (-inches * TicksPerIn);
+                    backLeftTarget = driveCore.backLeft.getCurrentPosition() + (int) (inches * TicksPerIn);
+                    backRightTarget = driveCore.backRight.getCurrentPosition() + (int) (-inches * TicksPerIn);
                     break;
                 case SW:
-                    driveCore.allTargetPosition(-frontLeftTarget, 0, 0, -backRightTarget);
+                    frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) (-inches * TicksPerIn);
+                    frontRightTarget = 0;
+                    backLeftTarget = 0;
+                    backRightTarget = driveCore.backRight.getCurrentPosition() + (int) (-inches * TicksPerIn);
                     break;
                 case SE:
-                    driveCore.allTargetPosition(0, -frontRightTarget, -backLeftTarget, 0);
+                    frontLeftTarget = 0;
+                    frontRightTarget = driveCore.frontRight.getCurrentPosition() + (int) (-inches * TicksPerIn);
+                    backLeftTarget = driveCore.backLeft.getCurrentPosition() + (int) (-inches * TicksPerIn);
+                    backRightTarget = 0;
                     break;
             }
+            driveCore.allTargetPosition(frontLeftTarget, frontRightTarget, backLeftTarget, backRightTarget);
+            driveCore.allMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
         @Override
-        public void run(){
+        public void run(ElapsedTime time){
             int err = Math.abs(frontLeftTarget - driveCore.frontLeft.getCurrentPosition());
-            if (err > driveTol){
-                driveCore.allMotorVelocity(velocity);
-            } else {
-                driveCore.allMotorVelocity(0);
-                driveCore.allMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                canRun = false;
+            Action.dashTele.addData("DRIVE ERR", err);
+            Action.dashTele.update();
+            if (time.seconds() >= period){
+                if (err > driveTol){
+                    driveCore.allMotorVelocity(velocity);
+                } else {
+                    driveCore.allMotorVelocity(0);
+                    driveCore.allMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    this.canRun = false;
+                }
             }
         }
     }
     public static class Arm implements Executable{
         public int ticks;
         public double velocity;
-        public double period;
+        public double period = 0;
         public ArmTestCore armCore;
         boolean canRun = true;
 
@@ -181,44 +209,37 @@ public class Action {
         }
 
         @Override
-        public void run(){
+        public void run(ElapsedTime time){
             int err = Math.abs(ticks - armCore.pvtArm.getCurrentPosition());
+            Action.dashTele.addData("ERR", err);
 
-            if (err > armTol){
-                armCore.pvtArm.setVelocity(velocity);
-            } else {
-                armCore.pvtArm.setVelocity(0);
-                armCore.pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                canRun = false;
+            if (time.seconds() >= period){
+                if (err > armTol){
+                    armCore.pvtArm.setVelocity(velocity);
+                } else {
+                    armCore.pvtArm.setVelocity(0);
+                    armCore.pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    this.canRun = false;
+                    Action.dashTele.addData("ARM FINISHED", true);
+                    Action.dashTele.update();
+                }
             }
         }
     }
 
     public void run(Executable... Actions){
-        boolean work = true;
-        int count = 0;
+        int count = Actions.length - 1;
+        timer.reset();
         for (Executable action: Actions){
             action.setupParams();
         }
-        while (work){
-            count = 0;
+        while (count > 0){
             for (Executable action: Actions){
                 if (action.getRunCondition()){
-                    action.run();
+                    action.run(timer);
+                    count+= 1;
                 } else {
-                    for (Executable actionCheck: Actions){
-                        dashTele.addData("Run?: ", actionCheck.getRunCondition());
-                        dashTele.update();
-                        if (actionCheck.getRunCondition()){
-                            dashTele.addData("Count: ", count);
-                            dashTele.update();
-                            count++;
-                            dashTele.addData("Count: ", count);
-                            dashTele.update();
-                            if (count >= Actions.length) work = false;
-                        }
-                    }
-                    break;
+                    count -= 1;
                 }
             }
         }

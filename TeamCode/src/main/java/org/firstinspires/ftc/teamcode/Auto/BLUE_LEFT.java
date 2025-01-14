@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name = "BLUE LEFT", group = "BLUE")
 public class BLUE_LEFT extends LinearOpMode {
     ArmAutoCore armCore = new ArmAutoCore();
+    Action action = new Action();
     DriveAutoCore drivetrainCore = new DriveAutoCore();
     ServoAutoCore servoCore = new ServoAutoCore();
     public static double initalFwd = 18.5;
@@ -29,9 +30,12 @@ public class BLUE_LEFT extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Init();
 
-        waitForStart();
-
+        waitForStart();;
         drivetrainCore.fwdDrive(800, initalFwd, opModeIsActive(), 250);
+        action.run(new Action.Drive()
+                .setDir(Action.DriveDirection.STRAFE_RIGHT)
+                .setCore(drivetrainCore)
+                .setDir())
         drivetrainCore.strafeRight(800, initialStrafe, opModeIsActive(), 250);
         armCore.pvtMove(armVel, armBarPos, opModeIsActive(), 250, telemetry);
         servoCore.wrist.setPosition(0.88);
