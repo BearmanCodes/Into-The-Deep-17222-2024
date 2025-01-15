@@ -10,6 +10,7 @@ public class RED_RIGHT extends LinearOpMode {
     ArmAutoCore armCore = new ArmAutoCore();
     DriveAutoCore drivetrainCore = new DriveAutoCore();
     ServoAutoCore servoCore = new ServoAutoCore();
+    Action action = new Action();
     public static double initalFwd = 18.5;
     public static double initialStrafe = 10;
     public static int armBarPos = 4500;
@@ -18,6 +19,7 @@ public class RED_RIGHT extends LinearOpMode {
     public static double nudgeFwd = 3;
     public static int armBackPos = 25;
     public static double armVel = 3000;
+    public static long standardTout = 150;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -25,27 +27,39 @@ public class RED_RIGHT extends LinearOpMode {
 
         waitForStart();
 
-        drivetrainCore.fwdDrive(800, initalFwd, opModeIsActive(), 250);
-        drivetrainCore.strafeLeft(800, initialStrafe, opModeIsActive(), 250);
-        armCore.pvtMove(armVel, armBarPos, opModeIsActive(), 250, telemetry);
+        drivetrainCore.fwdDrive(800, initalFwd, opModeIsActive(), standardTout);
+        action.run(new Action.Drive(drivetrainCore).
+                        setDir(Action.DriveDirection.STRAFE_LEFT)
+                        .setInches(initialStrafe)
+                        .setVelocity(1000)
+                        .setPeriod(0),
+                new Action.Arm(armCore)
+                        .setVelocity(armVel)
+                        .setTicks(armBarPos)
+                        .setPeriod(0.250));
         servoCore.wrist.setPosition(0.88);
-        drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), 250);
+        drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), standardTout);
         servoCore.pincer.setPosition(0.05);
         servoCore.wrist.getController().pwmDisable();
         sleep(100);
-        armCore.pvtMove(armVel, armBackPos, opModeIsActive(), 250, telemetry);
-        drivetrainCore.revDrive(1000, 9, opModeIsActive(), 250);
+        action.run(new Action.Arm(armCore)
+                        .setVelocity(armVel)
+                        .setTicks(armBackPos),
+                new Action.Drive(drivetrainCore)
+                        .setDir(Action.DriveDirection.STRAFE_RIGHT)
+                        .setVelocity(1000)
+                        .setInches(strafeBarClear));
         servoCore.wrist.getController().pwmEnable();
         servoCore.wrist.setPosition(0.96);
-        drivetrainCore.strafeRight(1000, strafeBarClear, opModeIsActive(), 250);
-        drivetrainCore.fwdDrive(straightSpeeds, 37, opModeIsActive(), 250);
-        drivetrainCore.strafeRight(1000, 10, opModeIsActive(), 250);
-        drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), 250);
-        drivetrainCore.fwdDrive(straightSpeeds, 45, opModeIsActive(), 250);
-        drivetrainCore.strafeRight(1000, 10, opModeIsActive(), 250);
-        drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), 250);
-
-
+        drivetrainCore.fwdDrive(straightSpeeds, 28, opModeIsActive(), standardTout);
+        drivetrainCore.strafeRight(1000, 10, opModeIsActive(), standardTout);
+        drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
+        drivetrainCore.fwdDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
+        drivetrainCore.strafeRight(1000, 10, opModeIsActive(), standardTout);
+        drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
+        drivetrainCore.fwdDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
+        drivetrainCore.strafeRight(1000, 7, opModeIsActive(), standardTout);
+        drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
     }
 
     private void Init(){

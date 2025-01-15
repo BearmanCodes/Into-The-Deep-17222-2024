@@ -46,7 +46,7 @@ public class ArmAutoCore {
         Thread.sleep(timeout);
     }
 
-    public void pvtMove(double velocity, int ticks, boolean active, int timeout, Telemetry tele) throws InterruptedException {
+    public void pvtMove(double velocity, int ticks, boolean active, long timeout, Telemetry tele) throws InterruptedException {
         pvtArm.setTargetPosition(ticks);
         pvtArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pvtArm.setVelocity(velocity);

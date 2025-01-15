@@ -67,9 +67,8 @@ public class Action {
             return this;
         }
 
-        public Drive setCore(DriveAutoCore core){
+        public Drive (DriveAutoCore core){
             this.driveCore = core;
-            return this;
         }
 
         @Override
@@ -84,8 +83,6 @@ public class Action {
 
         @Override
         public void setupParams(){
-            dashTele.addData("Dir: ", this.dir);
-            dashTele.update();
             switch (dir){
                 case NW:
                     frontLeftTarget = 0;
@@ -103,7 +100,8 @@ public class Action {
                     frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) (-inches * TicksPerIn);
                     frontRightTarget = driveCore.frontRight.getCurrentPosition() + (int) (-inches * TicksPerIn);
                     backLeftTarget = driveCore.backLeft.getCurrentPosition() + (int) (-inches * TicksPerIn);
-                    backRightTarget = driveCore.backRight.getCurrentPosition() + (int) (-inches * TicksPerIn);                    break;
+                    backRightTarget = driveCore.backRight.getCurrentPosition() + (int) (-inches * TicksPerIn);
+                    break;
                 case NE:
                     frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) (inches * TicksPerIn);
                     frontRightTarget = 0;
@@ -126,7 +124,8 @@ public class Action {
                     frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) (-inches * TicksPerIn);
                     frontRightTarget = driveCore.frontRight.getCurrentPosition() + (int) (inches * TicksPerIn);
                     backLeftTarget = driveCore.backLeft.getCurrentPosition() + (int) (-inches * TicksPerIn);
-                    backRightTarget = driveCore.backRight.getCurrentPosition() + (int) (inches * TicksPerIn);                       break;
+                    backRightTarget = driveCore.backRight.getCurrentPosition() + (int) (inches * TicksPerIn);
+                    break;
                 case TURN_CW:
                     frontLeftTarget = driveCore.frontLeft.getCurrentPosition() + (int) (inches * TicksPerIn);
                     frontRightTarget = driveCore.frontRight.getCurrentPosition() + (int) (-inches * TicksPerIn);
@@ -153,8 +152,7 @@ public class Action {
         @Override
         public void run(ElapsedTime time){
             int err = Math.abs(frontLeftTarget - driveCore.frontLeft.getCurrentPosition());
-            Action.dashTele.addData("DRIVE ERR", err);
-            Action.dashTele.update();
+
             if (time.seconds() >= period){
                 if (err > driveTol){
                     driveCore.allMotorVelocity(velocity);
@@ -188,9 +186,8 @@ public class Action {
             return this;
         }
 
-        public Arm setCore(ArmAutoCore core){
+        public Arm (ArmAutoCore core){
             this.armCore = core;
-            return this;
         }
 
         @Override
@@ -211,7 +208,6 @@ public class Action {
         @Override
         public void run(ElapsedTime time){
             int err = Math.abs(ticks - armCore.pvtArm.getCurrentPosition());
-            Action.dashTele.addData("ERR", err);
 
             if (time.seconds() >= period){
                 if (err > armTol){
@@ -220,8 +216,6 @@ public class Action {
                     armCore.pvtArm.setVelocity(0);
                     armCore.pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     this.canRun = false;
-                    Action.dashTele.addData("ARM FINISHED", true);
-                    Action.dashTele.update();
                 }
             }
         }

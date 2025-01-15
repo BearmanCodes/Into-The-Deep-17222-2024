@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Auto;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Config
+@Disabled
 @Autonomous(name = "BLUE TEST", group = "BLUE")
 public class BLUE_TEST extends LinearOpMode {
     ArmTestCore armCore = new ArmTestCore();
@@ -36,6 +38,7 @@ public class BLUE_TEST extends LinearOpMode {
         Init();
 
         waitForStart();
+        /*
         if (opModeIsActive()){
             action.run(new Action.Drive().
                             setDir(Action.DriveDirection.FWD)
@@ -71,6 +74,7 @@ public class BLUE_TEST extends LinearOpMode {
             drivetrainCore.drive(DriveTestCore.DriveDirection.STRAFE_RIGHT, 1000, 10, opModeIsActive(), 250);
             drivetrainCore.drive(DriveTestCore.DriveDirection.REV, straightSpeeds, 45, opModeIsActive(), 250);
         }
+         */
 
 
     }

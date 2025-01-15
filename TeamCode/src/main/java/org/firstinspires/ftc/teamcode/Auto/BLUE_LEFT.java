@@ -25,54 +25,51 @@ public class BLUE_LEFT extends LinearOpMode {
     public static int turnAmount = -90;
     public static double sampleAlign = 10;
     public static double netZonePos = 43;
+    public static long standardTout = 150;
 
     @Override
     public void runOpMode() throws InterruptedException {
         Init();
 
         waitForStart();;
-        drivetrainCore.fwdDrive(800, initalFwd, opModeIsActive(), 250);
-        action.run(new Action.Drive()
+        drivetrainCore.fwdDrive(800, initalFwd, opModeIsActive(), standardTout);
+        action.run(new Action.Drive(drivetrainCore)
                 .setDir(Action.DriveDirection.STRAFE_RIGHT)
-                .setCore(drivetrainCore)
                 .setVelocity(800)
                 .setInches(initialStrafe),
-                new Action.Arm()
-                        .setCore(armCore)
+                new Action.Arm(armCore)
                         .setTicks(armBarPos)
                         .setVelocity(armVel)
                         .setPeriod(0.450));
         servoCore.wrist.setPosition(0.88);
-        drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), 250);
+        drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), standardTout);
         servoCore.pincer.setPosition(0.05);
         servoCore.wrist.getController().pwmDisable();
         sleep(100);
-        armCore.pvtMove(armVel, armBackPos, opModeIsActive(), 250, telemetry);
-        drivetrainCore.revDrive(straightSpeeds, intialRev, opModeIsActive(), 250);
+        action.run(new Action.Arm(armCore)
+                        .setTicks(armBackPos)
+                        .setVelocity(armVel),
+                new Action.Drive(drivetrainCore)
+                        .setDir(Action.DriveDirection.STRAFE_LEFT)
+                        .setVelocity(1000)
+                        .setInches(strafeBarClear)
+                        .setPeriod(0.250));
         servoCore.wrist.getController().pwmEnable();
         servoCore.wrist.setPosition(0.96);
-        drivetrainCore.strafeLeft(1000, strafeBarClear, opModeIsActive(), 250);
-        drivetrainCore.fwdDrive(straightSpeeds, fwdHangAlign, opModeIsActive(), 250);
-        drivetrainCore.strafeLeft(1000, sampleAlign, opModeIsActive(), 250);
-        drivetrainCore.revDrive(straightSpeeds, netZonePos, opModeIsActive(), 250);
-        drivetrainCore.fwdDrive(straightSpeeds, netZonePos, opModeIsActive(), 250);
+        drivetrainCore.strafeLeft(1000, strafeBarClear, opModeIsActive(), standardTout);
+        drivetrainCore.fwdDrive(straightSpeeds, fwdHangAlign, opModeIsActive(), standardTout);
+        drivetrainCore.strafeLeft(1000, sampleAlign, opModeIsActive(), standardTout);
+        drivetrainCore.revDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);
+        drivetrainCore.fwdDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);
         drivetrainCore.turnAmount(turnAmount, opModeIsActive(), telemetry);
-        drivetrainCore.fwdDrive(straightSpeeds, hangNudge + sampleAlign, opModeIsActive(), 250);
-        drivetrainCore.fwdDrive(550, 5, opModeIsActive(), 200);
-        servoCore.wrist.getController().pwmDisable();
-        armCore.pvtMove(9999, 9100, opModeIsActive(), 250, telemetry);
-        /*
-        drivetrainCore.fwdDrive(800, 9, opModeIsActive(), 250);
-        servoCore.claw3.setPosition(1);
-        servoCore.claw4.setPosition(0.1);
-        drivetrainCore.strafeRight(800, 30, opModeIsActive(), 250);
-        armCore.pvtMove(500, 1750, opModeIsActive(), 250, telemetry);
-        drivetrainCore.revDrive(800, 8.5, opModeIsActive(), 250);
-        armCore.pvtMove(800, 0, opModeIsActive(), 250, telemetry);
-        servoCore.claw1.setPosition(0.04); //(open)
-        servoCore.claw2.setPosition(0.04);
-        drivetrainCore.revDrive(800, 8, opModeIsActive(), 250);
-         */
+        action.run(new Action.Drive(drivetrainCore)
+                        .setDir(Action.DriveDirection.FWD)
+                        .setVelocity(straightSpeeds)
+                        .setInches(hangNudge + sampleAlign),
+                new Action.Arm(armCore)
+                        .setTicks(armBarPos)
+                        .setVelocity(armVel)
+                        .setPeriod(0.350));
     }
 
     private void Init(){
