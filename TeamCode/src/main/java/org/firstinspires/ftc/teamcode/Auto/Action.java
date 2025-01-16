@@ -209,7 +209,7 @@ public class Action {
         public void run(ElapsedTime time){
             int err = Math.abs(ticks - armCore.pvtArm.getCurrentPosition());
 
-            if (time.seconds() >= period){
+            if (time.milliseconds() >= period){
                 if (err > armTol){
                     armCore.pvtArm.setVelocity(velocity);
                 } else {

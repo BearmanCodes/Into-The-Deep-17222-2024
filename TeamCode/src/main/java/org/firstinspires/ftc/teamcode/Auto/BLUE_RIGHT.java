@@ -12,7 +12,7 @@ public class BLUE_RIGHT extends LinearOpMode {
     ServoAutoCore servoCore = new ServoAutoCore();
 
     public static double initalFwd = 18.5;
-    public static double firstWaitPeriod = 0.125;
+    public static double firstWaitPeriod = 125;
     public static double initialStrafe = 25;
     public static double intialRev = 0;
     public static int armBarPos = 4500;
@@ -39,8 +39,7 @@ public class BLUE_RIGHT extends LinearOpMode {
             action.run(new Action.Drive(drivetrainCore).
                             setDir(Action.DriveDirection.FWD)
                             .setInches(initalFwd)
-                            .setVelocity(straightSpeeds)
-                            .setPeriod(0),
+                            .setVelocity(straightSpeeds),
                     new Action.Arm(armCore)
                             .setVelocity(armVel)
                             .setTicks(armBarPos)
@@ -56,7 +55,7 @@ public class BLUE_RIGHT extends LinearOpMode {
                             .setDir(Action.DriveDirection.STRAFE_RIGHT)
                             .setVelocity(1000)
                             .setInches(26)
-                            .setPeriod(0.250));
+                            .setPeriod(250));
             servoCore.wrist.getController().pwmEnable();
             servoCore.wrist.setPosition(0.96);
             drivetrainCore.fwdDrive(straightSpeeds, 28, opModeIsActive(), standardTout);
