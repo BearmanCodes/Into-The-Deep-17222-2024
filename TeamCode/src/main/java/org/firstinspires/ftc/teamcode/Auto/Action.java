@@ -26,12 +26,14 @@ public class Action {
     static Telemetry dashTele = dashboard.getTelemetry();
     public static double driveTol = 1;
     public static double armTol = 1;
+
     public interface Executable {
         void run(ElapsedTime time);
         double getPeriod();
         boolean getRunCondition();
         void setupParams();
     }
+
     public static class Drive implements Executable {
         private DriveAutoCore driveCore = new DriveAutoCore();
         static final double TicksPerRev = 560;
@@ -145,18 +147,34 @@ public class Action {
                     backRightTarget = 0;
                     break;
             }
+            this.canRun = true;
+            dashTele.addData("FL: ", frontLeftTarget);
+            dashTele.addData("FR: ", frontRightTarget);
+            dashTele.addData("BL: ", backLeftTarget);
+            dashTele.addData("BR: ", backRightTarget);
+            dashTele.update();
             driveCore.allTargetPosition(frontLeftTarget, frontRightTarget, backLeftTarget, backRightTarget);
             driveCore.allMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
         @Override
         public void run(ElapsedTime time){
+            dashTele.addData("Drive setup: ", true);
+            dashTele.addData("Seconds: ", time.seconds());
+            dashTele.addData("Period: ", period);
+            dashTele.update();
             int err = Math.abs(frontLeftTarget - driveCore.frontLeft.getCurrentPosition());
-
-            if (time.seconds() >= period){
+            if (time.milliseconds() >= period){
                 if (err > driveTol){
                     driveCore.allMotorVelocity(velocity);
+                    dashTele.addData("Err: ", err);
+                    dashTele.addData("Should be driving right now", true);
+                    dashTele.addData("Drive setup: ", false);
+                    dashTele.update();
                 } else {
+                    dashTele.addData("Should be driving right now", false);
+                    dashTele.addData("Drive setup: ", false);
+                    dashTele.update();
                     driveCore.allMotorVelocity(0);
                     driveCore.allMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     this.canRun = false;
@@ -203,6 +221,7 @@ public class Action {
         public void setupParams(){
             armCore.pvtArm.setTargetPosition(ticks);
             armCore.pvtArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            this.canRun = true;
         }
 
         @Override
@@ -221,21 +240,24 @@ public class Action {
         }
     }
 
-    public void run(Executable... Actions){
-        int count = Actions.length - 1;
-        timer.reset();
-        for (Executable action: Actions){
-            action.setupParams();
-        }
-        while (count > 0){
+    public void run(boolean active, Executable... Actions){
+        if (active){
+            int count = Actions.length - 1;
+            timer.reset();
             for (Executable action: Actions){
-                if (action.getRunCondition()){
-                    action.run(timer);
-                    count+= 1;
-                } else {
-                    count -= 1;
+                action.setupParams();
+            }
+            while (count > 0){
+                for (Executable action: Actions){
+                    if (action.getRunCondition()){
+                        action.run(timer);
+                        count+= 1;
+                    } else {
+                        count -= 1;
+                    }
                 }
             }
         }
+
     }
 }

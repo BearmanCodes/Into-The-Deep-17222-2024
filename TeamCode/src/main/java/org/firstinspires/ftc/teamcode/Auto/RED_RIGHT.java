@@ -28,7 +28,7 @@ public class RED_RIGHT extends LinearOpMode {
         waitForStart();
 
         drivetrainCore.fwdDrive(800, initalFwd, opModeIsActive(), standardTout);
-        action.run(new Action.Drive(drivetrainCore).
+        action.run(opModeIsActive(), new Action.Drive(drivetrainCore).
                         setDir(Action.DriveDirection.STRAFE_LEFT)
                         .setInches(initialStrafe)
                         .setVelocity(1000)
@@ -42,7 +42,7 @@ public class RED_RIGHT extends LinearOpMode {
         servoCore.pincer.setPosition(0.05);
         servoCore.wrist.getController().pwmDisable();
         sleep(100);
-        action.run(new Action.Arm(armCore)
+        action.run(opModeIsActive(), new Action.Arm(armCore)
                         .setVelocity(armVel)
                         .setTicks(armBackPos),
                 new Action.Drive(drivetrainCore)

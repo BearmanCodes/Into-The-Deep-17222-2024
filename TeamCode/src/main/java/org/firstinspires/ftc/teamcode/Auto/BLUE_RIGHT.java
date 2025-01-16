@@ -36,7 +36,7 @@ public class BLUE_RIGHT extends LinearOpMode {
 
 
         if (opModeIsActive()){
-            action.run(new Action.Drive(drivetrainCore).
+            action.run(opModeIsActive(), new Action.Drive(drivetrainCore).
                             setDir(Action.DriveDirection.FWD)
                             .setInches(initalFwd)
                             .setVelocity(straightSpeeds),
@@ -48,7 +48,7 @@ public class BLUE_RIGHT extends LinearOpMode {
             drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), standardTout);
             servoCore.pincer.setPosition(0.05);
             servoCore.wrist.getController().pwmDisable();
-            action.run(new Action.Arm(armCore)
+            action.run(opModeIsActive(), new Action.Arm(armCore)
                             .setVelocity(armVel)
                             .setTicks(armBackPos),
                     new Action.Drive(drivetrainCore)
