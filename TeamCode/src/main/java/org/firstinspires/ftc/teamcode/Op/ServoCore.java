@@ -31,7 +31,7 @@ public class ServoCore {
         wrist.setDirection(Servo.Direction.REVERSE);
         //brake.setDirection(Servo.Direction.FORWARD);
         pincer.setPosition(0);
-        wrist.setPosition(.96);
+        wrist.setPosition(.88);
         //brake.setPosition(0);
     }
 
@@ -47,18 +47,8 @@ public class ServoCore {
                 }
         }
 
-
-        if (currentGamepad2.dpad_right && !previousGamepad2.dpad_right && !currentGamepad2.start) {
-            brakeStat = !brakeStat;
-            if (brakeStat) {
-                wrist.setPosition(.96); //Up
-            } else {
-                wrist.setPosition(.83); //Down            }
-            }
-        }
-
         if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left && !currentGamepad2.start) {
-            wrist.setPosition(0.94);
+            wrist.setPosition(0.85);
             pincer.setPosition(0.05); //open
         }
 
@@ -68,9 +58,12 @@ public class ServoCore {
         }
         if (currentGamepad2.y && !previousGamepad2.y) {
             double currPos = Math.round(wrist.getPosition() * 100.00) / 100.00;
-            if (currPos - 0.01 >= 0.75){
+            if (currPos - 0.01 >= 0.67){
                 wrist.setPosition(currPos - 0.01);
             }
+        }
+        if (currentGamepad2.dpad_right && !previousGamepad2.dpad_right) {
+            wrist.setPosition(0.88);
         }
 
         dashTele.addData("Wrist Pos: ", wrist.getPosition());

@@ -18,7 +18,7 @@ public class ServoAutoCore {
             wrist.setDirection(Servo.Direction.REVERSE);
 
             pincer.setPosition(0);
-            wrist.setPosition(.96);
+            wrist.setPosition(.88);
         }
 
 

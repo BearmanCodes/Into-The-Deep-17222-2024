@@ -42,7 +42,7 @@ public class BLUE_LEFT extends LinearOpMode {
                             .setTicks(armBarPos)
                             .setVelocity(armVel)
                             .setPeriod(450));
-            servoCore.wrist.setPosition(0.88);
+            servoCore.wrist.setPosition(0.79);
             drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), standardTout);
             servoCore.pincer.setPosition(0.05);
             servoCore.wrist.getController().pwmDisable();
@@ -56,7 +56,7 @@ public class BLUE_LEFT extends LinearOpMode {
                             .setInches(strafeBarClear)
                             .setPeriod(250));
             servoCore.wrist.getController().pwmEnable();
-            servoCore.wrist.setPosition(0.96);
+            servoCore.wrist.setPosition(0.88);
             drivetrainCore.fwdDrive(straightSpeeds, fwdHangAlign, opModeIsActive(), standardTout);
             drivetrainCore.strafeLeft(1000, sampleAlign, opModeIsActive(), standardTout);
             drivetrainCore.revDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);

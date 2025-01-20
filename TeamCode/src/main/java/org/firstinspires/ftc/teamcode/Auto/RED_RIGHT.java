@@ -37,7 +37,7 @@ public class RED_RIGHT extends LinearOpMode {
                         .setVelocity(armVel)
                         .setTicks(armBarPos)
                         .setPeriod(250));
-        servoCore.wrist.setPosition(0.88);
+        servoCore.wrist.setPosition(0.79);
         drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), standardTout);
         servoCore.pincer.setPosition(0.05);
         servoCore.wrist.getController().pwmDisable();
@@ -50,7 +50,7 @@ public class RED_RIGHT extends LinearOpMode {
                         .setVelocity(1000)
                         .setInches(strafeBarClear));
         servoCore.wrist.getController().pwmEnable();
-        servoCore.wrist.setPosition(0.96);
+        servoCore.wrist.setPosition(0.88);
         drivetrainCore.fwdDrive(straightSpeeds, 28, opModeIsActive(), standardTout);
         drivetrainCore.strafeRight(1000, 10, opModeIsActive(), standardTout);
         drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout);

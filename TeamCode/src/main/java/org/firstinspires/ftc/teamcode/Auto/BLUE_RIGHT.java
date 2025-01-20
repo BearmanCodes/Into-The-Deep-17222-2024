@@ -11,7 +11,7 @@ public class BLUE_RIGHT extends LinearOpMode {
     Action action = new Action();
     ServoAutoCore servoCore = new ServoAutoCore();
 
-    public static double initalFwd = 18.5;
+    public static double initalFwd = 19;
     public static double firstWaitPeriod = 125;
     public static double initialStrafe = 25;
     public static double intialRev = 0;
@@ -44,7 +44,7 @@ public class BLUE_RIGHT extends LinearOpMode {
                             .setVelocity(armVel)
                             .setTicks(armBarPos)
                             .setPeriod(firstWaitPeriod));
-            servoCore.wrist.setPosition(0.88);
+            servoCore.wrist.setPosition(0.79);
             drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), standardTout);
             servoCore.pincer.setPosition(0.05);
             servoCore.wrist.getController().pwmDisable();
@@ -57,7 +57,7 @@ public class BLUE_RIGHT extends LinearOpMode {
                             .setInches(26)
                             .setPeriod(250));
             servoCore.wrist.getController().pwmEnable();
-            servoCore.wrist.setPosition(0.96);
+            servoCore.wrist.setPosition(0.88);
             drivetrainCore.fwdDrive(straightSpeeds, 28, opModeIsActive(), standardTout);
             drivetrainCore.strafeRight(straightSpeeds, 10, opModeIsActive(), standardTout);
             drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
