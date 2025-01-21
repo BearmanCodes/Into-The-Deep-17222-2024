@@ -44,9 +44,9 @@ public class BLUE_RIGHT extends LinearOpMode {
                             .setVelocity(armVel)
                             .setTicks(armBarPos)
                             .setPeriod(firstWaitPeriod));
-            servoCore.wrist.setPosition(0.79);
+            servoCore.wrist.setPosition(servoCore.hangWrist);
             drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), standardTout);
-            servoCore.pincer.setPosition(0.05);
+            servoCore.pincer.setPosition(servoCore.openPincer);
             servoCore.wrist.getController().pwmDisable();
             action.run(opModeIsActive(), new Action.Arm(armCore)
                             .setVelocity(armVel)
@@ -57,7 +57,7 @@ public class BLUE_RIGHT extends LinearOpMode {
                             .setInches(26)
                             .setPeriod(250));
             servoCore.wrist.getController().pwmEnable();
-            servoCore.wrist.setPosition(0.88);
+            servoCore.wrist.setPosition(servoCore.upWrist);
             drivetrainCore.fwdDrive(straightSpeeds, 28, opModeIsActive(), standardTout);
             drivetrainCore.strafeRight(straightSpeeds, 10, opModeIsActive(), standardTout);
             drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout);

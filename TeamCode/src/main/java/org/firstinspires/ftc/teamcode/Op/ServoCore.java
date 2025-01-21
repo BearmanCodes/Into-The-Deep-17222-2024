@@ -21,6 +21,7 @@ public class ServoCore {
     public Servo claw1, pincer, wrist, brake; //Declare servo variables
 
     boolean claw1Stat, pincerStat, wristStat, brakeStat, MMStat;
+    public double upWrist = 0.88;
 
     public void init(HardwareMap hwMap) {
         pincer = hwMap.get(Servo.class, "claw2".toLowerCase());
@@ -31,7 +32,7 @@ public class ServoCore {
         wrist.setDirection(Servo.Direction.REVERSE);
         //brake.setDirection(Servo.Direction.FORWARD);
         pincer.setPosition(0);
-        wrist.setPosition(.88);
+        wrist.setPosition(upWrist);
         //brake.setPosition(0);
     }
 
@@ -63,7 +64,7 @@ public class ServoCore {
             }
         }
         if (currentGamepad2.dpad_right && !previousGamepad2.dpad_right) {
-            wrist.setPosition(0.88);
+            wrist.setPosition(upWrist);
         }
 
         dashTele.addData("Wrist Pos: ", wrist.getPosition());

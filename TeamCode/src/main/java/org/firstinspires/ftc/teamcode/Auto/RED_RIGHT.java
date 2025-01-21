@@ -11,6 +11,7 @@ public class RED_RIGHT extends LinearOpMode {
     DriveAutoCore drivetrainCore = new DriveAutoCore();
     ServoAutoCore servoCore = new ServoAutoCore();
     Action action = new Action();
+
     public static double initalFwd = 18.5;
     public static double initialStrafe = 10;
     public static int armBarPos = 4500;
