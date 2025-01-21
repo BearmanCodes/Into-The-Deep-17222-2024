@@ -11,6 +11,7 @@ public class BLUE_LEFT extends LinearOpMode {
     Action action = new Action();
     DriveAutoCore drivetrainCore = new DriveAutoCore();
     ServoAutoCore servoCore = new ServoAutoCore();
+
     public static double initalFwd = 18.5;
     public static double initialStrafe = 25;
     public static double intialRev = 0;
