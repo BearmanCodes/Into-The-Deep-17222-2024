@@ -22,7 +22,7 @@ public class ModeCore {
         if (currGamepad2.dpad_down && !prevGamepad2.dpad_down) { //Demonstrative variables used, replace later please.
                                                                 //I did not, in fact, replace them later.
             //SPECIMEN FLOOR HANDLER
-            armTarget = 6800 + speciCompensator;
+            armTarget = 6750 + speciCompensator;
             armVelocity = 2000;
             wristPos = 0.80;
             pincerPos = 0.05;
@@ -30,7 +30,7 @@ public class ModeCore {
         }
         if (currGamepad2.dpad_up && !prevGamepad2.dpad_up) {
             //BAR HANDLER
-            armTarget = 5700 + barCompensator;
+            armTarget = 5800 + barCompensator;
             armVelocity = 2000;
             wristPos = 0.77;
             pincerPos = 0;
@@ -40,16 +40,16 @@ public class ModeCore {
     }
 
     public void Compensate(Gamepad currGamepad1, Gamepad prevGamepad1){
-        if (currGamepad1.dpad_up && !prevGamepad1.dpad_up){
+        if ((currGamepad1.right_trigger >= 0.8) && !(prevGamepad1.right_trigger >= 0.8)){
             barCompensator -= 50;
         }
-        if (currGamepad1.dpad_down && !prevGamepad1.dpad_down){
+        if ((currGamepad1.left_trigger >= 0.8) && !(prevGamepad1.left_trigger >= 0.8)){
             barCompensator += 50;
         }
-        if (currGamepad1.dpad_right && !prevGamepad1.dpad_right){
+        if (currGamepad1.right_bumper && !prevGamepad1.right_bumper){
             speciCompensator -= 50;
         }
-        if (currGamepad1.dpad_left && !prevGamepad1.dpad_left){
+        if (currGamepad1.left_bumper && !prevGamepad1.left_bumper){
             speciCompensator += 50;
         }
     }
