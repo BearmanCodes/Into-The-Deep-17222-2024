@@ -7,7 +7,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import java.text.DecimalFormat;
 
 import com.qualcomm.robotcore.hardware.Servo;
-
+//0.04 rest up
+//0.47/8 rest down
 @TeleOp(name = "ServoTest")
 public class servoTest extends LinearOpMode {
     Servo servo1, pincer, wrist;
@@ -20,11 +21,11 @@ public class servoTest extends LinearOpMode {
     @Override
 
     public void runOpMode() throws InterruptedException {
-        servo1 = hardwareMap.get(Servo.class, "claw1".toLowerCase());
-        pincer = hardwareMap.get(Servo.class, "claw2".toLowerCase());
-        wrist = hardwareMap.get(Servo.class, "claw4".toLowerCase());
+        servo1 = hardwareMap.get(Servo.class, "hook".toLowerCase());
+        pincer = hardwareMap.get(Servo.class, "pincer".toLowerCase());
+        wrist = hardwareMap.get(Servo.class, "wrist".toLowerCase());
 
-        servo1.setDirection(Servo.Direction.REVERSE);
+        servo1.setDirection(Servo.Direction.FORWARD);
         pincer.setDirection(Servo.Direction.FORWARD);
         wrist.setDirection(Servo.Direction.REVERSE);
         waitForStart();
@@ -68,8 +69,8 @@ public class servoTest extends LinearOpMode {
             }
             if (currentGamepad.start && !previousGamepad.start){
                 servo1.setPosition(servo1Pos); //0.04 open, 0 closed
-                pincer.setPosition(servo2Pos); //0.04 open, 0 closed
-                wrist.setPosition(servo3Pos); // servo 1 port 2, servo 3 port 4
+                //pincer.setPosition(servo2Pos); //0.04 open, 0 closed
+                //wrist.setPosition(servo3Pos); // servo 1 port 2, servo 3 port 4
                 telemetryUpdate();
             }
         }
