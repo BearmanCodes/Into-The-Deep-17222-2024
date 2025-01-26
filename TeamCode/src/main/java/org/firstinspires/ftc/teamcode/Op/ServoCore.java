@@ -18,14 +18,18 @@ public class ServoCore {
     Gamepad currentGamepad2 = new Gamepad();
     Gamepad previousGamepad2 = new Gamepad(); //Set up gamepad variables allowing for rising edge detector
 
-    public Servo claw1, pincer, wrist, brake; //Declare servo variables
+    public Servo claw1, pincer, wrist, brake, hook; //Declare servo variables
 
     boolean claw1Stat, pincerStat, wristStat, brakeStat, MMStat;
+    boolean hookStat = true;
     public double upWrist = 0.88;
+    public double hookClose = 0.06;
+    public double hookOpen = 0.25;
 
     public void init(HardwareMap hwMap) {
         pincer = hwMap.get(Servo.class, "claw2".toLowerCase());
         wrist = hwMap.get(Servo.class, "claw4".toLowerCase());
+        hook = hwMap.get(Servo.class, "hook".toLowerCase());
         //brake = hwMap.get(Servo.class, "brake".toLowerCase());
  
         pincer.setDirection(Servo.Direction.FORWARD);
@@ -33,6 +37,7 @@ public class ServoCore {
         //brake.setDirection(Servo.Direction.FORWARD);
         pincer.setPosition(0);
         wrist.setPosition(upWrist);
+        hook.setPosition(hookClose);
         //brake.setPosition(0);
     }
 
@@ -70,6 +75,18 @@ public class ServoCore {
         dashTele.addData("Wrist Pos: ", wrist.getPosition());
         dashTele.addData("Pincer Pos: ", pincer.getPosition());
     }
+
+    public void hookHandler(Gamepad currentGamepad, Gamepad previousGamepad){
+        if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
+            hookStat = !hookStat;
+            if (hookStat){
+                hook.setPosition(hookClose);
+            } else {
+                hook.setPosition(hookOpen);
+            }
+        }
+    }
+
     public void edgeDetector(Gamepad gamepad1, Gamepad gamepad2) throws RobotCoreException {
         previousGamepad.copy(currentGamepad);
         currentGamepad.copy(gamepad1);

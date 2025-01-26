@@ -8,6 +8,8 @@ import java.text.DecimalFormat;
 
 import com.qualcomm.robotcore.hardware.Servo;
 //0.04 rest up
+//0.25 start home
+//0.06 close
 //0.47/8 rest down
 @TeleOp(name = "ServoTest")
 public class servoTest extends LinearOpMode {

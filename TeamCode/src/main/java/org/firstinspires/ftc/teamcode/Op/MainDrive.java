@@ -34,6 +34,7 @@ public class MainDrive extends LinearOpMode {
             }
             int armCurrPos = armCore.pvtArm.getCurrentPosition(); //Keeps var of arm pos for ref
             drivetrainCore.run(gamepad1);
+            servoCore.hookHandler(servoCore.currentGamepad, servoCore.previousGamepad);
             if (armCurrPos >= servoActionTol) {
                 servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
             }
