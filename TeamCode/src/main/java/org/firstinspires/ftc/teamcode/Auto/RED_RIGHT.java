@@ -28,10 +28,10 @@ public class RED_RIGHT extends LinearOpMode {
 
         waitForStart();
 
-        drivetrainCore.fwdDrive(800, initalFwd, opModeIsActive(), standardTout);
+        //drivetrainCore.fwdDrive(800, initalFwd, opModeIsActive(), standardTout);
         action.run(opModeIsActive(), new Action.Drive(drivetrainCore).
-                        setDir(Action.DriveDirection.STRAFE_LEFT)
-                        .setInches(initialStrafe)
+                        setDir(Action.DriveDirection.FWD)
+                        .setInches(initalFwd)
                         .setVelocity(1000)
                         .setPeriod(0),
                 new Action.Arm(armCore)
@@ -53,10 +53,10 @@ public class RED_RIGHT extends LinearOpMode {
         servoCore.wrist.getController().pwmEnable();
         servoCore.wrist.setPosition(0.88);
         drivetrainCore.fwdDrive(straightSpeeds, 28, opModeIsActive(), standardTout);
-        drivetrainCore.strafeRight(1000, 10, opModeIsActive(), standardTout);
+        drivetrainCore.strafeRight(1000, 9, opModeIsActive(), standardTout);
         drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
         drivetrainCore.fwdDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
-        drivetrainCore.strafeRight(1000, 10, opModeIsActive(), standardTout);
+        drivetrainCore.strafeRight(1000, 9, opModeIsActive(), standardTout);
         drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
         drivetrainCore.fwdDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
         drivetrainCore.strafeRight(1000, 7, opModeIsActive(), standardTout);

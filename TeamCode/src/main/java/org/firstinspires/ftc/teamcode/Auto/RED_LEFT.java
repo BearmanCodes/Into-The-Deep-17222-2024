@@ -20,12 +20,12 @@ public class RED_LEFT extends LinearOpMode {
     public static double strafeBarClear = 30;
     public static double straightSpeeds = 1250;
     public static double fwdHangAlign = 25;
-    public static double hangNudge = 8;
+    public static double hangNudge = 9;
     public static double nudgeFwd = 3;
     public static int armBackPos = 25;
     public static double armVel = 3000;
     public static int turnAmount = -90;
-    public static double sampleAlign = 10;
+    public static double sampleAlign = 9;
     public static double netZonePos = 43;
     public static long standardTout = 150;
 
@@ -63,7 +63,7 @@ public class RED_LEFT extends LinearOpMode {
         drivetrainCore.strafeLeft(1000, sampleAlign, opModeIsActive(), standardTout);
         drivetrainCore.revDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);
         drivetrainCore.fwdDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);
-        drivetrainCore.strafeLeft(1000, sampleAlign, opModeIsActive(), standardTout);
+        drivetrainCore.strafeLeft(1000, sampleAlign - 1, opModeIsActive(), standardTout);
         drivetrainCore.revDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);
         drivetrainCore.fwdDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);
         drivetrainCore.turnAmount(turnAmount, opModeIsActive(), telemetry);

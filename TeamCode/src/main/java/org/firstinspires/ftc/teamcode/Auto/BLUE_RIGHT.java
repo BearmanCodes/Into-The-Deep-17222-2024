@@ -19,12 +19,12 @@ public class BLUE_RIGHT extends LinearOpMode {
     public static double strafeBarClear = 30;
     public static double straightSpeeds = 1250;
     public static double fwdHangAlign = 25;
-    public static double hangNudge = 8;
+    public static double hangNudge = 9;
     public static double nudgeFwd = 3;
     public static int armBackPos = 25;
     public static double armVel = 3000;
     public static int turnAmount = -90;
-    public static double sampleAlign = 10;
+    public static double sampleAlign = 9;
     public static double netZonePos = 43;
     public static long standardTout = 150;
 
@@ -59,10 +59,10 @@ public class BLUE_RIGHT extends LinearOpMode {
             servoCore.wrist.getController().pwmEnable();
             servoCore.wrist.setPosition(servoCore.upWrist);
             drivetrainCore.fwdDrive(straightSpeeds, 28, opModeIsActive(), standardTout);
-            drivetrainCore.strafeRight(straightSpeeds, 10, opModeIsActive(), standardTout);
+            drivetrainCore.strafeRight(straightSpeeds, 9, opModeIsActive(), standardTout);
             drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
             drivetrainCore.fwdDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
-            drivetrainCore.strafeRight(1000, 10, opModeIsActive(), standardTout);
+            drivetrainCore.strafeRight(1000, 9, opModeIsActive(), standardTout);
             drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
             drivetrainCore.fwdDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
             drivetrainCore.strafeRight(1000, 7, opModeIsActive(), standardTout);
