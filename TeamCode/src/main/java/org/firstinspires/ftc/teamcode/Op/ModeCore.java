@@ -18,7 +18,7 @@ public class ModeCore {
     public static double wristPos, pincerPos;
     public static int barCompensator, speciCompensator = 0;
 
-    public void modeHandler(Gamepad currGamepad2, Gamepad prevGamepad2, ServoCore servoCore){
+    public void modeHandler(Gamepad currGamepad2, Gamepad prevGamepad2, PIDFCore pidfCore){
         if (currGamepad2.dpad_down && !prevGamepad2.dpad_down) { //Demonstrative variables used, replace later please.
                                                                 //I did not, in fact, replace them later.
             //SPECIMEN FLOOR HANDLER
@@ -26,6 +26,7 @@ public class ModeCore {
             armVelocity = 2000;
             wristPos = 0.80;
             pincerPos = 0.05;
+            pidfCore.setTarget(armTarget);
             MODE = RUNNING_MODE.MOVE_MODE;
         }
         if (currGamepad2.dpad_up && !prevGamepad2.dpad_up) {
@@ -34,6 +35,7 @@ public class ModeCore {
             armVelocity = 2000;
             wristPos = 0.77;
             pincerPos = 0;
+            pidfCore.setTarget(armTarget);
             MODE = RUNNING_MODE.MOVE_MODE;
         }
 
