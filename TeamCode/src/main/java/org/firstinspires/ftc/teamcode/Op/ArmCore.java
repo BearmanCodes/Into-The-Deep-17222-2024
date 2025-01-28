@@ -46,26 +46,4 @@ public class ArmCore {
         pvtArm.setPower(pvtPower);
         //fndtlArm.setPower(fndtlPower);
     }
-
-    /*
-    //This uses the right stick to move the arm as used in Mason S.'s op mode
-    public void rStick(Gamepad gamepad2){
-        if (actualArm.getCurrentPosition() >= 415) actualArmPower = ((gamepad2.right_stick_y) * reducerActualArm) - 0.00450;
-        else if (actualArm.getCurrentPosition() <= 414) actualArmPower = ((gamepad2.right_stick_y) * reducerActualArm) + 0.00050;
-        actualArm.setPower(actualArmPower);
-    }
-
-    //This uses the left stick to move the arm as used in Joel's op mode
-    public void lStick(Gamepad gamepad2, Telemetry telemetry){
-        if (actualArm.getCurrentPosition() >= 415) actualArmPower = ((gamepad2.left_stick_y) * reducerActualArm) - 0.00450;
-        else if (actualArm.getCurrentPosition() <= 414) actualArmPower = ((gamepad2.left_stick_y) * reducerActualArm) + 0.00050;
-        actualArm.setPower(actualArmPower);
-    }
-
-    //Main extender arm function
-    public void Extender(Gamepad gamepad2){
-        extenderArmPower = (gamepad2.left_trigger + -gamepad2.right_trigger);
-        extender.setPower(extenderArmPower);
-    }
-     */
 }
