@@ -11,8 +11,8 @@ public class PIDFCore {
     private double P, I, D, F, iSum;
     private int target, motorPos, error;
     private double output, seconds;
-    private final double TICKS_PER_REV = 537.7; //look up for gobuilda motor
-    private final double GEAR_REDUCTION = 28; //2nd teeth gears divided by 1st teeth gears
+    private final int TICKS_PER_REV = 1120; //look up for gobuilda motor
+    private final double GEAR_REDUCTION = 2.1111; //2nd teeth gears divided by 1st teeth gears
     private final double TICKS_PER_GEARS = TICKS_PER_REV * GEAR_REDUCTION;
     private final double TICKS_PER_DEGREE = TICKS_PER_GEARS / 360;
     private double lastError = 0;
@@ -30,7 +30,6 @@ public class PIDFCore {
     public PIDFCore setTarget(int target){
         this.target = target;
         time.reset();
-        this.iSum = 0;
         return this;
     }
 
@@ -55,8 +54,8 @@ public class PIDFCore {
         P = kP * (this.error);
         I = kI * (iSum += (this.error * this.seconds));
         D = kD * ((this.error - this.lastError) / this.seconds);
-        //F = kF * (Math.cos(Math.toRadians(this.target / TICKS_PER_DEGREE)));
-        this.output = P + I + D; //+ F;
+        F = kF * (Math.cos(Math.toRadians(this.target / TICKS_PER_DEGREE)));
+        this.output = P + I + D + F;
         this.lastError = error;
         tele();
         return this.output;

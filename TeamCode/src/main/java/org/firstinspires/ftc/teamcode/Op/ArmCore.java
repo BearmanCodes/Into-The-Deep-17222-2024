@@ -24,6 +24,7 @@ public class ArmCore {
         pvtArm = hwMap.get(DcMotorEx.class, "pvt");
 
         fndtlArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        pvtArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         pvtArm.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -31,7 +32,7 @@ public class ArmCore {
         fndtlArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         fndtlArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pvtArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        pvtArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     //This uses the triggers to move the arm as used in Mason M.'s op mode

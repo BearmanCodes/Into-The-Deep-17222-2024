@@ -19,8 +19,6 @@ public class MainDrive extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashTele = dashboard.getTelemetry();
 
-    public static double kP = 0.00005, kI = 0.00005, kD = 0.00005, kF = 0.00005;
-    PIDFCore pidfCore = new PIDFCore(kP, kI, kD, kF, telemetry, dashTele);
     public static int errTolerance = 5;
     public static double freedomPower = 0.01;
     public static int servoActionTol = 3000;
@@ -51,7 +49,7 @@ public class MainDrive extends LinearOpMode {
                     dashTele.addData("Arm Velocity: ", armCore.pvtArm.getVelocity());
                     telemetry.update();
                     dashTele.update();
-                    modeCore.modeHandler(servoCore.currentGamepad2, servoCore.previousGamepad2, pidfCore); //Handle variables for reaching the top bar position (X)
+                    modeCore.modeHandler(servoCore.currentGamepad2, servoCore.previousGamepad2, servoCore); //Handle variables for reaching the top bar position (X)
                     modeCore.Compensate(servoCore.currentGamepad, servoCore.previousGamepad);
                     break; //Why I picked switch statements. Keeps you out of while loop hell
                 case MOVE_MODE:

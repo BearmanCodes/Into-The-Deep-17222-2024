@@ -51,11 +51,12 @@ public class ArmPID extends LinearOpMode {
                     dashTele.addData("Arm Velocity: ", armCore.pvtArm.getVelocity());
                     telemetry.update();
                     dashTele.update();
-                    modeCore.modeHandler(servoCore.currentGamepad2, servoCore.previousGamepad2, pidfCore); //Handle variables for reaching the top bar position (X)
+                    modeCore.modeHandler(servoCore.currentGamepad2, servoCore.previousGamepad2, servoCore); //Handle variables for reaching the top bar position (X)
                     modeCore.Compensate(servoCore.currentGamepad, servoCore.previousGamepad);
                     break; //Why I picked switch statements. Keeps you out of while loop hell
                 case MOVE_MODE:
                     armCore.pvtArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    pidfCore.setTarget(ModeCore.armTarget);
                     int err = Math.abs(armCurrPos - ModeCore.armTarget); //amount of ticks to go to target
                     double power = pidfCore.build(err);
                     if (armCurrPos >= servoActionTol) {
