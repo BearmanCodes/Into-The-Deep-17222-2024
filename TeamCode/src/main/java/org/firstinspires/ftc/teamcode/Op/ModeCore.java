@@ -14,8 +14,7 @@ public class ModeCore {
     } //This isn't needed. But enum's are cool for switch statements so...
 
     public RUNNING_MODE MODE = RUNNING_MODE.NORMAL_MODE;
-    public static int armTarget, armVelocity, wristTarget;
-    public static double wristVelocity = 500;
+    public static int armTarget, armVelocity;
     public static double wristPos, pincerPos;
     public static int barCompensator, speciCompensator = 0;
 
@@ -25,8 +24,7 @@ public class ModeCore {
             //SPECIMEN FLOOR HANDLER
             armTarget = 6650 + speciCompensator;
             armVelocity = 2000;
-            wristPos = 500; //0.80
-            wristVelocity = 500;
+            wristPos = 0.80;
             pincerPos = 0.05;
             MODE = RUNNING_MODE.MOVE_MODE;
         }
@@ -34,8 +32,7 @@ public class ModeCore {
             //BAR HANDLER
             armTarget = 5750 + barCompensator;
             armVelocity = 2000;
-            wristPos = 500; //0.77
-            wristVelocity = 500;
+            wristPos = 0.77;
             pincerPos = 0;
             MODE = RUNNING_MODE.MOVE_MODE;
         }

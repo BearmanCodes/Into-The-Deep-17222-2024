@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Op.DoubleTele;
 
 @Config
 public class Action {
@@ -27,12 +26,6 @@ public class Action {
     static Telemetry dashTele = dashboard.getTelemetry();
     public static double driveTol = 1;
     public static double armTol = 1;
-    public static double maxVelocity = 5000;
-    public static int maxRange = 10000;
-    public static double coefficent = .77;
-    public static int armMaxCutoff = 3000;
-    public static double driveClamp = 500;
-    public static double armClamp = 850;
 
     public interface Executable {
         void run(ElapsedTime time);
@@ -173,10 +166,8 @@ public class Action {
             int err = Math.abs(frontLeftTarget - driveCore.frontLeft.getCurrentPosition());
             if (time.milliseconds() >= period){
                 if (err > driveTol){
-                    velocity = Math.max(coefficent * (maxVelocity/err), driveClamp);
                     driveCore.allMotorVelocity(velocity);
-                    dashTele.addData("Drive Err: ", err);
-                    dashTele.addData("Drive Velocity: ", velocity);
+                    dashTele.addData("Err: ", err);
                     dashTele.addData("Should be driving right now", true);
                     dashTele.addData("Drive setup: ", false);
                     dashTele.update();
@@ -235,16 +226,11 @@ public class Action {
 
         @Override
         public void run(ElapsedTime time){
-            int armPos = armCore.pvtArm.getCurrentPosition();
             int err = Math.abs(ticks - armCore.pvtArm.getCurrentPosition());
+
             if (time.milliseconds() >= period){
                 if (err > armTol){
-                    if (armPos <= armMaxCutoff) velocity = maxVelocity;
-                    else velocity = Math.max(coefficent * (maxVelocity/err), armClamp);
                     armCore.pvtArm.setVelocity(velocity);
-                    dashTele.addData("Arm Err: ", err);
-                    dashTele.addData("Arm Velocity: ", velocity);
-                    dashTele.update();
                 } else {
                     armCore.pvtArm.setVelocity(0);
                     armCore.pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -253,7 +239,6 @@ public class Action {
             }
         }
     }
-
 
     public void run(boolean active, Executable... Actions){
         if (active){

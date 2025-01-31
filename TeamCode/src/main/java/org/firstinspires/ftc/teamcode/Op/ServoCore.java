@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.Op;
 
 import com.qualcomm.robotcore.exception.RobotCoreException;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -22,9 +19,6 @@ public class ServoCore {
     Gamepad previousGamepad2 = new Gamepad(); //Set up gamepad variables allowing for rising edge detector
 
     public Servo claw1, pincer, wrist, brake, hook; //Declare servo variables
-    public DcMotorEx wristMotor;
-    public static boolean fwd = true;
-
 
     boolean claw1Stat, pincerStat, wristStat, brakeStat, MMStat;
     boolean hookStat = true;
@@ -36,22 +30,15 @@ public class ServoCore {
         pincer = hwMap.get(Servo.class, "claw2".toLowerCase());
         wrist = hwMap.get(Servo.class, "claw4".toLowerCase());
         hook = hwMap.get(Servo.class, "hook".toLowerCase());
-        wristMotor = hwMap.get(DcMotorEx.class, "wristmotor");
         //brake = hwMap.get(Servo.class, "brake".toLowerCase());
  
         pincer.setDirection(Servo.Direction.FORWARD);
-        wrist.setDirection(Servo.Direction.REVERSE);
-        if (fwd) wristMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        else wristMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         wrist.setDirection(Servo.Direction.REVERSE);
         //brake.setDirection(Servo.Direction.FORWARD);
         pincer.setPosition(0);
         wrist.setPosition(upWrist);
         hook.setPosition(hookClose);
         //brake.setPosition(0);
-        wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        wristMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     //Dpad control used in Mason S.'s op mode
