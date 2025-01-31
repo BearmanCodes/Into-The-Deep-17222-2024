@@ -1,15 +1,17 @@
-package org.firstinspires.ftc.teamcode.Auto;
+package org.firstinspires.ftc.teamcode.Op;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Op.DoubleTele;
+import org.firstinspires.ftc.teamcode.Auto.ArmAutoCore;
+import org.firstinspires.ftc.teamcode.Auto.DriveAutoCore;
 
 @Config
-public class Action {
+public class ActionOP {
     private ElapsedTime timer = new ElapsedTime();
     public enum DriveDirection {
         FWD,
@@ -33,6 +35,7 @@ public class Action {
     public static int armMaxCutoff = 3000;
     public static double driveClamp = 500;
     public static double armClamp = 850;
+    public static double freedomPower = 0.01;
 
     public interface Executable {
         void run(ElapsedTime time);
@@ -46,7 +49,7 @@ public class Action {
         static final double TicksPerRev = 560;
         static final double WheelInches = (75 / 25.4);
         static final double TicksPerIn = TicksPerRev / (WheelInches * Math.PI);
-        private Action.DriveDirection dir;
+        private ActionOP.DriveDirection dir;
         private double inches;
         private double velocity;
         public double period = 0;
@@ -56,7 +59,7 @@ public class Action {
         int backRightTarget;
         public boolean canRun = true;
 
-        public Drive setDir(Action.DriveDirection dir){
+        public Drive setDir(ActionOP.DriveDirection dir){
             this.dir = dir;
             return this;
         }
@@ -191,11 +194,12 @@ public class Action {
             }
         }
     }
+
     public static class Arm implements Executable{
         public int ticks;
         public double velocity;
         public double period = 0;
-        public ArmAutoCore armCore;
+        public ArmCore armCore;
         boolean canRun = true;
 
         public Arm setVelocity(double vel){
@@ -213,7 +217,7 @@ public class Action {
             return this;
         }
 
-        public Arm (ArmAutoCore core){
+        public Arm (ArmCore core){
             this.armCore = core;
         }
 
@@ -236,7 +240,7 @@ public class Action {
         @Override
         public void run(ElapsedTime time){
             int armPos = armCore.pvtArm.getCurrentPosition();
-            int err = Math.abs(ticks - armCore.pvtArm.getCurrentPosition());
+            int err = Math.abs(ticks - armPos);
             if (time.milliseconds() >= period){
                 if (err > armTol){
                     if (armPos <= armMaxCutoff) velocity = maxVelocity;
@@ -254,8 +258,69 @@ public class Action {
         }
     }
 
+    public static class Wrist implements Executable{
+        public int ticks;
+        public double velocity;
+        public double period = 0;
+        public ServoCore servoCore;
+        boolean canRun = true;
 
-    public void run(boolean active, Executable... Actions){
+        public Wrist setVelocity(double vel){
+            this.velocity = vel;
+            return this;
+        }
+
+        public Wrist setTicks(int ticks){
+            this.ticks = ticks;
+            return this;
+        }
+
+        public Wrist setPeriod(double period){
+            this.period = period;
+            return this;
+        }
+
+        public Wrist (ServoCore core){
+            this.servoCore = core;
+        }
+
+        @Override
+        public double getPeriod() {
+            return this.period;
+        }
+
+        public boolean getRunCondition(){
+            return this.canRun;
+        }
+
+        @Override
+        public void setupParams(){
+            servoCore.wristMotor.setTargetPosition(ticks);
+            servoCore.wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            this.canRun = true;
+        }
+
+        @Override
+        public void run(ElapsedTime time){
+            int wristPos = servoCore.wristMotor.getCurrentPosition();
+            int err = Math.abs(ticks - wristPos);
+            if (time.milliseconds() >= period){
+                if (err > armTol){
+                    servoCore.wristMotor.setVelocity(velocity);
+                    dashTele.addData("Arm Err: ", err);
+                    dashTele.addData("Arm Velocity: ", velocity);
+                    dashTele.update();
+                } else {
+                    servoCore.wristMotor.setVelocity(0);
+                    servoCore.wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    this.canRun = false;
+                }
+            }
+        }
+    }
+
+
+    public void run(boolean active, Gamepad gamepad2, Executable... Actions){
         if (active){
             int count = Actions.length - 1;
             timer.reset();
@@ -263,6 +328,8 @@ public class Action {
                 action.setupParams();
             }
             while (count > 0){
+                boolean BREAKFREE = Math.abs((gamepad2.right_trigger - gamepad2.left_trigger)) >= freedomPower;
+                if (BREAKFREE) return;
                 for (Executable action: Actions){
                     if (action.getRunCondition()){
                         action.run(timer);
