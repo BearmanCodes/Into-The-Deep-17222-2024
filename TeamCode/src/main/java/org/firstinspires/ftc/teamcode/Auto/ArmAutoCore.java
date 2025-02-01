@@ -10,14 +10,18 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class ArmAutoCore {
     public DcMotorEx fndtlArm;
     public DcMotorEx pvtArm;
-
+    public DcMotorEx wristMotor;
 
     public void init(HardwareMap hwMap){
         fndtlArm = hwMap.get(DcMotorEx.class, "fndtl");
         pvtArm = hwMap.get(DcMotorEx.class, "pvt");
+        wristMotor = hwMap.get(DcMotorEx.class, "wristmotor");
 
         fndtlArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pvtArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        wristMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         fndtlArm.setDirection(DcMotorSimple.Direction.REVERSE);
         pvtArm.setDirection(DcMotorSimple.Direction.REVERSE);

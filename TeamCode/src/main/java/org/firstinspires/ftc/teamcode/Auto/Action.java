@@ -26,6 +26,7 @@ public class Action {
     static Telemetry dashTele = dashboard.getTelemetry();
     public static double driveTol = 1;
     public static double armTol = 1;
+    public static double wristTol = 10;
 
     public interface Executable {
         void run(ElapsedTime time);
@@ -234,6 +235,64 @@ public class Action {
                 } else {
                     armCore.pvtArm.setVelocity(0);
                     armCore.pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    this.canRun = false;
+                }
+            }
+        }
+    }
+
+    public static class Wrist implements Executable{
+        public int ticks;
+        public double velocity;
+        public double period = 0;
+        public ArmAutoCore armCore;
+        boolean canRun = true;
+
+        public Wrist setVelocity(double vel){
+            this.velocity = vel;
+            return this;
+        }
+
+        public Wrist setTicks(int ticks){
+            this.ticks = ticks;
+            return this;
+        }
+
+        public Wrist setPeriod(double period){
+            this.period = period;
+            return this;
+        }
+
+        public Wrist (ArmAutoCore core){
+            this.armCore = core;
+        }
+
+        @Override
+        public double getPeriod() {
+            return this.period;
+        }
+
+        public boolean getRunCondition(){
+            return this.canRun;
+        }
+
+        @Override
+        public void setupParams(){
+            armCore.wristMotor.setTargetPosition(ticks);
+            armCore.wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            this.canRun = true;
+        }
+
+        @Override
+        public void run(ElapsedTime time){
+            int err = Math.abs(ticks - armCore.wristMotor.getCurrentPosition());
+
+            if (time.milliseconds() >= period){
+                if (err > wristTol){
+                    armCore.wristMotor.setVelocity(velocity);
+                } else {
+                    armCore.wristMotor.setVelocity(0);
+                    armCore.wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     this.canRun = false;
                 }
             }

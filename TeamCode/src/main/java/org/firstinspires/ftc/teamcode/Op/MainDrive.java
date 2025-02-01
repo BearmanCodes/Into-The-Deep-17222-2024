@@ -26,7 +26,6 @@ public class MainDrive extends LinearOpMode {
     public static double freedomPower = 0.01;
     public static int servoActionTol = 3000;
     public static boolean fwd = true;
-    public static double wristReducer = 1;
     @Override
     public void runOpMode() throws InterruptedException {
         Init();
@@ -38,30 +37,30 @@ public class MainDrive extends LinearOpMode {
                 throw new RuntimeException(e);
             }
             int armCurrPos = armCore.pvtArm.getCurrentPosition(); //Keeps var of arm pos for ref
+            int wristCurrPos = armCore.wristMotor.getCurrentPosition();
             drivetrainCore.run(gamepad1);
             servoCore.hookHandler(servoCore.currentGamepad, servoCore.previousGamepad);
-            if (armCurrPos >= servoActionTol) {
-                servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
-            }
+            servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
             switch (modeCore.MODE){ //Based on the mode set the arm to be in control or moving auto
                 case NORMAL_MODE:
-                    armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
-                    doubleTele.addData("Arm Position: ", armCurrPos);
-                    doubleTele.addData("Arm Power: ", armCore.pvtPower);
-                    doubleTele.addData("Arm Velocity: ", armCore.pvtArm.getVelocity());
-                    doubleTele.update();
+                    armCore.trigger(gamepad1, gamepad2, armCurrPos); //Give arm control to driver
+                    dashTele.addData("Arm Pos: ", armCurrPos);
+                    dashTele.addData("Wrist Pos: ", wristCurrPos);
+                    dashTele.addData("Arm Pwr: ", armCore.pvtPower);
+                    dashTele.update();
                     determineWristPos();
                     modeCore.modeHandler(servoCore.currentGamepad2, servoCore.previousGamepad2, servoCore); //Handle variables for reaching the top bar position (X)
-                    //modeCore.Compensate(servoCore.currentGamepad, servoCore.previousGamepad);
                     break; //Why I picked switch statements. Keeps you out of while loop hell
                 case MOVE_MODE:
                     armCore.pvtArm.setTargetPosition(ModeCore.armTarget);
+                    armCore.wristMotor.setTargetPosition(ModeCore.wristTarget);
                     armCore.pvtArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armCore.wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     armCore.pvtArm.setVelocity(ModeCore.armVelocity);
-                    if (armCurrPos >= servoActionTol) {
-                        servoCore.wrist.setPosition(ModeCore.wristPos);
-                        servoCore.pincer.setPosition(ModeCore.pincerPos);
-                    }
+                    armCore.wristMotor.setVelocity(ModeCore.wristVelocity);
+                    servoCore.pincer.setPosition(ModeCore.pincerPos);
+
+                    int wristErr = Math.abs(wristCurrPos - ModeCore.wristTarget);
                     int err = Math.abs(armCurrPos - ModeCore.armTarget); //amount of ticks to go to target
                     boolean BREAKFREE = Math.abs((gamepad2.right_trigger - gamepad2.left_trigger)) >= freedomPower;
                     modeCore.teleMove(dashTele, err);
@@ -76,20 +75,8 @@ public class MainDrive extends LinearOpMode {
     }
 
     public void determineWristPos(){
-        DcMotorEx wristMotor = hardwareMap.get(DcMotorEx.class, "wristmotor");
-        if (fwd) wristMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        else wristMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        wristMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        double wristPwr = ((gamepad1.right_trigger - gamepad1.left_trigger) * wristReducer);
-        wristMotor.setPower(wristPwr);
-        double wristVel = wristMotor.getVelocity();
-        double wristPos = wristMotor.getCurrentPosition();
-        doubleTele.addData("Wrist Pow: ", wristPwr);
-        doubleTele.addData("Wrist Vel: ", wristVel);
-        doubleTele.addData("Wrist Pos: ", wristPos);
-        doubleTele.update();
+        double wristVel = armCore.wristMotor.getVelocity();
+        double wristPos = armCore.wristMotor.getCurrentPosition();
     }
 
     private void Init(){

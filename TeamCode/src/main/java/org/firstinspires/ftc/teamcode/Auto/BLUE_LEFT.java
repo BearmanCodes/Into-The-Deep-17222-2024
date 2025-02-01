@@ -45,7 +45,7 @@ public class BLUE_LEFT extends LinearOpMode {
                             .setPeriod(450));
             servoCore.wrist.setPosition(0.79);
             drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), standardTout);
-            servoCore.pincer.setPosition(0.05);
+            servoCore.pincer.setPosition(servoCore.openPincer);
             servoCore.wrist.getController().pwmDisable();
             action.run(opModeIsActive(), new Action.Arm(armCore)
                             .setTicks(armBackPos)

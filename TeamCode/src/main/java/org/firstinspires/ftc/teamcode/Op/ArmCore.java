@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Op;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -8,43 +9,72 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@Config
 //This is the core arm class every single TeleOp uses to access functions pertaining to the arm
 public class ArmCore {
 
     public DcMotorEx fndtlArm;
     public DcMotorEx pvtArm; //Declare the 2 arm motors, this one is the extender
-
+    public DcMotorEx hangArm;
+    public static double wristReducer = 0.8;
+    public static double kF = 0.0025;
     public double reducerActualArm = 0.45; //Change this depending on how much you want to reduce your arm
     public double reducerPvt = (1); //Change this depending on how much you want to reduce your arm
     public double fndtlPower;
     public double pvtPower;
+    public double hangPower;
+    public static boolean fwd = true;
+    public double wristPower;
+    public boolean hangMode = false;
+
+    private final double TICKS_PER_REV = 537.7; //look up for gobuilda motor
+    private final double GEAR_REDUCTION = 2; //2nd teeth gears divided by 1st teeth gears
+    private final double TICKS_PER_GEARS = TICKS_PER_REV * GEAR_REDUCTION;
+    private final double TICKS_PER_DEGREE = TICKS_PER_GEARS / 360;
+    DcMotorEx wristMotor;
 
     public void init(HardwareMap hwMap){
+        wristMotor = hwMap.get(DcMotorEx.class, "wristmotor");
         fndtlArm = hwMap.get(DcMotorEx.class, "fndtl");
         pvtArm = hwMap.get(DcMotorEx.class, "pvt");
+        hangArm = hwMap.get(DcMotorEx.class, "hang");
 
         fndtlArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pvtArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hangArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         pvtArm.setDirection(DcMotorSimple.Direction.REVERSE);
+        if (fwd) wristMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        else wristMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         fndtlArm.setDirection(DcMotorSimple.Direction.REVERSE);
         fndtlArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        wristMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fndtlArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pvtArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hangArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     //This uses the triggers to move the arm as used in Mason M.'s op mode
-    public void trigger(Gamepad gamepad2, int currPos){
-        pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt); //might need something to counteract gravity
-        //fndtlPower = (gamepad2.left_stick_y * reducerActualArm); //might need something to counteract gravity
-        if (currPos >= 5700) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0050;
-        if (currPos >= 6250) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0025;
-        if (currPos >= 6800) pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt) - 0.0045;
+    public void trigger(Gamepad gamepad1, Gamepad gamepad2, int currPos){
+        pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt)
+                + (Math.cos(Math.toRadians(currPos / TICKS_PER_GEARS)) * kF); //might need something to counteract gravity
+        wristPower = ((gamepad1.right_trigger - gamepad1.left_trigger) * wristReducer);
+        hangPower = gamepad2.right_stick_y;
 
+        wristMotor.setPower(wristPower);
         pvtArm.setPower(pvtPower);
+        hangArm.setPower(hangPower);
         //fndtlArm.setPower(fndtlPower);
+    }
+
+    public void hangModeHandler(Gamepad currentGamepad1, Gamepad previousGamepad1){
+        if (currentGamepad1.start && currentGamepad1.x && !previousGamepad1.start && !previousGamepad1.x){
+            hangMode = !hangMode;
+        }
     }
 
     /*

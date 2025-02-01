@@ -60,7 +60,7 @@ public class ServoCore {
                 pincerStat = !pincerStat;
                 pincer.setPosition(0); //(close)
                 if (pincerStat) {
-                    pincer.setPosition(0.05); //open
+                    pincer.setPosition(0.06); //open
                 } else {
                     pincer.setPosition(0); //close
                 }
@@ -68,7 +68,7 @@ public class ServoCore {
 
         if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left && !currentGamepad2.start) {
             wrist.setPosition(0.85);
-            pincer.setPosition(0.05); //open
+            pincer.setPosition(0.06); //open
         }
 
         if (currentGamepad2.x && !previousGamepad2.x) {
@@ -84,9 +84,6 @@ public class ServoCore {
         if (currentGamepad2.dpad_right && !previousGamepad2.dpad_right) {
             wrist.setPosition(upWrist);
         }
-
-        dashTele.addData("Wrist Pos: ", wrist.getPosition());
-        dashTele.addData("Pincer Pos: ", pincer.getPosition());
     }
 
     public void hookHandler(Gamepad currentGamepad, Gamepad previousGamepad){

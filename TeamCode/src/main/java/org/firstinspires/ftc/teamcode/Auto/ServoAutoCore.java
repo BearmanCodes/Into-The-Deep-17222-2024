@@ -11,7 +11,7 @@ public class ServoAutoCore {
         public double upWrist = 0.88;
         public double hangWrist = 0.79;
         public double closePincer = 0;
-        public double openPincer = 0.05;
+        public double openPincer = 0.06;
 
         public void init(HardwareMap hwMap) {
             pincer = hwMap.get(Servo.class, "claw2".toLowerCase());

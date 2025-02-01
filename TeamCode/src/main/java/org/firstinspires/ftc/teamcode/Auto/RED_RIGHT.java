@@ -40,7 +40,7 @@ public class RED_RIGHT extends LinearOpMode {
                         .setPeriod(250));
         servoCore.wrist.setPosition(0.79);
         drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), standardTout);
-        servoCore.pincer.setPosition(0.05);
+        servoCore.pincer.setPosition(servoCore.openPincer);
         servoCore.wrist.getController().pwmDisable();
         sleep(100);
         action.run(opModeIsActive(), new Action.Arm(armCore)
