@@ -35,12 +35,13 @@ public class BLUE_RIGHT extends LinearOpMode {
     public static double armVel = 3000;
     public static int turnAmount = -90;
     public static double sampleAlign = 9;
-    public static int wristUp = 110;
+    public static int wristUp = (int) (110 * (3895.9 / 537.7)); //Refine
+    public static double wristVelocity = 2000; //Refine
+    public static int wristInit = 10; //Refine
+    public static int wristGrabSpeci = (int) (350 * (3895.9 / 537.7));
     public static int wristTwoUp = 120;
-    public static double wristVelocity = 2000;
     public static double netZonePos = 43;
     public static long standardTout = 50;
-    public static int wristTol = 20;
     public static double firstout = 10;
     public static double alignreverse = 20;
     public static double secondout = 20;
@@ -64,21 +65,9 @@ public class BLUE_RIGHT extends LinearOpMode {
                     new Action.Arm(armCore)
                             .setVelocity(armVel)
                             .setTicks(armBarPos)
-                            .setPeriod(firstWaitPeriod));
-            armCore.wristMotor.setTargetPosition((int) (110 * (3895.9 / 537.7)));
-            armCore.wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            armCore.wristMotor.setVelocity(wristVelocity);
-            int wristErr = Math.abs(armCore.wristMotor.getCurrentPosition() - (int) (110 * (3895.9 / 537.7)));
-            while (wristErr >= wristTol){
-                telemetry.addData("wristErr: ", wristErr);
-                telemetry.addData("wrist Pos: ", armCore.wristMotor.getCurrentPosition());
-                telemetry.update();
-                wristErr = Math.abs(armCore.wristMotor.getCurrentPosition() - (int) (110 * (3895.9 / 537.7)));
-            }
-            armCore.wristMotor.setVelocity(0);
-            armCore.wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            servoCore.pincer.setPosition(servoCore.openPincer);
-            servoCore.wrist.getController().pwmDisable();
+                            .setPeriod(firstWaitPeriod)); //Initial driveforward with arm touching the bar
+            armCore.wristMove(wristVelocity, wristUp, opModeIsActive(), 0, telemetry); //Move wrist up to get specimen clipped in
+            servoCore.pincer.setPosition(servoCore.openPincer); //open up the pincer afterwards
             action.run(opModeIsActive(), new Action.Arm(armCore)
                             .setVelocity(armVel)
                             .setTicks(armBackPos),
@@ -86,24 +75,27 @@ public class BLUE_RIGHT extends LinearOpMode {
                             .setDir(Action.DriveDirection.STRAFE_RIGHT)
                             .setVelocity(1000)
                             .setInches(26)
-                            .setPeriod(250));
-            servoCore.wrist.getController().pwmEnable();
-            drivetrainCore.fwdDrive(straightSpeeds, 28, opModeIsActive(), standardTout);
-            drivetrainCore.strafeRight(straightSpeeds, 9, opModeIsActive(), standardTout);
-            drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
-            drivetrainCore.fwdDrive(straightSpeeds, firstout, opModeIsActive(), standardTout);
-            drivetrainCore.revDrive(straightSpeeds, alignreverse, opModeIsActive(), standardTout);
-            drivetrainCore.fwdDrive(straightSpeeds, secondout, opModeIsActive(), standardTout);
+                            .setPeriod(250),
+                    new Action.Wrist(armCore)
+                            .setVelocity(wristVelocity)
+                            .setTicks(wristInit)
+                            .setPeriod(500)); //Move the arm back while strafing to clear the submersiable bar, move wrist to start too.
+            drivetrainCore.fwdDrive(straightSpeeds, 28, opModeIsActive(), standardTout); //Move up past first sampe
+            drivetrainCore.strafeRight(straightSpeeds, 9, opModeIsActive(), standardTout); //Strafe right to get right above sample
+            drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout); //Reverse drive into the observation zone to drop off the sample
+            drivetrainCore.fwdDrive(straightSpeeds, firstout, opModeIsActive(), standardTout); //Drive forward a bit so that the human player can grab it
+            drivetrainCore.revDrive(straightSpeeds, alignreverse, opModeIsActive(), standardTout); //Reverse back into the wall to straighten out the bot
+            drivetrainCore.fwdDrive(straightSpeeds, secondout, opModeIsActive(), standardTout); //Move forward so the human player can align the specimen to the wall
             action.run(opModeIsActive(), new Action.Wrist(armCore)
-                    .setTicks((int) (350 * (3895.9 / 537.7)))
-                    .setVelocity(500),
+                    .setTicks(wristGrabSpeci)
+                    .setVelocity(wristVelocity),
                     new Action.Arm(armCore)
                             .setTicks(700)
-                            .setVelocity(1000));
-            drivetrainCore.revDrive(straightSpeeds, armwall, opModeIsActive(), 0);
-            servoCore.pincer.setPosition(0);
-            sleep(1000);
-            drivetrainCore.strafeLeft(straightSpeeds, baralign, opModeIsActive(), standardTout);
+                            .setVelocity(1000)); //Move the arm and wrist into specimen grabbing position
+            drivetrainCore.revDrive(straightSpeeds, armwall, opModeIsActive(), 0); //Reverse drive to grab the specimen. Arm keeps up becasuse of code in the standard drives
+            servoCore.pincer.setPosition(0); //Close to grab the specimen
+            sleep(1000); //Wait until the servo has actually gripped it
+            drivetrainCore.strafeLeft(straightSpeeds, baralign, opModeIsActive(), standardTout); //Strafe left to align with the specimen bar
             action.run(opModeIsActive(), new Action.Drive(drivetrainCore).
                             setDir(Action.DriveDirection.FWD)
                             .setInches(secondFwd)
@@ -114,36 +106,21 @@ public class BLUE_RIGHT extends LinearOpMode {
                             .setPeriod(firstWaitPeriod),
                     new Action.Wrist(armCore)
                             .setTicks((int) (20 * (3895.9 / 537.7)))
-                            .setVelocity(500));
-            sleep(1000);
-            armCore.wristMotor.setTargetPosition((int) (120 * (3895.9 / 537.7)));
-            armCore.wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            armCore.wristMotor.setVelocity(wristVelocity);
-            wristErr = Math.abs(armCore.wristMotor.getCurrentPosition() - (int) (120 * (3895.9 / 537.7)));
-            while (wristErr >= wristTol){
-                telemetry.addData("wristErr: ", wristErr);
-                telemetry.addData("wrist Pos: ", armCore.wristMotor.getCurrentPosition());
-                telemetry.update();
-                wristErr = Math.abs(armCore.wristMotor.getCurrentPosition() - (int) (120 * (3895.9 / 537.7)));
-            }
-            armCore.wristMotor.setVelocity(0);
-            armCore.wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            servoCore.pincer.setPosition(servoCore.openPincer);
+                            .setVelocity(500)); //COMPLETEY CHANGE. Drive forward, arm forward, and wrist forward into position. Maybe stop and reset encoder here?
+            sleep(1000); //Wait a second? I'm not sure why, probably remove this
+            armCore.wristMove(wristVelocity, wristUp, opModeIsActive(), 0, telemetry); //Move wrist up to get specimen clipped in
+            servoCore.pincer.setPosition(servoCore.openPincer); //Open up the wrist so we can move back
             action.run(opModeIsActive(), new Action.Wrist(armCore)
                     .setTicks((int) (20 * (3895.9 / 537.7)))
                     .setVelocity(2000),
                     new Action.Arm(armCore)
                             .setTicks(armBackPos)
-                            .setVelocity(armVel), new Action.Drive(drivetrainCore)
+                            .setVelocity(armVel),
+                    new Action.Drive(drivetrainCore)
                             .setDir(Action.DriveDirection.REV)
                             .setInches(20)
-                            .setVelocity(2500));
-            drivetrainCore.strafeRight(2500, 40, opModeIsActive(), 20);
-            //drivetrainCore.strafeRight(1000, 9, opModeIsActive(), standardTout);
-            //drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
-            //drivetrainCore.fwdDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
-            //drivetrainCore.strafeRight(1000, 7, opModeIsActive(), standardTout);
-            //drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout);
+                            .setVelocity(2500)); //CHANGE AGAIN, Move wrist back into position, arm back, reverse into parking
+            drivetrainCore.strafeRight(2500, 40, opModeIsActive(), 20); //Strafe right into the parking zone
         }
     }
 

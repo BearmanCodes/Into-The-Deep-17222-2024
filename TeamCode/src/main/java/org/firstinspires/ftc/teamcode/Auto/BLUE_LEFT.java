@@ -15,7 +15,7 @@ public class BLUE_LEFT extends LinearOpMode {
     public static double initalFwd = 18.5;
     public static double initialStrafe = 25;
     public static double intialRev = 0;
-    public static int armBarPos = 4500;
+    public static int armBarPos = 3770;
     public static double strafeBarClear = 30;
     public static double straightSpeeds = 1250;
     public static double fwdHangAlign = 25;
@@ -27,6 +27,9 @@ public class BLUE_LEFT extends LinearOpMode {
     public static double sampleAlign = 9;
     public static double netZonePos = 43;
     public static long standardTout = 150;
+    public static int wristUp = (int) (110 * (3895.9 / 537.7)); //Refine
+    public static int wristInit = 10; //Refine
+    public static double wristVelocity = 2000; //Refine
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -34,7 +37,7 @@ public class BLUE_LEFT extends LinearOpMode {
 
         waitForStart();
         if (opModeIsActive()){
-            drivetrainCore.fwdDrive(800, initalFwd, opModeIsActive(), standardTout);
+            drivetrainCore.fwdDrive(straightSpeeds, initalFwd, opModeIsActive(), standardTout);
             action.run(opModeIsActive(), new Action.Drive(drivetrainCore)
                             .setDir(Action.DriveDirection.STRAFE_RIGHT)
                             .setVelocity(1000)
@@ -43,21 +46,20 @@ public class BLUE_LEFT extends LinearOpMode {
                             .setTicks(armBarPos)
                             .setVelocity(armVel)
                             .setPeriod(450));
-            servoCore.wrist.setPosition(0.79);
-            drivetrainCore.fwdDrive(800, nudgeFwd, opModeIsActive(), standardTout);
+            armCore.wristMove(wristVelocity, wristUp, opModeIsActive(), 0, telemetry); //Move wrist up to get specimen clipped in
             servoCore.pincer.setPosition(servoCore.openPincer);
-            servoCore.wrist.getController().pwmDisable();
             action.run(opModeIsActive(), new Action.Arm(armCore)
                             .setTicks(armBackPos)
-                            .setVelocity(armVel)
-                            .setPeriod(0),
+                            .setVelocity(armVel),
                     new Action.Drive(drivetrainCore)
                             .setDir(Action.DriveDirection.STRAFE_LEFT)
                             .setVelocity(1000)
                             .setInches(strafeBarClear)
-                            .setPeriod(250));
-            servoCore.wrist.getController().pwmEnable();
-            servoCore.wrist.setPosition(0.88);
+                            .setPeriod(250),
+                    new Action.Wrist(armCore)
+                            .setVelocity(wristVelocity)
+                            .setTicks(wristInit)
+                            .setPeriod(500));
             drivetrainCore.fwdDrive(straightSpeeds, fwdHangAlign, opModeIsActive(), standardTout);
             drivetrainCore.strafeLeft(1000, sampleAlign, opModeIsActive(), standardTout);
             drivetrainCore.revDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);

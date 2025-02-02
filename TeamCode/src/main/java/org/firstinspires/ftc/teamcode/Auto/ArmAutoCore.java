@@ -11,6 +11,7 @@ public class ArmAutoCore {
     public DcMotorEx fndtlArm;
     public DcMotorEx pvtArm;
     public DcMotorEx wristMotor;
+    public static int wristTol = 20;
 
     public void init(HardwareMap hwMap){
         fndtlArm = hwMap.get(DcMotorEx.class, "fndtl");
@@ -45,8 +46,24 @@ public class ArmAutoCore {
 
         fndtlArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        Thread.sleep(timeout);
+    }
 
-
+    public void wristMove(double velocity, int ticks, boolean active, long timeout, Telemetry tele) throws InterruptedException{
+        wristMotor.setTargetPosition(ticks);
+        wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wristMotor.setVelocity(velocity);
+        int wristPos = wristMotor.getCurrentPosition();
+        int wristErr = Math.abs(wristPos - ticks);
+        while (active && wristErr >= wristTol){
+            wristPos = wristMotor.getCurrentPosition();
+            tele.addData("wristErr: ", wristErr);
+            tele.addData("wrist Pos: ", wristPos);
+            tele.update();
+            wristErr = Math.abs(wristPos - ticks);
+        }
+        wristMotor.setVelocity(0);
+        wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Thread.sleep(timeout);
     }
 

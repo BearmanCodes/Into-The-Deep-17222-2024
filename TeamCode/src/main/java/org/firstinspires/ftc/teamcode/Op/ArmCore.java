@@ -27,7 +27,7 @@ public class ArmCore {
     public double wristPower;
     public boolean hangMode = false;
 
-    private final double TICKS_PER_REV = 537.7; //look up for gobuilda motor
+    private final double TICKS_PER_REV = 3895.9; //look up for gobuilda motor
     private final double GEAR_REDUCTION = 2; //2nd teeth gears divided by 1st teeth gears
     private final double TICKS_PER_GEARS = TICKS_PER_REV * GEAR_REDUCTION;
     private final double TICKS_PER_DEGREE = TICKS_PER_GEARS / 360;
@@ -61,7 +61,7 @@ public class ArmCore {
     //This uses the triggers to move the arm as used in Mason M.'s op mode
     public void trigger(Gamepad gamepad1, Gamepad gamepad2, int currPos){
         pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt)
-                + (Math.cos(Math.toRadians(currPos / TICKS_PER_GEARS)) * kF); //might need something to counteract gravity
+                + (Math.cos(Math.toRadians(currPos / TICKS_PER_DEGREE)) * kF); //might need something to counteract gravity
         wristPower = ((gamepad1.right_trigger - gamepad1.left_trigger) * wristReducer);
         hangPower = gamepad2.right_stick_y;
 
