@@ -25,7 +25,7 @@ public class BLUE_RIGHT extends LinearOpMode {
     public static double firstWaitPeriod = 125;
     public static double initialStrafe = 25;
     public static double intialRev = 0;
-    public static int armBarPos = 3770;
+    public static int armBarPos = 4000;
     public static double strafeBarClear = 30;
     public static double straightSpeeds = 1250;
     public static double fwdHangAlign = 25;
@@ -35,7 +35,7 @@ public class BLUE_RIGHT extends LinearOpMode {
     public static double armVel = 3000;
     public static int turnAmount = -90;
     public static double sampleAlign = 9;
-    public static int wristUp = (int) (110 * (3895.9 / 537.7)); //Refine
+    public static int wristUp = 1400; //Refine
     public static double wristVelocity = 2000; //Refine
     public static int wristInit = 10; //Refine
     public static int wristGrabSpeci = (int) (350 * (3895.9 / 537.7));
@@ -43,6 +43,7 @@ public class BLUE_RIGHT extends LinearOpMode {
     public static double netZonePos = 43;
     public static long standardTout = 50;
     public static double firstout = 10;
+    public static int armRear = 550;
     public static double alignreverse = 20;
     public static double secondout = 20;
     public static double armwall = 15.5;
@@ -90,7 +91,7 @@ public class BLUE_RIGHT extends LinearOpMode {
                     .setTicks(wristGrabSpeci)
                     .setVelocity(wristVelocity),
                     new Action.Arm(armCore)
-                            .setTicks(700)
+                            .setTicks(armRear)
                             .setVelocity(1000)); //Move the arm and wrist into specimen grabbing position
             drivetrainCore.revDrive(straightSpeeds, armwall, opModeIsActive(), 0); //Reverse drive to grab the specimen. Arm keeps up becasuse of code in the standard drives
             servoCore.pincer.setPosition(0); //Close to grab the specimen
@@ -105,22 +106,22 @@ public class BLUE_RIGHT extends LinearOpMode {
                             .setTicks(armBarPos)
                             .setPeriod(firstWaitPeriod),
                     new Action.Wrist(armCore)
-                            .setTicks((int) (20 * (3895.9 / 537.7)))
-                            .setVelocity(500)); //COMPLETEY CHANGE. Drive forward, arm forward, and wrist forward into position. Maybe stop and reset encoder here?
-            sleep(1000); //Wait a second? I'm not sure why, probably remove this
+                            .setTicks(20)
+                            .setVelocity(wristVelocity)); //COMPLETEY CHANGE. Drive forward, arm forward, and wrist forward into position. Maybe stop and reset encoder here?
+            sleep(250); //Wait a second? I'm not sure why, probably remove this
             armCore.wristMove(wristVelocity, wristUp, opModeIsActive(), 0, telemetry); //Move wrist up to get specimen clipped in
             servoCore.pincer.setPosition(servoCore.openPincer); //Open up the wrist so we can move back
             action.run(opModeIsActive(), new Action.Wrist(armCore)
-                    .setTicks((int) (20 * (3895.9 / 537.7)))
-                    .setVelocity(2000),
+                    .setTicks(20)
+                    .setVelocity(wristVelocity),
                     new Action.Arm(armCore)
                             .setTicks(armBackPos)
                             .setVelocity(armVel),
                     new Action.Drive(drivetrainCore)
                             .setDir(Action.DriveDirection.REV)
-                            .setInches(20)
+                            .setInches(15)
                             .setVelocity(2500)); //CHANGE AGAIN, Move wrist back into position, arm back, reverse into parking
-            drivetrainCore.strafeRight(2500, 40, opModeIsActive(), 20); //Strafe right into the parking zone
+            drivetrainCore.strafeRight(2500, 50, opModeIsActive(), 20); //Strafe right into the parking zone
         }
     }
 
