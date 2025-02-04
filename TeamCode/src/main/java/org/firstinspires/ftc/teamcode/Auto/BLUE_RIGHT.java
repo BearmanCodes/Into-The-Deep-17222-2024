@@ -49,6 +49,7 @@ public class BLUE_RIGHT extends LinearOpMode {
     public static double armwall = 15.5;
     public static double baralign = 35;
     public static double secondFwd = 20;
+    public static double driveParkRev = 17;
     public ElapsedTime time = new ElapsedTime();
 
     @Override
@@ -119,7 +120,7 @@ public class BLUE_RIGHT extends LinearOpMode {
                             .setVelocity(armVel),
                     new Action.Drive(drivetrainCore)
                             .setDir(Action.DriveDirection.REV)
-                            .setInches(15)
+                            .setInches(driveParkRev)
                             .setVelocity(2500)); //CHANGE AGAIN, Move wrist back into position, arm back, reverse into parking
             drivetrainCore.strafeRight(2500, 50, opModeIsActive(), 20); //Strafe right into the parking zone
         }

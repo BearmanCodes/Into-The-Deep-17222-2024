@@ -18,23 +18,32 @@ public class ModeCore {
     public static double armVelocity, wristVelocity;
     public static double wristPos, pincerPos;
     public static int barCompensator, speciCompensator = 0;
+    public static int fwdGrabArm = 6550;
+    public static int fwdGrabWrist = 3010;
+    public static int fwdHangArm = 5200;
+    public static int fwdHangWrist = 4000;
+    public static int rearHangArm = 4250;
+    public static int rearHangWrist = 1400;
+    public static int rearGrabArm = 550;
+    public static int rearGrabWrist = 2200;
 
     public void modeHandler(Gamepad currGamepad2, Gamepad prevGamepad2, ServoCore servoCore){
         if (currGamepad2.dpad_down && !prevGamepad2.dpad_down) { //Demonstrative variables used, replace later please.
                                                                 //I did not, in fact, replace them later.
             //FORWARD GRAB HANDLER
-            armTarget = 6550; //change this
+            armTarget = fwdGrabArm; //change this
             armVelocity = 2000;
-            wristTarget = 3010;
+            wristTarget = fwdGrabWrist;
             wristVelocity = 2000; //change this
+            if (servoCore.pincerStat) servoCore.pincerStat = !servoCore.pincerStat;
             pincerPos = 0.06;
             MODE = RUNNING_MODE.MOVE_MODE;
         }
         if (currGamepad2.dpad_up && !prevGamepad2.dpad_up) {
             //FORWARD HANG
-            armTarget = 5300; //change this
+            armTarget = fwdHangArm + barCompensator; //change this
             armVelocity = 2000;
-            wristTarget = 4000; //change this
+            wristTarget = fwdHangWrist; //change this
             wristVelocity = 2000; //change this
             pincerPos = 0;
             MODE = RUNNING_MODE.MOVE_MODE;
@@ -42,19 +51,20 @@ public class ModeCore {
         if (currGamepad2.dpad_left && !prevGamepad2.dpad_left) { //Demonstrative variables used, replace later please.
             //I did not, in fact, replace them later.
             //REAR HANG
-            armTarget = 3850; //change this
+            armTarget = rearHangArm + barCompensator; //change this
             armVelocity = 2000;
-            wristTarget = 1400; //change this
+            wristTarget = rearHangWrist; //change this
             wristVelocity = 2000; //change this
             pincerPos = 0;
             MODE = RUNNING_MODE.MOVE_MODE;
         }
         if (currGamepad2.dpad_right && !prevGamepad2.dpad_right) {
             //REAR GRAB
-            armTarget = 425; //change this
+            armTarget = rearGrabArm; //change this
             armVelocity = 2000;
-            wristTarget = 2200; //change this
+            wristTarget = rearGrabWrist; //change this
             wristVelocity = 2000; //change this
+            if (servoCore.pincerStat) servoCore.pincerStat = !servoCore.pincerStat;
             pincerPos = 0.06;
             MODE = RUNNING_MODE.MOVE_MODE;
         }
@@ -63,16 +73,16 @@ public class ModeCore {
 
     public void Compensate(Gamepad currGamepad1, Gamepad prevGamepad1){
         if ((currGamepad1.right_trigger >= 0.8) && !(prevGamepad1.right_trigger >= 0.8)){
-            barCompensator -= 50;
-        }
-        if ((currGamepad1.left_trigger >= 0.8) && !(prevGamepad1.left_trigger >= 0.8)){
-            barCompensator += 50;
-        }
-        if (currGamepad1.right_bumper && !prevGamepad1.right_bumper){
             speciCompensator -= 50;
         }
-        if (currGamepad1.left_bumper && !prevGamepad1.left_bumper){
+        if ((currGamepad1.left_trigger >= 0.8) && !(prevGamepad1.left_trigger >= 0.8)){
             speciCompensator += 50;
+        }
+        if (currGamepad1.right_bumper && !prevGamepad1.right_bumper){
+            barCompensator -= 50;
+        }
+        if (currGamepad1.left_bumper && !prevGamepad1.left_bumper){
+            barCompensator += 50;
         }
     }
 

@@ -59,14 +59,15 @@ public class MainDrive extends LinearOpMode {
                     armCore.pvtArm.setVelocity(ModeCore.armVelocity);
                     armCore.wristMotor.setVelocity(ModeCore.wristVelocity);
                     servoCore.pincer.setPosition(ModeCore.pincerPos);
-
                     int wristErr = Math.abs(wristCurrPos - ModeCore.wristTarget);
                     int err = Math.abs(armCurrPos - ModeCore.armTarget); //amount of ticks to go to target
                     boolean BREAKFREE = Math.abs((gamepad2.right_trigger - gamepad2.left_trigger)) >= freedomPower;
+                    boolean WRISTFREE = Math.abs((gamepad1.right_trigger - gamepad1.left_trigger)) >= freedomPower;
                     modeCore.teleMove(dashTele, err);
                     //This boolean decides whether or not to give control back to the driver
-                    if (err <= errTolerance || BREAKFREE) {
+                    if ((err <= errTolerance || BREAKFREE) && (wristErr <= errTolerance || WRISTFREE)) {
                         armCore.pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        armCore.wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                         modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
                     }
                     break;

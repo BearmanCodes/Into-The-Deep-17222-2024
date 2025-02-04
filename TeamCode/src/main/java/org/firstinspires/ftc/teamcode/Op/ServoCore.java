@@ -58,7 +58,6 @@ public class ServoCore {
     public void  dpadRun(Gamepad currentGamepad2, Gamepad previousGamepad2, Telemetry dashTele) {
         if (currentGamepad2.b && !previousGamepad2.b && !currentGamepad2.start) {
                 pincerStat = !pincerStat;
-                pincer.setPosition(0); //(close)
                 if (pincerStat) {
                     pincer.setPosition(0.06); //open
                 } else {
