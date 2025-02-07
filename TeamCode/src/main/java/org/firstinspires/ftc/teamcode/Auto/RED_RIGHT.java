@@ -27,6 +27,7 @@ public class RED_RIGHT extends LinearOpMode {
     public static double straightSpeeds = 1250;
     public static double fwdHangAlign = 45;
     public static double hangNudge = 10;
+    public static double firstEscapeStrafe = 28;
     public static double nudgeFwd = 3;
     public static int armBackPos = 25;
     public static double armVel = 3000;
@@ -71,7 +72,7 @@ public class RED_RIGHT extends LinearOpMode {
                 new Action.Drive(drivetrainCore)
                         .setDir(Action.DriveDirection.STRAFE_RIGHT)
                         .setVelocity(1000)
-                        .setInches(26)
+                        .setInches(firstEscapeStrafe)
                         .setPeriod(250),
                 new Action.Wrist(armCore)
                         .setVelocity(wristVelocity)

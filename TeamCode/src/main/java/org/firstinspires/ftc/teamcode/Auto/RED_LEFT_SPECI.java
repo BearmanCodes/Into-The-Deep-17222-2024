@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
-@Autonomous(name = "BLUE LEFT", group = "BLUE")
-public class BLUE_LEFT extends LinearOpMode {
+@Autonomous(name = "RED LEFT", group = "BLUE")
+public class RED_LEFT_SPECI extends LinearOpMode {
     ArmAutoCore armCore = new ArmAutoCore();
     DriveAutoCore drivetrainCore = new DriveAutoCore();
     Action action = new Action();
@@ -29,6 +29,7 @@ public class BLUE_LEFT extends LinearOpMode {
     public static double fwdHangAlign = 45;
     public static double hangNudge = 10;
     public static double nudgeFwd = 3;
+    public static double firstEscapeStrafe = 28;
     public static int armBackPos = 25;
     public static double armVel = 3000;
     public static int turnAmount = -90;
@@ -55,20 +56,31 @@ public class BLUE_LEFT extends LinearOpMode {
         Init();
 
         waitForStart();
-        if (opModeIsActive()){
-            drivetrainCore.strafeLeft(1000, 5, opModeIsActive(), standardTout);
+        sleep(5000);
+        drivetrainCore.strafeRight(1000, initialStrafe, opModeIsActive(), standardTout);
+        action.run(opModeIsActive(), new Action.Drive(drivetrainCore)
+                        .setDir(Action.DriveDirection.FWD)
+                        .setVelocity(1000)
+                        .setInches(initalFwd),
+                new Action.Arm(armCore)
+                        .setTicks(armBarPos)
+                        .setVelocity(armVel)
+                        .setPeriod(450));
+        armCore.wristMove(wristVelocity, wristUp, opModeIsActive(), 0, telemetry); //Move wrist up to get specimen clipped in
+        servoCore.pincer.setPosition(servoCore.openPincer);
+        action.run(opModeIsActive(), new Action.Arm(armCore)
+                        .setVelocity(armVel)
+                        .setTicks(armBackPos),
+                new Action.Drive(drivetrainCore)
+                        .setDir(Action.DriveDirection.REV)
+                        .setVelocity(1000)
+                        .setInches(initalFwd-4)
+                        .setPeriod(250),
+                new Action.Wrist(armCore)
+                        .setVelocity(wristVelocity)
+                        .setTicks(wristInit)
+                        .setPeriod(500));
             /*
-            drivetrainCore.fwdDrive(straightSpeeds, initalFwd, opModeIsActive(), standardTout);
-            action.run(opModeIsActive(), new Action.Drive(drivetrainCore)
-                            .setDir(Action.DriveDirection.STRAFE_RIGHT)
-                            .setVelocity(1000)
-                            .setInches(initialStrafe),
-                    new Action.Arm(armCore)
-                            .setTicks(armBarPos)
-                            .setVelocity(armVel)
-                            .setPeriod(450));
-            armCore.wristMove(wristVelocity, wristUp, opModeIsActive(), 0, telemetry); //Move wrist up to get specimen clipped in
-            servoCore.pincer.setPosition(servoCore.openPincer);
             action.run(opModeIsActive(), new Action.Arm(armCore)
                             .setTicks(armBackPos)
                             .setVelocity(armVel),
@@ -82,26 +94,17 @@ public class BLUE_LEFT extends LinearOpMode {
                             .setTicks(wristInit)
                             .setPeriod(500));
              */
-            drivetrainCore.fwdDrive(straightSpeeds, fwdHangAlign, opModeIsActive(), standardTout);
-            drivetrainCore.strafeLeft(1000, sampleAlign, opModeIsActive(), standardTout);
-            drivetrainCore.revDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);
-            drivetrainCore.fwdDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);
-            drivetrainCore.strafeLeft(1000, sampleAlign, opModeIsActive(), standardTout);
-            drivetrainCore.revDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);
-            drivetrainCore.fwdDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);
-            drivetrainCore.strafeLeft(1000, thirdSampleAlign, opModeIsActive(), standardTout);
-            drivetrainCore.revDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);
-            drivetrainCore.fwdDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);
-            drivetrainCore.turnAmount(turnAmount, opModeIsActive(), telemetry);
-            action.run(opModeIsActive(), new Action.Drive(drivetrainCore)
-                            .setDir(Action.DriveDirection.FWD)
-                            .setVelocity(straightSpeeds)
-                            .setInches(hangNudge + (sampleAlign * 2) + thirdSampleAlign),
-                    new Action.Arm(armCore)
-                            .setTicks(armBarPos)
-                            .setVelocity(armVel)
-                            .setPeriod(350));
-        }
+        drivetrainCore.strafeLeft(1000, firstEscapeStrafe, opModeIsActive(), standardTout);
+        drivetrainCore.fwdDrive(straightSpeeds, netZonePos, opModeIsActive(), standardTout);
+        drivetrainCore.turnAmount(turnAmount, opModeIsActive(), telemetry);
+        action.run(opModeIsActive(), new Action.Drive(drivetrainCore)
+                        .setDir(Action.DriveDirection.FWD)
+                        .setVelocity(straightSpeeds)
+                        .setInches(hangNudge),
+                new Action.Arm(armCore)
+                        .setTicks(armBarPos)
+                        .setVelocity(armVel)
+                        .setPeriod(350));
     }
 
     private void Init(){

@@ -38,6 +38,7 @@ public class BLUE_RIGHT extends LinearOpMode {
     public static int wristUp = 1400; //Refine
     public static double wristVelocity = 2000; //Refine
     public static int wristInit = 10; //Refine
+    public static double firstEscapeStrafe = 28;
     public static int wristGrabSpeci = (int) (350 * (3895.9 / 537.7));
     public static int wristTwoUp = 120;
     public static double netZonePos = 43;
@@ -76,7 +77,7 @@ public class BLUE_RIGHT extends LinearOpMode {
                     new Action.Drive(drivetrainCore)
                             .setDir(Action.DriveDirection.STRAFE_RIGHT)
                             .setVelocity(1000)
-                            .setInches(26)
+                            .setInches(firstEscapeStrafe)
                             .setPeriod(250),
                     new Action.Wrist(armCore)
                             .setVelocity(wristVelocity)
