@@ -17,6 +17,7 @@ public class MainDrive extends LinearOpMode {
     ArmCore armCore = new ArmCore();
     ServoCore servoCore = new ServoCore();
     DrivetrainCore drivetrainCore = new DrivetrainCore();
+    IntakeCore intakeCore = new IntakeCore();
     ModeCore modeCore = new ModeCore();
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashTele = dashboard.getTelemetry();
@@ -39,11 +40,14 @@ public class MainDrive extends LinearOpMode {
             int armCurrPos = armCore.pvtArm.getCurrentPosition(); //Keeps var of arm pos for ref
             int wristCurrPos = armCore.wristMotor.getCurrentPosition();
             drivetrainCore.run(gamepad1);
+            intakeCore.viperControl(gamepad1, dashTele);
+            intakeCore.vipWristControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
+            intakeCore.vipSuckControl(servoCore.currentGamepad, servoCore.previousGamepad);
             servoCore.hookHandler(servoCore.currentGamepad, servoCore.previousGamepad);
             servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
             switch (modeCore.MODE){ //Based on the mode set the arm to be in control or moving auto
                 case NORMAL_MODE:
-                    armCore.trigger(gamepad1, gamepad2, armCurrPos); //Give arm control to driver
+                    armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
                     dashTele.addData("Arm Pos: ", armCurrPos);
                     dashTele.addData("Wrist Pos: ", wristCurrPos);
                     dashTele.addData("Arm Pwr: ", armCore.pvtPower);
@@ -84,5 +88,6 @@ public class MainDrive extends LinearOpMode {
         armCore.init(hardwareMap);
         servoCore.init(hardwareMap);
         drivetrainCore.init(hardwareMap);
+        intakeCore.init(hardwareMap);
     }
 }

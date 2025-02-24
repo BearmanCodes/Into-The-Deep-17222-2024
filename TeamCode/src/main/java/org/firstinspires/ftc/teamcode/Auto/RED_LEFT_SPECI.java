@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
-@Autonomous(name = "RED LEFT", group = "BLUE")
+@Autonomous(name = "SPECI RED LEFT", group = "SPECI")
 public class RED_LEFT_SPECI extends LinearOpMode {
     ArmAutoCore armCore = new ArmAutoCore();
     DriveAutoCore drivetrainCore = new DriveAutoCore();

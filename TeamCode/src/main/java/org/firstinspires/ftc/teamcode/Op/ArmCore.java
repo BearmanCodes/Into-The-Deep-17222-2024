@@ -35,11 +35,9 @@ public class ArmCore {
 
     public void init(HardwareMap hwMap){
         wristMotor = hwMap.get(DcMotorEx.class, "wristmotor");
-        fndtlArm = hwMap.get(DcMotorEx.class, "fndtl");
         pvtArm = hwMap.get(DcMotorEx.class, "pvt");
         hangArm = hwMap.get(DcMotorEx.class, "hang");
 
-        fndtlArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pvtArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         hangArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -47,25 +45,21 @@ public class ArmCore {
         if (fwd) wristMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         else wristMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        fndtlArm.setDirection(DcMotorSimple.Direction.REVERSE);
-        fndtlArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         wristMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        fndtlArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pvtArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hangArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     //This uses the triggers to move the arm as used in Mason M.'s op mode
-    public void trigger(Gamepad gamepad1, Gamepad gamepad2, int currPos){
+    public void trigger(Gamepad gamepad2, int currPos){
         pvtPower = ((gamepad2.right_trigger - gamepad2.left_trigger) * reducerPvt)
                 + (Math.cos(Math.toRadians(currPos / TICKS_PER_DEGREE)) * kF); //might need something to counteract gravity
-        wristPower = ((gamepad1.right_trigger - gamepad1.left_trigger) * wristReducer);
         hangPower = gamepad2.right_stick_y;
 
-        wristMotor.setPower(wristPower);
         pvtArm.setPower(pvtPower);
         hangArm.setPower(hangPower);
         //fndtlArm.setPower(fndtlPower);

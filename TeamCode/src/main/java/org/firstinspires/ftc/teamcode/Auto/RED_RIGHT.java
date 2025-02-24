@@ -19,6 +19,7 @@ public class RED_RIGHT extends LinearOpMode {
     private final double TICKS_PER_DEGREE = TICKS_PER_GEARS / 360;
 
     public static double initalFwd = 24;
+    public static int liftArmWall = 900;
     public static double firstWaitPeriod = 125;
     public static double initialStrafe = 25;
     public static double intialRev = 0;
@@ -37,12 +38,12 @@ public class RED_RIGHT extends LinearOpMode {
     public static int wristUp = 1400; //Refine
     public static double wristVelocity = 2000; //Refine
     public static int wristInit = 10; //Refine
-    public static int wristGrabSpeci = (int) (350 * (3895.9 / 537.7));
+    public static int wristGrabSpeci = 2200;
     public static int wristTwoUp = 120;
     public static double netZonePos = 43;
     public static long standardTout = 50;
     public static double firstout = 10;
-    public static int armRear = 550;
+    public static int armRear = 635;
     public static double alignreverse = 20;
     public static double secondout = 20;
     public static double armwall = 15.5;
@@ -79,7 +80,7 @@ public class RED_RIGHT extends LinearOpMode {
                         .setTicks(wristInit)
                         .setPeriod(500)); //Move the arm back while strafing to clear the submersiable bar, move wrist to start too.
         drivetrainCore.fwdDrive(straightSpeeds, 28, opModeIsActive(), standardTout); //Move up past first sampe
-        drivetrainCore.strafeRight(straightSpeeds, 9, opModeIsActive(), standardTout); //Strafe right to get right above sample
+        drivetrainCore.strafeRight(straightSpeeds, 12, opModeIsActive(), standardTout); //Strafe right to get right above sample
         drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout); //Reverse drive into the observation zone to drop off the sample
         drivetrainCore.fwdDrive(straightSpeeds, firstout, opModeIsActive(), standardTout); //Drive forward a bit so that the human player can grab it
         drivetrainCore.revDrive(straightSpeeds, alignreverse, opModeIsActive(), standardTout); //Reverse back into the wall to straighten out the bot
@@ -93,6 +94,8 @@ public class RED_RIGHT extends LinearOpMode {
         drivetrainCore.revDrive(straightSpeeds, armwall, opModeIsActive(), 0); //Reverse drive to grab the specimen. Arm keeps up becasuse of code in the standard drives
         servoCore.pincer.setPosition(0); //Close to grab the specimen
         sleep(1000); //Wait until the servo has actually gripped it
+        armCore.pvtMove(500, liftArmWall, opModeIsActive(), 0, telemetry);
+        drivetrainCore.fwdDrive(1250, 1, opModeIsActive(), 0);
         drivetrainCore.strafeLeft(straightSpeeds, baralign, opModeIsActive(), standardTout); //Strafe left to align with the specimen bar
         action.run(opModeIsActive(), new Action.Drive(drivetrainCore).
                         setDir(Action.DriveDirection.FWD)

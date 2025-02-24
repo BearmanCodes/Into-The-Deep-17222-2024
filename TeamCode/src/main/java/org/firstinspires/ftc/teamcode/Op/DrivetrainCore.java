@@ -20,9 +20,7 @@ public class DrivetrainCore{
 
     public DcMotorEx frontleft, frontright, backleft, backright; //Declare the drivetrian motors
     public double reducer = /*0.85*/1; //Change for reducing drive power
-
     YawPitchRollAngles robotOrientation; //IMU YPR Angles
-
     IMU imu; //Declare the IMU
     IMU.Parameters imuparams; //Declare the IMU's settings
 
@@ -79,7 +77,6 @@ public class DrivetrainCore{
         frontleft.setDirection(DcMotorSimple.Direction.FORWARD); //Change these directions for your drive
         backright.setDirection(DcMotorSimple.Direction.REVERSE);
         backleft.setDirection(DcMotorSimple.Direction.REVERSE);
-
 
         frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
