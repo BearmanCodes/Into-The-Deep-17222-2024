@@ -73,20 +73,20 @@ public class DrivetrainCore{
         backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        frontright.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontright.setDirection(DcMotorSimple.Direction.FORWARD);
         frontleft.setDirection(DcMotorSimple.Direction.FORWARD); //Change these directions for your drive
         backright.setDirection(DcMotorSimple.Direction.REVERSE);
-        backleft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backleft.setDirection(DcMotorSimple.Direction.FORWARD);
 
         frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontright.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontleft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backright.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backleft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     //below are functions of convenience that apply to all the motors in just one line of code

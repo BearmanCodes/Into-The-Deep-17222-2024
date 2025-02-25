@@ -21,33 +21,33 @@ public class ServoCore {
     Gamepad currentGamepad2 = new Gamepad();
     Gamepad previousGamepad2 = new Gamepad(); //Set up gamepad variables allowing for rising edge detector
 
-    public Servo claw1, pincer, wrist, brake, hook; //Declare servo variables
+    public Servo claw1, pincer, wrist, brake; //Declare servo variables
     public DcMotorEx wristMotor;
     public static boolean fwd = true;
 
 
     boolean claw1Stat, pincerStat, wristStat, brakeStat, MMStat;
-    boolean hookStat = true;
+    //boolean hookStat = true;
     public double upWrist = 0.88;
     public double hookClose = 0.06;
     public double hookOpen = 0.25;
 
     public void init(HardwareMap hwMap) {
-        pincer = hwMap.get(Servo.class, "claw2".toLowerCase());
-        wrist = hwMap.get(Servo.class, "claw4".toLowerCase());
-        hook = hwMap.get(Servo.class, "hook".toLowerCase());
+        pincer = hwMap.get(Servo.class, "pincer".toLowerCase());
+        //wrist = hwMap.get(Servo.class, "claw4".toLowerCase());
+        //hook = hwMap.get(Servo.class, "hook".toLowerCase());
         wristMotor = hwMap.get(DcMotorEx.class, "wristmotor");
         //brake = hwMap.get(Servo.class, "brake".toLowerCase());
  
         pincer.setDirection(Servo.Direction.FORWARD);
-        wrist.setDirection(Servo.Direction.REVERSE);
+        //wrist.setDirection(Servo.Direction.REVERSE);
         if (fwd) wristMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         else wristMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        wrist.setDirection(Servo.Direction.REVERSE);
+        //wrist.setDirection(Servo.Direction.REVERSE);
         //brake.setDirection(Servo.Direction.FORWARD);
         pincer.setPosition(0);
-        wrist.setPosition(upWrist);
-        hook.setPosition(hookClose);
+        //wrist.setPosition(upWrist);
+        //hook.setPosition(hookClose);
         //brake.setPosition(0);
         wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -57,19 +57,19 @@ public class ServoCore {
     //Dpad control used in Mason S.'s op mode
     public void  dpadRun(Gamepad currentGamepad2, Gamepad previousGamepad2, Telemetry dashTele) {
         if (currentGamepad2.b && !previousGamepad2.b && !currentGamepad2.start) {
-                pincerStat = !pincerStat;
-                if (pincerStat) {
-                    pincer.setPosition(0.06); //open
-                } else {
-                    pincer.setPosition(0); //close
-                }
+            pincerStat = !pincerStat;
+            if (pincerStat) {
+                pincer.setPosition(0.06); //open
+            } else {
+                pincer.setPosition(0); //close
+            }
         }
 
         if (currentGamepad2.dpad_left && !previousGamepad2.dpad_left && !currentGamepad2.start) {
             wrist.setPosition(0.85);
             pincer.setPosition(0.06); //open
         }
-
+        /*
         if (currentGamepad2.x && !previousGamepad2.x) {
             double currPos = Math.round(wrist.getPosition() * 100.00) / 100.00;
             wrist.setPosition(currPos + 0.01);
@@ -85,6 +85,7 @@ public class ServoCore {
         }
     }
 
+    /*
     public void hookHandler(Gamepad currentGamepad, Gamepad previousGamepad){
         if (currentGamepad.dpad_down && !previousGamepad.dpad_down) {
             hookStat = !hookStat;
@@ -94,6 +95,8 @@ public class ServoCore {
                 hook.setPosition(hookOpen);
             }
         }
+    }
+     */
     }
 
     public void edgeDetector(Gamepad gamepad1, Gamepad gamepad2) throws RobotCoreException {

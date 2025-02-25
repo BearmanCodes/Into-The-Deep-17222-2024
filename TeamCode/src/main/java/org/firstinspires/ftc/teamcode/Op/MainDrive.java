@@ -42,8 +42,8 @@ public class MainDrive extends LinearOpMode {
             drivetrainCore.run(gamepad1);
             intakeCore.viperControl(gamepad1, dashTele);
             intakeCore.vipWristControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
-            intakeCore.vipSuckControl(servoCore.currentGamepad, servoCore.previousGamepad);
-            servoCore.hookHandler(servoCore.currentGamepad, servoCore.previousGamepad);
+            intakeCore.vipSuckControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
+            //servoCore.hookHandler(servoCore.currentGamepad, servoCore.previousGamepad);
             servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
             switch (modeCore.MODE){ //Based on the mode set the arm to be in control or moving auto
                 case NORMAL_MODE:

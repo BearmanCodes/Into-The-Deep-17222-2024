@@ -5,6 +5,7 @@ import android.sax.StartElementListener;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -18,8 +19,13 @@ public class IntakeCore {
     public DcMotorEx viper;
     public Servo vipWrist;
     public CRServo suckL, suckR;
-    public static boolean vipDir, vipWristDir, suckLDir = true;
-    public boolean suckRDir = false;
+    public ColorSensor color;
+    public static boolean vipDir = true;
+    public static boolean vipWristDir = false;
+    public static boolean suckRDir = true;
+    public static boolean suckLDir = false;
+    public static boolean alliance = true; //true = blue false = red
+    public static boolean suckToggle = false;
     public double viperPower;
     public double vipPos;
     public double vipReducer = 0.05;
@@ -28,6 +34,7 @@ public class IntakeCore {
         vipWrist = hwMap.get(Servo.class, "vWrist");
         suckL = hwMap.get(CRServo.class, "suckL");
         suckR = hwMap.get(CRServo.class, "suckR");
+        color = hwMap.get(ColorSensor.class, "color");
         viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         if (vipDir) viper.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -72,16 +79,82 @@ public class IntakeCore {
         tele.addData("vipWristPos: ", vipWrist.getPosition());
         tele.update();
     }
-    public void vipSuckControl(Gamepad currentGamepad1, Gamepad previousGamepad1){
+    public void vipSuckControl(Gamepad currentGamepad1, Gamepad previousGamepad1, Telemetry tele){
+        //viper, 600
+        //vipwrist, .40
+        double blue = color.blue();
+        double red = color.red();
+        double green = color.green();
+        boolean bluethresh = blue >= 1000;
+        boolean redthresh = red >= 1000;
+        boolean greenthresh = green >= 1000;
+        if (currentGamepad1.left_stick_button && !previousGamepad1.left_stick_button){
+            viper.setTargetPosition(500);
+            viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            viper.setVelocity(50);
+            while (viper.isBusy()){
+                tele.addData("vipWristPos: ", vipWrist.getPosition());
+                tele.update();
+            }
+            viper.setVelocity(0);
+            viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            vipWrist.setPosition(0.4);
+            while (alliance && !bluethresh){
+                suckR.setPower(1);
+                suckL.setPower(1);
+            }
+            suckR.setPower(0);
+            suckL.setPower(0);
+            vipWrist.setPosition(0);
+            viper.setTargetPosition(0);
+            viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            viper.setVelocity(100);
+            while (viper.isBusy()){
+                tele.addData("vipWristPos: ", vipWrist.getPosition());
+                tele.update();
+            }
+            viper.setVelocity(0);
+            viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
         if (currentGamepad1.x && !previousGamepad1.x){
-            suckL.setPower(1);
-            suckR.setPower(1);
+            suckToggle = !suckToggle;
+            if (suckToggle){
+                suckL.setPower(-1);
+                suckR.setPower(-1);
+            }
+            else{
+                suckL.setPower(1);
+                suckR.setPower(1);
+            }
+        }
+        if (alliance && bluethresh){
+            suckL.setPower(0);
+            suckR.setPower(0);
+        }
+        if (!alliance && bluethresh){
+            suckL.setPower(-1);
+            suckR.setPower(-1);
+        }
+        if (!alliance && redthresh){
+            suckL.setPower(0);
+            suckR.setPower(0);
+        }
+        if (alliance && redthresh){
+            suckL.setPower(-1);
+            suckR.setPower(-1);
+        }
+        if (greenthresh){
+            suckL.setPower(0);
+            suckR.setPower(0);
         }
         // start
         if (currentGamepad1.y && !previousGamepad1.y){
             suckL.setPower(0);
             suckR.setPower(0);
         }
+        tele.addData("Blue: ", blue);
+        tele.addData("Red: ", red);
+        tele.addData("Green: ", green);
         //stop
     }
     // a & b move wrist, x start suck, y stop suck
