@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Op;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -10,14 +9,28 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class ModeCore {
     public enum RUNNING_MODE{
         NORMAL_MODE,
-        MOVE_MODE
+        ARM_MOVE,
+        VIP_MOVE,
+        VIP_SUCK
     } //This isn't needed. But enum's are cool for switch statements so...
 
+    public enum CHAINS {
+        EXTEND_SUCK_BACK,
+        SUCK_BACK
+    }
+
     public RUNNING_MODE MODE = RUNNING_MODE.NORMAL_MODE;
-    public static int armTarget, wristTarget;
-    public static double armVelocity, wristVelocity;
-    public static double wristPos, pincerPos;
+    public static CHAINS CHAIN;
+    public static boolean isChain = false;
+    public static int chainIterator = 0;
+    public static RUNNING_MODE nextMode;
+    public static int armTarget, wristTarget, vipTarget;
+    public static double armVelocity, wristVelocity, vipVelocity;
+    public static double wristPos, pincerPos, vipWristTarget;
     public static int barCompensator, speciCompensator = 0;
+    public static int vipExtended = 500;
+    public static double vipWristDown = 0.4;
+    public static int vipVel = 20;
     public static int fwdGrabArm = 6550;
     public static int fwdGrabWrist = 3010;
     public static int fwdHangArm = 5200;
@@ -27,7 +40,14 @@ public class ModeCore {
     public static int rearGrabArm = 550;
     public static int rearGrabWrist = 2200;
 
-    public void modeHandler(Gamepad currGamepad2, Gamepad prevGamepad2, ServoCore servoCore){
+    RUNNING_MODE[] modes;
+    int[] vipTargets;
+    int[] vipVelocities;
+    double[] vipWristTargets;
+    int[] modeIterations;
+
+
+    public void modeHandler(Gamepad currGamepad1, Gamepad prevGamepad1, Gamepad currGamepad2, Gamepad prevGamepad2, ServoCore servoCore){
         if (currGamepad2.dpad_down && !prevGamepad2.dpad_down) { //Demonstrative variables used, replace later please.
                                                                 //I did not, in fact, replace them later.
             //FORWARD GRAB HANDLER
@@ -37,7 +57,7 @@ public class ModeCore {
             wristVelocity = 2000; //change this
             if (servoCore.pincerStat) servoCore.pincerStat = !servoCore.pincerStat;
             pincerPos = 0.06;
-            MODE = RUNNING_MODE.MOVE_MODE;
+            MODE = RUNNING_MODE.ARM_MOVE;
         }
         if (currGamepad2.dpad_up && !prevGamepad2.dpad_up) {
             //FORWARD HANG
@@ -46,7 +66,7 @@ public class ModeCore {
             wristTarget = fwdHangWrist; //change this
             wristVelocity = 2000; //change this
             pincerPos = 0;
-            MODE = RUNNING_MODE.MOVE_MODE;
+            MODE = RUNNING_MODE.ARM_MOVE;
         }
         if (currGamepad2.dpad_left && !prevGamepad2.dpad_left) { //Demonstrative variables used, replace later please.
             //I did not, in fact, replace them later.
@@ -56,7 +76,7 @@ public class ModeCore {
             wristTarget = rearHangWrist; //change this
             wristVelocity = 2000; //change this
             pincerPos = 0;
-            MODE = RUNNING_MODE.MOVE_MODE;
+            MODE = RUNNING_MODE.ARM_MOVE;
         }
         if (currGamepad2.dpad_right && !prevGamepad2.dpad_right) {
             //REAR GRAB
@@ -66,9 +86,45 @@ public class ModeCore {
             wristVelocity = 2000; //change this
             if (servoCore.pincerStat) servoCore.pincerStat = !servoCore.pincerStat;
             pincerPos = 0.06;
-            MODE = RUNNING_MODE.MOVE_MODE;
+            MODE = RUNNING_MODE.ARM_MOVE;
         }
+        if (currGamepad1.left_stick_button && !prevGamepad1.left_stick_button){
+            chainIterator = 0;
+            isChain = true;
+            CHAIN = CHAINS.EXTEND_SUCK_BACK;
+            MODE = RUNNING_MODE.VIP_MOVE;
+        }
+        if (currGamepad1.right_stick_button && !prevGamepad1.right_stick_button){
+            chainIterator = 0;
+            isChain = true;
+            CHAIN = CHAINS.SUCK_BACK;
+            MODE = RUNNING_MODE.VIP_SUCK;
+        }
+    }
 
+    public void chainRefresh(CHAINS chain){
+        switch (chain){
+            case EXTEND_SUCK_BACK:
+                modes = new RUNNING_MODE[]{RUNNING_MODE.VIP_MOVE, RUNNING_MODE.VIP_SUCK, RUNNING_MODE.VIP_MOVE, RUNNING_MODE.NORMAL_MODE};
+                vipTargets = new int[]{vipExtended, 0, 0};
+                vipVelocities = new int[]{vipVel, 0, vipVel};
+                vipWristTargets = new double[]{0, vipWristDown, 0};
+                modeIterations = new int[]{1, 2, 3};
+                vipTarget = vipTargets[chainIterator];
+                vipVelocity = vipVelocities[chainIterator];
+                vipWristTarget = vipWristTargets[chainIterator];
+                nextMode = modes[modeIterations[chainIterator]];
+            case SUCK_BACK:
+                modes = new RUNNING_MODE[]{RUNNING_MODE.VIP_SUCK, RUNNING_MODE.VIP_MOVE, RUNNING_MODE.NORMAL_MODE};
+                vipTargets = new int[]{0, 0};
+                vipVelocities = new int[]{0, vipVel};
+                vipWristTargets = new double[]{vipWristDown, 0};
+                modeIterations = new int[]{1, 2};
+                vipTarget = vipTargets[chainIterator];
+                vipVelocity = vipVelocities[chainIterator];
+                vipWristTarget = vipWristTargets[chainIterator];
+                nextMode = modes[modeIterations[chainIterator]];
+        }
     }
 
     public void Compensate(Gamepad currGamepad1, Gamepad prevGamepad1){

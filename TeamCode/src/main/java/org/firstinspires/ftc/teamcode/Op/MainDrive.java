@@ -6,11 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import org.firstinspires.ftc.teamcode.Auto.Action;
 @TeleOp(name="Main Drive", group="Critical")
 @Config
 public class MainDrive extends LinearOpMode {
@@ -39,23 +37,22 @@ public class MainDrive extends LinearOpMode {
             }
             int armCurrPos = armCore.pvtArm.getCurrentPosition(); //Keeps var of arm pos for ref
             int wristCurrPos = armCore.wristMotor.getCurrentPosition();
+            int viperCurrPos = intakeCore.viper.getCurrentPosition();
             drivetrainCore.run(gamepad1);
-            intakeCore.viperControl(gamepad1, dashTele);
-            intakeCore.vipWristControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
-            intakeCore.vipSuckControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
-            //servoCore.hookHandler(servoCore.currentGamepad, servoCore.previousGamepad);
             servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
             switch (modeCore.MODE){ //Based on the mode set the arm to be in control or moving auto
                 case NORMAL_MODE:
                     armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
+                    intakeCore.viperControl(gamepad1, viperCurrPos, dashTele);
+                    intakeCore.vipWristControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
+                    intakeCore.vipSuckControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
                     dashTele.addData("Arm Pos: ", armCurrPos);
                     dashTele.addData("Wrist Pos: ", wristCurrPos);
                     dashTele.addData("Arm Pwr: ", armCore.pvtPower);
                     dashTele.update();
-                    determineWristPos();
-                    modeCore.modeHandler(servoCore.currentGamepad2, servoCore.previousGamepad2, servoCore); //Handle variables for reaching the top bar position (X)
+                    modeCore.modeHandler(servoCore.currentGamepad, servoCore.previousGamepad, servoCore.currentGamepad2, servoCore.previousGamepad2, servoCore); //Handle variables for reaching the top bar position (X)
                     break; //Why I picked switch statements. Keeps you out of while loop hell
-                case MOVE_MODE:
+                case ARM_MOVE:
                     armCore.pvtArm.setTargetPosition(ModeCore.armTarget);
                     armCore.wristMotor.setTargetPosition(ModeCore.wristTarget);
                     armCore.pvtArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -75,13 +72,70 @@ public class MainDrive extends LinearOpMode {
                         modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
                     }
                     break;
+                case VIP_MOVE:
+                    if (ModeCore.isChain) modeCore.chainRefresh(ModeCore.CHAIN);
+                    armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
+                    intakeCore.viper.setTargetPosition(ModeCore.vipTarget);
+                    intakeCore.viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    intakeCore.viper.setVelocity(ModeCore.vipVelocity);
+                    int vipErr = Math.abs(viperCurrPos - ModeCore.vipTarget);
+                    boolean VIPFREE = Math.abs((gamepad1.right_trigger - gamepad1.left_trigger)) >= freedomPower;
+                    dashTele.addData("Viper Mode Pos: ", viperCurrPos);
+                    dashTele.addData("Viper Mode Err: ", vipErr);
+                    dashTele.update();
+                    if (vipErr <= errTolerance || VIPFREE){
+                        intakeCore.viper.setVelocity(0);
+                        intakeCore.viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        if (ModeCore.isChain){
+                            modeCore.MODE = ModeCore.nextMode;
+                            ModeCore.chainIterator += 1;
+                        } else {
+                            modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
+                        }
+                    }
+                    break;
+                case VIP_SUCK:
+                    if (ModeCore.isChain) modeCore.chainRefresh(ModeCore.CHAIN);
+                    armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
+                    intakeCore.vipWrist.setPosition(ModeCore.vipWristTarget);
+                    intakeCore.updateColor();
+                    boolean takenIn = intakeCore.vipSuckHandler();
+                    boolean spitting = intakeCore.spitting;
+                    boolean SUCKESCAPE = suck_failsafe();
+                    if (SUCKESCAPE) break;
+                    if (!takenIn){
+                        if (!spitting) intakeCore.suck();
+                    } else {
+                        intakeCore.vipWrist.setPosition(0);
+                        if (ModeCore.isChain){
+                            modeCore.MODE = ModeCore.nextMode;
+                            ModeCore.chainIterator += 1;
+                        } else {
+                            modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
+                        }
+                    }
+                    break;
             }
         }
     }
 
-    public void determineWristPos(){
-        double wristVel = armCore.wristMotor.getVelocity();
-        double wristPos = armCore.wristMotor.getCurrentPosition();
+    public boolean suck_failsafe(){
+        if (servoCore.currentGamepad.left_bumper && !servoCore.previousGamepad.left_bumper){
+            intakeCore.suck();
+            modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
+            return true;
+        }
+        if (servoCore.currentGamepad.right_bumper && !servoCore.previousGamepad.right_bumper){
+            intakeCore.spit();
+            modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
+            return true;
+        }
+        if (servoCore.currentGamepad.y && !servoCore.previousGamepad.y){
+            intakeCore.stop();
+            modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
+            return true;
+        }
+        return false;
     }
 
     private void Init(){
