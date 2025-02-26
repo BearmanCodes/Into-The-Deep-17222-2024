@@ -29,7 +29,7 @@ public class ModeCore {
     public static double wristPos, pincerPos, vipWristTarget;
     public static int barCompensator, speciCompensator = 0;
     public static int vipExtended = 500;
-    public static double vipWristDown = 0.4;
+    public static double vipWristDown = 0.45;
     public static int vipVel = 20;
     public static int fwdGrabArm = 6550;
     public static int fwdGrabWrist = 3010;
@@ -39,6 +39,7 @@ public class ModeCore {
     public static int rearHangWrist = 1400;
     public static int rearGrabArm = 550;
     public static int rearGrabWrist = 2200;
+    public static int vipHome = 5;
 
     RUNNING_MODE[] modes;
     int[] vipTargets;
@@ -47,7 +48,7 @@ public class ModeCore {
     int[] modeIterations;
 
 
-    public void modeHandler(Gamepad currGamepad1, Gamepad prevGamepad1, Gamepad currGamepad2, Gamepad prevGamepad2, ServoCore servoCore){
+    public void modeHandler(Gamepad currGamepad1, Gamepad prevGamepad1, Gamepad currGamepad2, Gamepad prevGamepad2, ServoCore servoCore, IntakeCore intakeCore){
         if (currGamepad2.dpad_down && !prevGamepad2.dpad_down) { //Demonstrative variables used, replace later please.
                                                                 //I did not, in fact, replace them later.
             //FORWARD GRAB HANDLER
@@ -89,9 +90,9 @@ public class ModeCore {
             MODE = RUNNING_MODE.ARM_MOVE;
         }
         if (currGamepad1.left_stick_button && !prevGamepad1.left_stick_button){
-            chainIterator = 0;
-            isChain = true;
-            CHAIN = CHAINS.EXTEND_SUCK_BACK;
+            isChain = false;
+            intakeCore.vipWrist.setPosition(0);
+            vipTarget = 0;
             MODE = RUNNING_MODE.VIP_MOVE;
         }
         if (currGamepad1.right_stick_button && !prevGamepad1.right_stick_button){
@@ -106,7 +107,7 @@ public class ModeCore {
         switch (chain){
             case EXTEND_SUCK_BACK:
                 modes = new RUNNING_MODE[]{RUNNING_MODE.VIP_MOVE, RUNNING_MODE.VIP_SUCK, RUNNING_MODE.VIP_MOVE, RUNNING_MODE.NORMAL_MODE};
-                vipTargets = new int[]{vipExtended, 0, 0};
+                vipTargets = new int[]{vipExtended, 0, vipHome};
                 vipVelocities = new int[]{vipVel, 0, vipVel};
                 vipWristTargets = new double[]{0, vipWristDown, 0};
                 modeIterations = new int[]{1, 2, 3};
@@ -116,7 +117,7 @@ public class ModeCore {
                 nextMode = modes[modeIterations[chainIterator]];
             case SUCK_BACK:
                 modes = new RUNNING_MODE[]{RUNNING_MODE.VIP_SUCK, RUNNING_MODE.VIP_MOVE, RUNNING_MODE.NORMAL_MODE};
-                vipTargets = new int[]{0, 0};
+                vipTargets = new int[]{0, vipHome};
                 vipVelocities = new int[]{0, vipVel};
                 vipWristTargets = new double[]{vipWristDown, 0};
                 modeIterations = new int[]{1, 2};

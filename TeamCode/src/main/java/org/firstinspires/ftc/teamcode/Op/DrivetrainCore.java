@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Op;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -16,10 +17,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 //This is the core drivetrain class that every TeleOp uses when they need to access drivetrain features.
 
 //NOTE, IF THERE'S A PROBLEM WITH MOTOR(S) FASTER THAN THE OTHER(S) CHECK THE ENCODER CABLE
+@Config
 public class DrivetrainCore{
 
     public DcMotorEx frontleft, frontright, backleft, backright; //Declare the drivetrian motors
-    public double reducer = /*0.85*/1; //Change for reducing drive power
+    public static double reducer = 0.5; //Change for reducing drive power
     YawPitchRollAngles robotOrientation; //IMU YPR Angles
     IMU imu; //Declare the IMU
     IMU.Parameters imuparams; //Declare the IMU's settings
@@ -45,7 +47,7 @@ public class DrivetrainCore{
     public void run(Gamepad gamepad1){ //Main running function, TeleOp's will use this function.
         double Vertical = gamepad1.left_stick_y;
         double Horizontal = gamepad1.left_stick_x;
-        double Pivot = -gamepad1.right_stick_x;
+        double Pivot = gamepad1.right_stick_x;
         double denominator = Math.max(Math.abs(Vertical) + Math.abs(Horizontal) + Math.abs(Pivot), 1);
 
         double frontLeftPower = (-Pivot + (Vertical - Horizontal)) * reducer;

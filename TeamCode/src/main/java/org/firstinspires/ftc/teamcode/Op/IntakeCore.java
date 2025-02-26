@@ -20,7 +20,7 @@ public class IntakeCore {
     public Servo vipWrist;
     public CRServo suckL, suckR;
     public ColorSensor color;
-    public static boolean vipDir = true;
+    public static boolean vipDir = false;
     public static boolean vipWristDir = false;
     public static boolean suckRDir = true;
     public static boolean suckLDir = false;
@@ -77,13 +77,18 @@ public class IntakeCore {
         suckL.setPower(0);
     }
 
-    public void updateColor(){
+    public void updateColor(Telemetry dashtele){
         blue = color.blue();
         red = color.red();
         green = color.green();
         bluethresh = blue >= colorDeterminer;
         redthresh = red >= colorDeterminer;
         greenthresh = green >= colorDeterminer;
+        dashtele.addData("blue: ", blue);
+        dashtele.addData("green: ", green);
+        dashtele.addData("red: ", red);
+        dashtele.addData("Spitting? ", spitting);
+        dashtele.update();
     }
 
     public boolean vipSuckHandler(){
@@ -94,7 +99,7 @@ public class IntakeCore {
                 spitting = false;
                 return true;
             }
-            if (redthresh){
+            if (redthresh && !greenthresh && (red> green)){
                 spitting = true;
                 spit();
                 spitting = true;
@@ -102,7 +107,7 @@ public class IntakeCore {
             }
         }
         if (!alliance){
-            if (bluethresh){
+            if (bluethresh && !greenthresh && (blue > green)){
                 spitting = true;
                 spit();
                 spitting = true;
@@ -115,7 +120,7 @@ public class IntakeCore {
                 return true;
             }
         }
-        if (greenthresh){
+        if (greenthresh && redthresh && (green > red)){
             spitting = false;
             stop();
             spitting = false;
@@ -123,6 +128,7 @@ public class IntakeCore {
         }
         if (!greenthresh && !redthresh && !bluethresh){
             spitting = false;
+            suck();
             return false;
         }
         return false;
@@ -143,13 +149,13 @@ public class IntakeCore {
         tele.update();
     }
     public void vipWristControl(Gamepad currentGamepad1, Gamepad previousGamepad1, Telemetry tele){
-        if (currentGamepad1.a && !previousGamepad1.a) {
+        if (currentGamepad1.a && !previousGamepad1.a && !currentGamepad1.start) {
             double currPos = Math.round(vipWrist.getPosition() * 100.00) / 100.00;
-            vipWrist.setPosition(Math.max(currPos + wristIncrementer, 1.0));
+            vipWrist.setPosition(currPos + wristIncrementer);
         }
-        if (currentGamepad1.b && !previousGamepad1.b) {
+        if (currentGamepad1.b && !previousGamepad1.b && !currentGamepad1.start) {
             double currPos = Math.round(vipWrist.getPosition() * 100.00) / 100.00;
-            vipWrist.setPosition(Math.min(currPos - wristIncrementer, 0.0));
+            vipWrist.setPosition(currPos - wristIncrementer);
         }
         tele.addData("vipWristPos: ", vipWrist.getPosition());
         tele.update();
@@ -157,10 +163,10 @@ public class IntakeCore {
     public void vipSuckControl(Gamepad currentGamepad1, Gamepad previousGamepad1, Telemetry tele){
         //viper, 600
         //vipwrist, .40
-        if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper){
+        if (currentGamepad1.dpad_down && !previousGamepad1.dpad_down){
             suck();
         }
-        if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper){
+        if (currentGamepad1.dpad_up && !previousGamepad1.dpad_up){
             spit();
         }
         if (currentGamepad1.y && !previousGamepad1.y){

@@ -23,11 +23,9 @@ public class servoTest extends LinearOpMode {
     @Override
 
     public void runOpMode() throws InterruptedException {
-        servo1 = hardwareMap.get(Servo.class, "hook".toLowerCase());
         pincer = hardwareMap.get(Servo.class, "pincer".toLowerCase());
         wrist = hardwareMap.get(Servo.class, "wrist".toLowerCase());
 
-        servo1.setDirection(Servo.Direction.FORWARD);
         pincer.setDirection(Servo.Direction.FORWARD);
         wrist.setDirection(Servo.Direction.REVERSE);
         waitForStart();
@@ -79,8 +77,6 @@ public class servoTest extends LinearOpMode {
     }
 
     public void telemetryUpdate(){
-        telemetry.addData("First Servo Position", dformat.format(servo1Pos));
-        telemetry.addData("Current First Servo Position", dformat.format(servo1.getPosition()));
         telemetry.addData("Second Servo Position", dformat.format(servo2Pos));
         telemetry.addData("Current Second Servo Position", dformat.format(pincer.getPosition()));
         telemetry.addData("Third Servo Position", dformat.format(servo3Pos));
