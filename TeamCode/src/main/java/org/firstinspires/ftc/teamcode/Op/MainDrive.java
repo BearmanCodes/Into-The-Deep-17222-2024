@@ -40,13 +40,12 @@ public class MainDrive extends LinearOpMode {
             int wristCurrPos = armCore.wristMotor.getCurrentPosition();
             int viperCurrPos = intakeCore.viper.getCurrentPosition();
             drivetrainCore.run(gamepad1);
-            intakeCore.viperControl(gamepad1, viperCurrPos, dashTele);
             intakeCore.vipWristControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
             servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
             switch (modeCore.MODE){ //Based on the mode set the arm to be in control or moving auto
                 case NORMAL_MODE:
-                    drivetrainCore.run(gamepad1);
                     armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
+                    intakeCore.viperControl(gamepad1, viperCurrPos, dashTele);
                     intakeCore.vipSuckControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
                     dashTele.addData("Arm Pos: ", armCurrPos);
                     dashTele.addData("Wrist Pos: ", wristCurrPos);
@@ -97,6 +96,7 @@ public class MainDrive extends LinearOpMode {
                     break;
                 case VIP_SUCK:
                     if (ModeCore.isChain) modeCore.chainRefresh(ModeCore.CHAIN);
+                    intakeCore.viperControl(gamepad1, viperCurrPos, dashTele);
                     //armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
                     //intakeCore.vipWrist.setPosition(ModeCore.vipWristTarget);
                     intakeCore.updateColor(dashTele);
@@ -117,7 +117,6 @@ public class MainDrive extends LinearOpMode {
 
                     }
                     break;
-
             }
         }
     }
