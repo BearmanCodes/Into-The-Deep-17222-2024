@@ -36,6 +36,10 @@ public class MainDrive extends LinearOpMode {
             } catch (RobotCoreException e) {
                 throw new RuntimeException(e);
             }
+            dashTele.addData("backLeft: ", drivetrainCore.backleft.getCurrentPosition());
+            dashTele.addData("backRight: ", drivetrainCore.backright.getCurrentPosition());
+            dashTele.addData("frontRight: ", drivetrainCore.frontright.getCurrentPosition());
+            dashTele.update();
             int armCurrPos = armCore.pvtArm.getCurrentPosition(); //Keeps var of arm pos for ref
             int wristCurrPos = armCore.wristMotor.getCurrentPosition();
             int viperCurrPos = intakeCore.viper.getCurrentPosition();
