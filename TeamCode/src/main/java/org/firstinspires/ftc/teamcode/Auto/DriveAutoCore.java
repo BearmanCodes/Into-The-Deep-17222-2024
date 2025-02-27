@@ -21,8 +21,8 @@ public class DriveAutoCore {
     public IMU imu;
     public IMU.Parameters imuparams;
 
-    static final double TicksPerRev = 560;
-    static final double WheelInches = (75 / 25.4);
+    static final double TicksPerRev = 537.7;
+    static final double WheelInches = (104 / 25.4);
     static final double TicksPerIn = TicksPerRev / (WheelInches * Math.PI);
 
     public void Drive(double velocity,
