@@ -58,6 +58,7 @@ public class ModeCore {
             wristVelocity = 2000; //change this
             if (servoCore.pincerStat) servoCore.pincerStat = !servoCore.pincerStat;
             pincerPos = 0.06;
+            //SHAAAWN ADD THE WRISTPOS YOU WANT HERE
             MODE = RUNNING_MODE.ARM_MOVE;
         }
         if (currGamepad2.dpad_up && !prevGamepad2.dpad_up) {
@@ -68,6 +69,8 @@ public class ModeCore {
             wristVelocity = 2000; //change this
             pincerPos = 0;
             MODE = RUNNING_MODE.ARM_MOVE;
+            //SHAAAWN ADD THE WRISTPOS YOU WANT HERE
+
         }
         if (currGamepad2.dpad_left && !prevGamepad2.dpad_left) { //Demonstrative variables used, replace later please.
             //I did not, in fact, replace them later.
@@ -78,6 +81,7 @@ public class ModeCore {
             wristVelocity = 2000; //change this
             pincerPos = 0;
             MODE = RUNNING_MODE.ARM_MOVE;
+            //SHAAAWN ADD THE WRISTPOS YOU WANT HERE
         }
         if (currGamepad2.dpad_right && !prevGamepad2.dpad_right) {
             //REAR GRAB
@@ -88,6 +92,7 @@ public class ModeCore {
             if (servoCore.pincerStat) servoCore.pincerStat = !servoCore.pincerStat;
             pincerPos = 0.06;
             MODE = RUNNING_MODE.ARM_MOVE;
+            //SHAAAWN ADD THE WRISTPOS YOU WANT HERE
         }
         if (currGamepad1.left_stick_button && !prevGamepad1.left_stick_button){
             isChain = false;

@@ -41,7 +41,6 @@ public class MainDrive extends LinearOpMode {
             dashTele.addData("frontRight: ", drivetrainCore.frontright.getCurrentPosition());
             dashTele.update();
             int armCurrPos = armCore.pvtArm.getCurrentPosition(); //Keeps var of arm pos for ref
-            int wristCurrPos = armCore.wristMotor.getCurrentPosition();
             int viperCurrPos = intakeCore.viper.getCurrentPosition();
             drivetrainCore.run(gamepad1);
             intakeCore.vipWristControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
@@ -52,28 +51,22 @@ public class MainDrive extends LinearOpMode {
                     intakeCore.viperControl(gamepad1, viperCurrPos, dashTele);
                     intakeCore.vipSuckControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
                     dashTele.addData("Arm Pos: ", armCurrPos);
-                    dashTele.addData("Wrist Pos: ", wristCurrPos);
                     dashTele.addData("Arm Pwr: ", armCore.pvtPower);
                     dashTele.update();
                     modeCore.modeHandler(servoCore.currentGamepad, servoCore.previousGamepad, servoCore.currentGamepad2, servoCore.previousGamepad2, servoCore, intakeCore); //Handle variables for reaching the top bar position (X)
                     break; //Why I picked switch statements. Keeps you out of while loop hell
                 case ARM_MOVE:
                     armCore.pvtArm.setTargetPosition(ModeCore.armTarget);
-                    armCore.wristMotor.setTargetPosition(ModeCore.wristTarget);
                     armCore.pvtArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    armCore.wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     armCore.pvtArm.setVelocity(ModeCore.armVelocity);
-                    armCore.wristMotor.setVelocity(ModeCore.wristVelocity);
                     servoCore.pincer.setPosition(ModeCore.pincerPos);
-                    int wristErr = Math.abs(wristCurrPos - ModeCore.wristTarget);
+                    servoCore.wrist.setPosition(ModeCore.wristPos);
                     int err = Math.abs(armCurrPos - ModeCore.armTarget); //amount of ticks to go to target
                     boolean BREAKFREE = Math.abs((gamepad2.right_trigger - gamepad2.left_trigger)) >= freedomPower;
-                    boolean WRISTFREE = Math.abs((gamepad1.right_trigger - gamepad1.left_trigger)) >= freedomPower;
                     modeCore.teleMove(dashTele, err);
                     //This boolean decides whether or not to give control back to the driver
-                    if ((err <= errTolerance || BREAKFREE) && (wristErr <= errTolerance || WRISTFREE)) {
+                    if (err <= errTolerance || BREAKFREE) {
                         armCore.pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                        armCore.wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                         modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
                     }
                     break;
