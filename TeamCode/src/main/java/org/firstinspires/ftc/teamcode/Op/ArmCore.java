@@ -31,10 +31,9 @@ public class ArmCore {
     private final double GEAR_REDUCTION = 2; //2nd teeth gears divided by 1st teeth gears
     private final double TICKS_PER_GEARS = TICKS_PER_REV * GEAR_REDUCTION;
     private final double TICKS_PER_DEGREE = TICKS_PER_GEARS / 360;
-    DcMotorEx wristMotor;
+
 
     public void init(HardwareMap hwMap){
-        wristMotor = hwMap.get(DcMotorEx.class, "wristmotor");
         pvtArm = hwMap.get(DcMotorEx.class, "pvt");
         hangArm = hwMap.get(DcMotorEx.class, "hang");
 
@@ -42,13 +41,7 @@ public class ArmCore {
         hangArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         pvtArm.setDirection(DcMotorSimple.Direction.REVERSE);
-        if (fwd) wristMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        else wristMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-
-        wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        wristMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pvtArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hangArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
