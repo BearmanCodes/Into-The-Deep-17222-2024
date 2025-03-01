@@ -19,7 +19,7 @@ public class servoTest extends LinearOpMode {
     Gamepad previousGamepad = new Gamepad();
 
     private static final DecimalFormat dformat = new DecimalFormat("0.00");
-    double servo1Pos, servo2Pos, servo3Pos, servo4Pos;
+    double servo1Pos, servo2Pos, servo3Pos, servo4Pos, wristPos, pincerPos;
     @Override
 
     public void runOpMode() throws InterruptedException {
@@ -35,6 +35,23 @@ public class servoTest extends LinearOpMode {
             } catch (RobotCoreException e) {
                 throw new RuntimeException(e);
             }
+            if (currentGamepad.y && !previousGamepad.y){
+                wristPos += 0.01;
+                telemetryUpdate();
+            }
+            if (currentGamepad.x && !previousGamepad.x){
+                wristPos -= 0.01;
+                telemetryUpdate();
+            }
+            if (currentGamepad.dpad_down && !previousGamepad.dpad_down){
+                pincerPos += 0.01;
+                telemetryUpdate();
+            }
+            if (currentGamepad.dpad_up && !previousGamepad.dpad_up){
+                pincerPos -= 0.01;
+                telemetryUpdate();
+            }
+            /*
             if (currentGamepad.a && !previousGamepad.a){
                 servo1Pos += 0.01;
                 telemetryUpdate();
@@ -72,16 +89,23 @@ public class servoTest extends LinearOpMode {
                 //pincer.setPosition(servo2Pos); //0.04 open, 0 closed
                 //wrist.setPosition(servo3Pos); // servo 1 port 2, servo 3 port 4
                 telemetryUpdate();
+            }*/
+            if (currentGamepad.start && !previousGamepad.start){
+                pincer.setPosition(pincerPos);
+                wrist.setPosition(wristPos);
             }
         }
     }
 
     public void telemetryUpdate(){
-        telemetry.addData("Second Servo Position", dformat.format(servo2Pos));
+        /*telemetry.addData("Second Servo Position", dformat.format(servo2Pos));
         telemetry.addData("Current Second Servo Position", dformat.format(pincer.getPosition()));
         telemetry.addData("Third Servo Position", dformat.format(servo3Pos));
         telemetry.addData("Current Third Servo Position", dformat.format(wrist.getPosition()));
 
+        telemetry.update(); */
+        telemetry.addData("Pincer Position", dformat.format(pincerPos));
+        telemetry.addData("Wrist Position", dformat.format(wristPos));
         telemetry.update();
     }
 

@@ -35,10 +35,14 @@ public class ModeCore {
     public static int fwdGrabWrist = 3010;
     public static int fwdHangArm = 5200;
     public static int fwdHangWrist = 4000;
-    public static int rearHangArm = 4250;
+    public static int rearHangArm = 5045;
     public static int rearHangWrist = 1400;
-    public static int rearGrabArm = 550;
-    public static int rearGrabWrist = 2200;
+    public static double rearHangWristPos = 0.23;
+    public static int rearGrabArm = 5;
+    public static int rearGrabWrist = 5300;
+    public static double rearGrabWristPos = 0.51;
+    public static double pincerOpen = 0.21;
+    public static double pincerClose = 0;
     public static int vipHome = 5;
 
     RUNNING_MODE[] modes;
@@ -77,9 +81,9 @@ public class ModeCore {
             //REAR HANG
             armTarget = rearHangArm + barCompensator; //change this
             armVelocity = 2000;
-            wristTarget = rearHangWrist; //change this
+            wristPos = rearHangWristPos; //change this
             wristVelocity = 2000; //change this
-            pincerPos = 0;
+            pincerPos = pincerClose;
             MODE = RUNNING_MODE.ARM_MOVE;
             //SHAAAWN ADD THE WRISTPOS YOU WANT HERE
         }
@@ -87,10 +91,8 @@ public class ModeCore {
             //REAR GRAB
             armTarget = rearGrabArm; //change this
             armVelocity = 2000;
-            wristTarget = rearGrabWrist; //change this
-            wristVelocity = 2000; //change this
-            if (servoCore.pincerStat) servoCore.pincerStat = !servoCore.pincerStat;
-            pincerPos = 0.06;
+            wristPos = rearGrabWristPos; //change this
+            pincerPos = pincerOpen;
             MODE = RUNNING_MODE.ARM_MOVE;
             //SHAAAWN ADD THE WRISTPOS YOU WANT HERE
         }

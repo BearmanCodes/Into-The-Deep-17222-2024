@@ -65,10 +65,13 @@ import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 @TeleOp(group = "drive")
 public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
     public static int NUM_TURNS = 10;
+    public static double startHeading = 270;
 
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        Pose2d startPos = new Pose2d(0, 0, Math.toRadians(startHeading));
+        drive.setPoseEstimate(startPos);
 
         if (!(drive.getLocalizer() instanceof StandardTrackingWheelLocalizer)) {
             RobotLog.setGlobalErrorMsg("StandardTrackingWheelLocalizer is not being set in the "

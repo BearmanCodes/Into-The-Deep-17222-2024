@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -57,6 +58,7 @@ public class MainDrive extends LinearOpMode {
                     break; //Why I picked switch statements. Keeps you out of while loop hell
                 case ARM_MOVE:
                     armCore.pvtArm.setTargetPosition(ModeCore.armTarget);
+                    armCore.pvtArm.setDirection(DcMotorSimple.Direction.REVERSE);
                     armCore.pvtArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     armCore.pvtArm.setVelocity(ModeCore.armVelocity);
                     servoCore.pincer.setPosition(ModeCore.pincerPos);
@@ -67,6 +69,7 @@ public class MainDrive extends LinearOpMode {
                     //This boolean decides whether or not to give control back to the driver
                     if (err <= errTolerance || BREAKFREE) {
                         armCore.pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        armCore.pvtArm.setDirection(DcMotorSimple.Direction.FORWARD);
                         modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
                     }
                     break;
