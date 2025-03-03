@@ -64,12 +64,14 @@ public class RR_BLUE_RIGHT extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Init();
         TrajectorySequence firstScoreTraj = drive.trajectorySequenceBuilder(new Pose2d(-24.00, 72.00, Math.toRadians(270.00)))
-                .addTemporalMarker(0.25, () ->{
+
+                /*.addTemporalMarker(0.25, () ->{
                     servoCore.wrist.setPosition(wristScore);
                     action.run(opModeIsActive(), new Action.Arm(armCore)
                             .setVelocity(armVel)
                             .setTicks(armBarPos));
                 })
+                 */
                 .splineTo(new Vector2d(-4.79, 38), Math.toRadians(270))
                 .splineToConstantHeading(new Vector2d(-34, 42.92), Math.toRadians(270))
                 .splineToSplineHeading(new Pose2d(-45, 13, Math.toRadians(270)), Math.toRadians(180))
@@ -80,49 +82,57 @@ public class RR_BLUE_RIGHT extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(-62, 55))
                 .setTangent(Math.toRadians(270))
                 .splineToConstantHeading(new Vector2d(-48, 50), Math.toRadians(90))
+                /*
                 .addDisplacementMarker(() -> {
                     servoCore.wrist.setPosition(wristGrabSpeci);
                     action.run(opModeIsActive(), new Action.Arm(armCore)
                             .setVelocity(armVel)
                             .setTicks(armBackPos));
                 })
+
+                 */
                 .lineToConstantHeading(new Vector2d(-48, 55))
                 .splineToSplineHeading(new Pose2d(-4.79, 53.64, Math.toRadians(90)), Math.toRadians(0))
+                /*
                 .addDisplacementMarker(() -> {
                     servoCore.wrist.setPosition(wristScore);
                     action.run(opModeIsActive(), new Action.Arm(armCore)
                             .setVelocity(armVel)
                             .setTicks(armBarPos));
                 })
+
+                 */
                 .lineToConstantHeading(new Vector2d(-4.79, 38.00))
                 .setTangent(90)
                 .splineToLinearHeading(new Pose2d(-48, 50, Math.toRadians(270)), Math.toRadians(0))
+                /*
                 .addDisplacementMarker(() -> {
                     servoCore.wrist.setPosition(wristGrabSpeci);
                     action.run(opModeIsActive(), new Action.Arm(armCore)
                             .setVelocity(armVel)
                             .setTicks(armBackPos));
                 })
+
+                 */
                 .lineToConstantHeading(new Vector2d(-48, 55))
                 .setTangent(270)
                 .splineToSplineHeading(new Pose2d(-4.79, 53.64, Math.toRadians(90)), Math.toRadians(0))
+                /*
                 .addDisplacementMarker(() -> {
                     servoCore.wrist.setPosition(wristScore);
                     action.run(opModeIsActive(), new Action.Arm(armCore)
                             .setVelocity(armVel)
                             .setTicks(armBarPos));
                 })
+
+                 */
                 .lineToConstantHeading(new Vector2d(-4.79, 38.00))
                 .setTangent(90)
                 .splineToLinearHeading(new Pose2d(-48, 60, Math.toRadians(270)), Math.toRadians(0))
                 .build();
         waitForStart();
-
-
-        if (opModeIsActive()){
-            drive.followTrajectorySequence(firstScoreTraj);
-            while (!isStopRequested());
-        }
+        drive.followTrajectorySequence(firstScoreTraj);
+        while (!isStopRequested());
     }
 
     private void Init(){

@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Op;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -12,6 +14,12 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 //This is the core drivetrain class that every TeleOp uses when they need to access drivetrain features.
@@ -21,16 +29,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 public class DrivetrainCore{
 
     public DcMotorEx frontleft, frontright, backleft, backright; //Declare the drivetrian motors
-    public static double reducer = 0.5; //Change for reducing drive power
+    public static double reducer = 1; //Change for reducing drive power
     YawPitchRollAngles robotOrientation; //IMU YPR Angles
     IMU imu; //Declare the IMU
-    IMU.Parameters imuparams; //Declare the IMU's settings
+    IMU.Parameters imuparams; //Declare the IMU's settingsx
+    TrajectorySequence trajectorySequence;
+    SampleMecanumDrive drive;
 
     public void init(HardwareMap hwMap){
         frontleft = hwMap.get(DcMotorEx.class, "frontleft");  //change these motor names depending on the config
         frontright = hwMap.get(DcMotorEx.class, "frontright");
         backleft = hwMap.get(DcMotorEx.class, "backleft");
         backright = hwMap.get(DcMotorEx.class, "backright");
+        drive = new SampleMecanumDrive(hwMap);
+        drive.setPoseEstimate(new Pose2d(-63.25, 72, Math.toRadians(270)));
 
         imu = hwMap.get(IMU.class, "imu");
         imuparams = new IMU.Parameters(new RevHubOrientationOnRobot
@@ -44,7 +56,7 @@ public class DrivetrainCore{
 
     }
 
-    public void run(Gamepad gamepad1){ //Main running function, TeleOp's will use this function.
+    public void run(Gamepad gamepad1, Telemetry tele){ //Main running function, TeleOp's will use this function.
         double Vertical = gamepad1.left_stick_y;
         double Horizontal = gamepad1.left_stick_x;
         double Pivot = gamepad1.right_stick_x;
@@ -55,11 +67,16 @@ public class DrivetrainCore{
         double backRightPower = (Pivot + (Vertical - Horizontal)) * reducer;
         double backLeftPower = (-Pivot + Vertical + Horizontal) * reducer;
         //I don't understand any of this math but it allows the mecanum wheels to, do what they do.
-
         frontleft.setPower(frontLeftPower);
         frontright.setPower(frontRightPower);
         backleft.setPower(backLeftPower);
         backright.setPower(backRightPower);
+        drive.update();
+        Pose2d pose = drive.getPoseEstimate();
+        tele.addData("BOT X: ", pose.getX());
+        tele.addData("BOX Y: ", pose.getY());
+        tele.addData("BOT HEAD: ", pose.getHeading());
+        tele.update();
     }
 
     public void allMotorPower(double power){

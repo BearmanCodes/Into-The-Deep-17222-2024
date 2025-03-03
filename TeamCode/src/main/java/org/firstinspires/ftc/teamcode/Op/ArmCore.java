@@ -19,7 +19,7 @@ public class ArmCore {
     public static double wristReducer = 0.8;
     public static double kF = 0.0025;
     public double reducerActualArm = 0.45; //Change this depending on how much you want to reduce your arm
-    public static double reducerPvt = (0.85); //Change this depending on how much you want to reduce your arm
+    public static double reducerPvt = (1); //Change this depending on how much you want to reduce your arm
     public double fndtlPower;
     public double pvtPower;
     public double hangPower;

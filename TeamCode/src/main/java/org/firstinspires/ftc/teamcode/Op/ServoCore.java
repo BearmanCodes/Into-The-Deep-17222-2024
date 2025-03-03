@@ -30,11 +30,12 @@ public class ServoCore {
 
     boolean claw1Stat, pincerStat, wristStat, brakeStat, MMStat;
     //boolean hookStat = true;
-    public static double upWrist = 0.61;
+    public static double upWrist = 1;
     public static double hookClose = 0.06;
     public static double hookOpen = 0.25;
     public static double pincerClose = 0;
     public static double pincerOpen = 0.23;
+    public static double wristIterator = 0.05;
 
     public void init(HardwareMap hwMap) {
         pincer = hwMap.get(Servo.class, "pincer".toLowerCase());
@@ -70,13 +71,13 @@ public class ServoCore {
         }
         if (currentGamepad2.x && !previousGamepad2.x) {
             double currPos = Math.round(wrist.getPosition() * 100.00) / 100.00;
-            wrist.setPosition(currPos + 0.01);
+            wrist.setPosition(currPos + wristIterator);
             dashTele.addData("Wrist Pos: ", wrist.getPosition());
             dashTele.update();
         }
         if (currentGamepad2.y && !previousGamepad2.y) {
             double currPos = Math.round(wrist.getPosition() * 100.00) / 100.00;
-            wrist.setPosition(currPos - 0.01);
+            wrist.setPosition(currPos - wristIterator);
             dashTele.addData("Wrist Pos: ", wrist.getPosition());
             dashTele.update();
         }

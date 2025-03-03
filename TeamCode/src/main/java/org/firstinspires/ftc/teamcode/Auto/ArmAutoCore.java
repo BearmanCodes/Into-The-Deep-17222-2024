@@ -8,46 +8,24 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class ArmAutoCore {
-    public DcMotorEx fndtlArm;
     public DcMotorEx pvtArm;
     public DcMotorEx wristMotor;
     public static int wristTol = 20;
 
     public void init(HardwareMap hwMap){
-        fndtlArm = hwMap.get(DcMotorEx.class, "fndtl");
         pvtArm = hwMap.get(DcMotorEx.class, "pvt");
         wristMotor = hwMap.get(DcMotorEx.class, "wristmotor");
 
-        fndtlArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pvtArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wristMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         wristMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        fndtlArm.setDirection(DcMotorSimple.Direction.REVERSE);
         pvtArm.setDirection(DcMotorSimple.Direction.REVERSE);
-        fndtlArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        fndtlArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pvtArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void fndtlMove(double velocity, int ticks, boolean active, int timeout, Telemetry tele) throws InterruptedException {
-        fndtlArm.setTargetPosition(ticks);
-        fndtlArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        fndtlArm.setVelocity(velocity);
-
-        while (active && fndtlArm.isBusy()){
-
-            tele.addData("Current Fndtl Position ", fndtlArm.getCurrentPosition());
-            tele.update();
-        }
-        fndtlArm.setVelocity(0);
-
-        fndtlArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        Thread.sleep(timeout);
-    }
 
     public void wristMove(double velocity, int ticks, boolean active, long timeout, Telemetry tele) throws InterruptedException{
         wristMotor.setTargetPosition(ticks);

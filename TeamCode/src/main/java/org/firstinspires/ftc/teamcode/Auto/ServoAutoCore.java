@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class ServoAutoCore {
 
         public Servo pincer, wrist; //Declare servo variables
-        public double upWrist = 0.61;
+        public double upWrist = 1;
         public double hangWrist = 0.79;
         public double closePincer = 0;
         public double openPincer = 0.06;

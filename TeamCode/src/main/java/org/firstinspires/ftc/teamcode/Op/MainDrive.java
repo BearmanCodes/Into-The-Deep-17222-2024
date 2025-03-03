@@ -43,7 +43,7 @@ public class MainDrive extends LinearOpMode {
             dashTele.update();
             int armCurrPos = armCore.pvtArm.getCurrentPosition(); //Keeps var of arm pos for ref
             int viperCurrPos = intakeCore.viper.getCurrentPosition();
-            drivetrainCore.run(gamepad1);
+            drivetrainCore.run(gamepad1, dashTele);
             intakeCore.vipWristControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
             servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
             switch (modeCore.MODE){ //Based on the mode set the arm to be in control or moving auto
@@ -58,7 +58,6 @@ public class MainDrive extends LinearOpMode {
                     break; //Why I picked switch statements. Keeps you out of while loop hell
                 case ARM_MOVE:
                     armCore.pvtArm.setTargetPosition(ModeCore.armTarget);
-                    armCore.pvtArm.setDirection(DcMotorSimple.Direction.REVERSE);
                     armCore.pvtArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     armCore.pvtArm.setVelocity(ModeCore.armVelocity);
                     servoCore.pincer.setPosition(ModeCore.pincerPos);
@@ -69,7 +68,6 @@ public class MainDrive extends LinearOpMode {
                     //This boolean decides whether or not to give control back to the driver
                     if (err <= errTolerance || BREAKFREE) {
                         armCore.pvtArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                        armCore.pvtArm.setDirection(DcMotorSimple.Direction.FORWARD);
                         modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
                     }
                     break;

@@ -29,18 +29,19 @@ public class ModeCore {
     public static double wristPos, pincerPos, vipWristTarget;
     public static int barCompensator, speciCompensator = 0;
     public static int vipExtended = 500;
+    public static int armVel = 4000;
     public static double vipWristDown = 0.45;
     public static int vipVel = 20;
     public static int fwdGrabArm = 6550;
     public static int fwdGrabWrist = 3010;
-    public static int fwdHangArm = 5200;
+    public static int fwdHangArm = 4625;
     public static int fwdHangWrist = 4000;
     public static int rearHangArm = 5045;
     public static int rearHangWrist = 1400;
     public static double rearHangWristPos = 0.23;
     public static int rearGrabArm = 5;
     public static int rearGrabWrist = 5300;
-    public static double rearGrabWristPos = 0.51;
+    public static double rearGrabWristPos = 0.6;
     public static double pincerOpen = 0.21;
     public static double pincerClose = 0;
     public static int vipHome = 5;
@@ -57,7 +58,7 @@ public class ModeCore {
                                                                 //I did not, in fact, replace them later.
             //FORWARD GRAB HANDLER
             armTarget = fwdGrabArm; //change this
-            armVelocity = 2000;
+            armVelocity = armVel;
             wristTarget = fwdGrabWrist;
             wristVelocity = 2000; //change this
             if (servoCore.pincerStat) servoCore.pincerStat = !servoCore.pincerStat;
@@ -67,8 +68,8 @@ public class ModeCore {
         }
         if (currGamepad2.dpad_up && !prevGamepad2.dpad_up) {
             //FORWARD HANG
-            armTarget = fwdHangArm + barCompensator; //change this
-            armVelocity = 2000;
+            armTarget = fwdHangArm; //change this
+            armVelocity = armVel;
             wristTarget = fwdHangWrist; //change this
             wristVelocity = 2000; //change this
             pincerPos = 0;
@@ -80,8 +81,7 @@ public class ModeCore {
             //I did not, in fact, replace them later.
             //REAR HANG
             armTarget = rearHangArm + barCompensator; //change this
-            armVelocity = 2000;
-            wristPos = rearHangWristPos; //change this
+            armVelocity = armVel;
             wristVelocity = 2000; //change this
             pincerPos = pincerClose;
             MODE = RUNNING_MODE.ARM_MOVE;
@@ -90,7 +90,7 @@ public class ModeCore {
         if (currGamepad2.dpad_right && !prevGamepad2.dpad_right) {
             //REAR GRAB
             armTarget = rearGrabArm; //change this
-            armVelocity = 2000;
+            armVelocity = armVel;
             wristPos = rearGrabWristPos; //change this
             pincerPos = pincerOpen;
             MODE = RUNNING_MODE.ARM_MOVE;
