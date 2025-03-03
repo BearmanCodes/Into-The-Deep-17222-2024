@@ -8,18 +8,18 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class ServoAutoCore {
 
         public Servo pincer, wrist; //Declare servo variables
-        public double upWrist = 0.88;
+        public double upWrist = 0.61;
         public double hangWrist = 0.79;
         public double closePincer = 0;
         public double openPincer = 0.06;
 
         public void init(HardwareMap hwMap) {
             pincer = hwMap.get(Servo.class, "pincer".toLowerCase());
-            wrist = hwMap.get(Servo.class, "claw4".toLowerCase());
+            wrist = hwMap.get(Servo.class, "wrist".toLowerCase());
             //brake = hwMap.get(Servo.class, "brake".toLowerCase());
 
             pincer.setDirection(Servo.Direction.FORWARD);
-            wrist.setDirection(Servo.Direction.REVERSE);
+            wrist.setDirection(Servo.Direction.FORWARD);
 
             pincer.setPosition(closePincer);
             wrist.setPosition(upWrist);
