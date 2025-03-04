@@ -8,7 +8,7 @@ import org.rowlandhall.meepmeep.roadrunner.DefaultBotBuilder;
 import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepTesting {
-    public static Pose2d startPose = new Pose2d(-48, 60, Math.toRadians(270));
+    public static Pose2d startPose = new Pose2d(-63.25, 72, Math.toRadians(270));
 
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
@@ -17,16 +17,29 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(56.855292234154874, 56.855292234154874, Math.toRadians(183.88477629466686), Math.toRadians(188.84453843478258), 17.24)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(startPose)
-                        .splineToConstantHeading(new Vector2d(-48, 50), Math.toRadians(90))
-                        .lineToConstantHeading(new Vector2d(-48, 55))
-                        .waitSeconds(1) //here you grab
-                        .splineToSplineHeading(new Pose2d(-4.79, 53.64, Math.toRadians(90)), Math.toRadians(0))
-                        .lineToConstantHeading(new Vector2d(-4.79, 38.00))
-                        .setTangent(90)
-                        .waitSeconds(1) //here you score
-                        .splineToLinearHeading(new Pose2d(-48, 50, Math.toRadians(270)), Math.toRadians(0))
-                        .lineToConstantHeading(new Vector2d(-48, 55))
-                        .waitSeconds(1) //here you grab
+                        .splineToConstantHeading(new Vector2d(-49, 55), Math.toRadians(90))
+                        .setTangent(0)
+                        .addDisplacementMarker(() -> {
+                            //open pincer and set wrist to grab
+                        })
+                        .lineToConstantHeading(new Vector2d(-49, 67.5))
+                        .addDisplacementMarker(() -> {
+                            //close pincer and move arm up
+                        })
+                        .setTangent(270)
+                        .splineToConstantHeading(new Vector2d(-3, 65), Math.toRadians(0))
+                        .lineToConstantHeading(new Vector2d(-3, 59))
+                        .addDisplacementMarker(() -> {
+                            //move arm up and open pincer
+                        })
+                        .waitSeconds(0.5)
+                        .setTangent(180)
+                        .splineToConstantHeading(new Vector2d(-49, 55), Math.toRadians(90))
+                        .setTangent(0)
+                        .addDisplacementMarker(() -> {
+                            //open pincer and set wrist to grab also move arm back
+                        })
+                        .lineToConstantHeading(new Vector2d(-49, 67.5))
                         .build());
 
 

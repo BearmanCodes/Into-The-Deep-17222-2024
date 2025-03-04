@@ -94,7 +94,7 @@ public class RED_RIGHT extends LinearOpMode {
         drivetrainCore.revDrive(straightSpeeds, armwall, opModeIsActive(), 0); //Reverse drive to grab the specimen. Arm keeps up becasuse of code in the standard drives
         servoCore.pincer.setPosition(0); //Close to grab the specimen
         sleep(1000); //Wait until the servo has actually gripped it
-        armCore.pvtMove(500, liftArmWall, opModeIsActive(), 0, telemetry);
+        armCore.pvtMove(500, liftArmWall, opModeIsActive(), telemetry);
         drivetrainCore.fwdDrive(1250, 1, opModeIsActive(), 0);
         drivetrainCore.strafeLeft(straightSpeeds, baralign, opModeIsActive(), standardTout); //Strafe left to align with the specimen bar
         action.run(opModeIsActive(), new Action.Drive(drivetrainCore).
