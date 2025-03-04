@@ -49,7 +49,6 @@ public class DriveAutoCore {
             allMotorVelocity(Math.abs(velocity));
 
             while (active && frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
-                armCore.pvtArm.setPower(0.0025); //CHANGE THIS
             }
 
             allMotorVelocity(0);

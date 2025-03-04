@@ -65,8 +65,7 @@ public class RED_RIGHT extends LinearOpMode {
                         .setVelocity(armVel)
                         .setTicks(armBarPos)
                         .setPeriod(firstWaitPeriod)); //Initial driveforward with arm touching the bar
-        armCore.wristMove(wristVelocity, wristUp, opModeIsActive(), 0, telemetry); //Move wrist up to get specimen clipped in
-        servoCore.pincer.setPosition(servoCore.openPincer); //open up the pincer afterwards
+        servoCore.pincer.setPosition(servoCore.pincerOpen); //open up the pincer afterwards
         action.run(opModeIsActive(), new Action.Arm(armCore)
                         .setVelocity(armVel)
                         .setTicks(armBackPos),
@@ -74,20 +73,15 @@ public class RED_RIGHT extends LinearOpMode {
                         .setDir(Action.DriveDirection.STRAFE_RIGHT)
                         .setVelocity(1000)
                         .setInches(firstEscapeStrafe)
-                        .setPeriod(250),
-                new Action.Wrist(armCore)
-                        .setVelocity(wristVelocity)
-                        .setTicks(wristInit)
-                        .setPeriod(500)); //Move the arm back while strafing to clear the submersiable bar, move wrist to start too.
+                        .setPeriod(250));
+        //clear the submersiable bar, move wrist to start too.
         drivetrainCore.fwdDrive(straightSpeeds, 28, opModeIsActive(), standardTout); //Move up past first sampe
         drivetrainCore.strafeRight(straightSpeeds, 12, opModeIsActive(), standardTout); //Strafe right to get right above sample
         drivetrainCore.revDrive(straightSpeeds, 45, opModeIsActive(), standardTout); //Reverse drive into the observation zone to drop off the sample
         drivetrainCore.fwdDrive(straightSpeeds, firstout, opModeIsActive(), standardTout); //Drive forward a bit so that the human player can grab it
         drivetrainCore.revDrive(straightSpeeds, alignreverse, opModeIsActive(), standardTout); //Reverse back into the wall to straighten out the bot
         drivetrainCore.fwdDrive(straightSpeeds, secondout, opModeIsActive(), standardTout); //Move forward so the human player can align the specimen to the wall
-        action.run(opModeIsActive(), new Action.Wrist(armCore)
-                        .setTicks(wristGrabSpeci)
-                        .setVelocity(wristVelocity),
+        action.run(opModeIsActive(),
                 new Action.Arm(armCore)
                         .setTicks(armRear)
                         .setVelocity(1000)); //Move the arm and wrist into specimen grabbing position
@@ -104,16 +98,10 @@ public class RED_RIGHT extends LinearOpMode {
                 new Action.Arm(armCore)
                         .setVelocity(armVel)
                         .setTicks(armBarPos)
-                        .setPeriod(firstWaitPeriod),
-                new Action.Wrist(armCore)
-                        .setTicks(20)
-                        .setVelocity(wristVelocity)); //COMPLETEY CHANGE. Drive forward, arm forward, and wrist forward into position. Maybe stop and reset encoder here?
+                        .setPeriod(firstWaitPeriod));//COMPLETEY CHANGE. Drive forward, arm forward, and wrist forward into position. Maybe stop and reset encoder here?
         sleep(250); //Wait a second? I'm not sure why, probably remove this
-        armCore.wristMove(wristVelocity, wristUp, opModeIsActive(), 0, telemetry); //Move wrist up to get specimen clipped in
-        servoCore.pincer.setPosition(servoCore.openPincer); //Open up the wrist so we can move back
-        action.run(opModeIsActive(), new Action.Wrist(armCore)
-                        .setTicks(20)
-                        .setVelocity(wristVelocity),
+        servoCore.pincer.setPosition(servoCore.pincerOpen); //Open up the wrist so we can move back
+        action.run(opModeIsActive(),
                 new Action.Arm(armCore)
                         .setTicks(armBackPos)
                         .setVelocity(armVel),

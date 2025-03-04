@@ -66,8 +66,7 @@ public class RED_LEFT_SPECI extends LinearOpMode {
                         .setTicks(armBarPos)
                         .setVelocity(armVel)
                         .setPeriod(450));
-        armCore.wristMove(wristVelocity, wristUp, opModeIsActive(), 0, telemetry); //Move wrist up to get specimen clipped in
-        servoCore.pincer.setPosition(servoCore.openPincer);
+        servoCore.pincer.setPosition(servoCore.pincerOpen);
         action.run(opModeIsActive(), new Action.Arm(armCore)
                         .setVelocity(armVel)
                         .setTicks(armBackPos),
@@ -75,11 +74,7 @@ public class RED_LEFT_SPECI extends LinearOpMode {
                         .setDir(Action.DriveDirection.REV)
                         .setVelocity(1000)
                         .setInches(initalFwd-4)
-                        .setPeriod(250),
-                new Action.Wrist(armCore)
-                        .setVelocity(wristVelocity)
-                        .setTicks(wristInit)
-                        .setPeriod(500));
+                        .setPeriod(250));
             /*
             action.run(opModeIsActive(), new Action.Arm(armCore)
                             .setTicks(armBackPos)
