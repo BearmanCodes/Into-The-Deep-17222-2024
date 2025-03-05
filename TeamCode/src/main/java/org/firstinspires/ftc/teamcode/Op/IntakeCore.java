@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
@@ -27,6 +28,7 @@ public class IntakeCore {
     public static boolean alliance = true; //true = blue false = red
     public static boolean suckToggle = false;
     public boolean spitting = false;
+    public ElapsedTime timer = new ElapsedTime();
     public static double colorDeterminer = 1000;
     public static double wristIncrementer = 0.05;
     public static double blue;

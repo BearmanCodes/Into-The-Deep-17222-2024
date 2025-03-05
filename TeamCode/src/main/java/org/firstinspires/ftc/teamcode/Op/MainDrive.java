@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -22,6 +23,7 @@ public class MainDrive extends LinearOpMode {
     Telemetry dashTele = dashboard.getTelemetry();
 
     DoubleTele doubleTele = new DoubleTele(telemetry, dashTele);
+    public ElapsedTime timer = new ElapsedTime();
     public static int errTolerance = 5;
     public static double freedomPower = 0.01;
     public static int servoActionTol = 3000;

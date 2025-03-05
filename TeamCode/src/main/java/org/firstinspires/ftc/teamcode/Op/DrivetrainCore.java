@@ -35,6 +35,8 @@ public class DrivetrainCore{
     IMU.Parameters imuparams; //Declare the IMU's settingsx
     TrajectorySequence trajectorySequence;
     SampleMecanumDrive drive;
+    public static Pose2d startPose = new Pose2d(-63.25, 72, Math.toRadians(270));
+    public static Pose2d testPose = new Pose2d(-16.5, 72, Math.toRadians(270));
 
     public void init(HardwareMap hwMap){
         frontleft = hwMap.get(DcMotorEx.class, "frontleft");  //change these motor names depending on the config
@@ -42,7 +44,7 @@ public class DrivetrainCore{
         backleft = hwMap.get(DcMotorEx.class, "backleft");
         backright = hwMap.get(DcMotorEx.class, "backright");
         drive = new SampleMecanumDrive(hwMap);
-        drive.setPoseEstimate(new Pose2d(-63.25, 72, Math.toRadians(270)));
+        drive.setPoseEstimate(testPose);
 
         imu = hwMap.get(IMU.class, "imu");
         imuparams = new IMU.Parameters(new RevHubOrientationOnRobot

@@ -21,16 +21,37 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(56.855292234154874, 56.855292234154874, Math.toRadians(183.88477629466686), Math.toRadians(188.84453843478258), 17.24)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(startPose)
-                        .splineToConstantHeading(new Vector2d(-3, 65), Math.toRadians(0))
-                        //move the arm up here
-                        .lineToConstantHeading(new Vector2d(-3, 59))
+                        .addTemporalMarker(0.25, () -> {
+                            //armCore.pvtMove(armVelocity, armBar, opModeIsActive(), dashTele);
+                        })
+                        .splineToConstantHeading(new Vector2d(-3, 49), Math.toRadians(0))
+                        .addDisplacementMarker(() -> {
+                            //while (ArmAutoCore.running){
+                             //   drive.setMotorPowers(0, 0, 0, 0);
+                                //armCore.checkArm();
+                           // };
+                        })
+                        .addTemporalMarker(2, () -> {
+                            //servoCore.wrist.setPosition(0.85);
+                        })
+                        .addTemporalMarker(2.5, () -> {
+                            //servoCore.pincer.setPosition(servoCore.pincerOpen);
+                            //armCore.pvtMove(armVelocity, armBack, opModeIsActive(), dashTele);
+                        })
+                        .waitSeconds(1)
                         //move the arm ALL the way up here, then let it out and move back
-                        .splineTo(new Vector2d(-42, 19.07), Math.toRadians(270))
-                        .splineToConstantHeading(new Vector2d(-45, 67.81), Math.toRadians(95.41))
-                        .splineToConstantHeading(new Vector2d(-51, 12.68), Math.toRadians(259.33))
-                        .splineToConstantHeading(new Vector2d(-54, 68.40), Math.toRadians(90.62))
-                        .back(5)
-                        .strafeRight(10)
+                        .setTangent(90)
+                        .splineToConstantHeading(new Vector2d(-43, 56), Math.toRadians(270))
+                        //-41 15
+                        .setTangent(270)
+                        .splineToConstantHeading(new Vector2d(-48, 15), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(-48, 60), Math.toRadians(270))
+                        .setTangent(270)
+                        .splineToConstantHeading(new Vector2d(-55, 15), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(-55, 60), Math.toRadians(270))
+                        .setTangent(270)
+                        .splineToConstantHeading(new Vector2d(-62, 15), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(-62, 60), Math.toRadians(90))
                         .build());
 
 

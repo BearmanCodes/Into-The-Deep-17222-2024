@@ -61,7 +61,7 @@ public class ServoCore {
     //Dpad control used in Mason S.'s op mode
     public void  dpadRun(Gamepad currentGamepad2, Gamepad previousGamepad2, Telemetry dashTele) {
 
-        if (currentGamepad2.b && !previousGamepad2.b) {
+        if (currentGamepad2.b && !previousGamepad2.b && !currentGamepad2.start) {
             pincerStat = !pincerStat;
             if (pincerStat) {
                 pincer.setPosition(pincerOpen); //open
