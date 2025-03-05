@@ -30,8 +30,8 @@ public class ModeCore {
     public static int barCompensator, speciCompensator = 0;
     public static int vipExtended = 500;
     public static int armVel = 4000;
-    public static double vipWristDown = 0.45;
-    public static int vipVel = 20;
+    public static double vipWristDown = 0.4;
+    public static int vipVel = 4000;
     public static int fwdGrabArm = 6550;
     public static int fwdGrabWrist = 3010;
     public static int fwdHangArm = 4625;
@@ -98,13 +98,16 @@ public class ModeCore {
         }
         if (currGamepad1.left_stick_button && !prevGamepad1.left_stick_button){
             isChain = false;
+            intakeCore.stop();
             intakeCore.vipWrist.setPosition(0);
-            vipTarget = 0;
+            vipVelocity = vipVel;
+            vipTarget = vipHome;
             MODE = RUNNING_MODE.VIP_MOVE;
         }
         if (currGamepad1.right_stick_button && !prevGamepad1.right_stick_button){
             chainIterator = 0;
             isChain = true;
+            intakeCore.vipWrist.setPosition(vipWristDown);
             CHAIN = CHAINS.SUCK_BACK;
             MODE = RUNNING_MODE.VIP_SUCK;
         }
@@ -132,6 +135,7 @@ public class ModeCore {
                 vipVelocity = vipVelocities[chainIterator];
                 vipWristTarget = vipWristTargets[chainIterator];
                 nextMode = modes[modeIterations[chainIterator]];
+
         }
     }
 

@@ -24,20 +24,23 @@ public class MeepMeepTesting {
                         })
                         .lineToConstantHeading(new Vector2d(-49, 67.5))
                         .addDisplacementMarker(() -> {
-                            //close pincer and move arm up
+
                         })
                         .setTangent(270)
                         .splineToConstantHeading(new Vector2d(-3, 65), Math.toRadians(0))
+                        .addDisplacementMarker(() -> {
+
+                            //wait for arm to finish in case it hasn't
+                        })
                         .lineToConstantHeading(new Vector2d(-3, 59))
                         .addDisplacementMarker(() -> {
-                            //move arm up and open pincer
+
                         })
-                        .waitSeconds(0.5)
                         .setTangent(180)
                         .splineToConstantHeading(new Vector2d(-49, 55), Math.toRadians(90))
                         .setTangent(0)
                         .addDisplacementMarker(() -> {
-                            //open pincer and set wrist to grab also move arm back
+
                         })
                         .lineToConstantHeading(new Vector2d(-49, 67.5))
                         .build());

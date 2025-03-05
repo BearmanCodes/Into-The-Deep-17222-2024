@@ -21,7 +21,7 @@ public class goToSub extends LinearOpMode {
     Pose2d startPose =  new Pose2d(-63.25, 72, Math.toRadians(270));
     public static int armVelocity = 4000;
     public static int armBack = 5;
-    public static int armBar = 4750;
+    public static int armBar = 4550;
     ServoAutoCore servoCore = new ServoAutoCore();
     ArmAutoCore armCore = new ArmAutoCore();
     FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -44,9 +44,13 @@ public class goToSub extends LinearOpMode {
                     servoCore.pincer.setPosition(servoCore.pincerOpen);
                     //open pincer and set wrist to grab
                 })
-                .lineToConstantHeading(new Vector2d(-49, 67.5))
+                .lineToConstantHeading(new Vector2d(-49, 68.5))
                 .addDisplacementMarker(() -> {
                     servoCore.pincer.setPosition(servoCore.pincerClose);
+                })
+                .waitSeconds(0.1)
+                .addDisplacementMarker(() -> {
+                    sleep(1000);
                     armCore.pvtMove(armVelocity, armBar, opModeIsActive(), dashTele);
                 })
                 .setTangent(270)
@@ -60,6 +64,9 @@ public class goToSub extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(-3, 59))
                 .addDisplacementMarker(() -> {
                     armCore.pvtArm.setPower(1);
+                })
+                .waitSeconds(1.2)
+                .addDisplacementMarker(() -> {
                     servoCore.pincer.setPosition(servoCore.pincerOpen);
                     armCore.pvtArm.setPower(0);
                     armCore.pvtMove(armVelocity, armBack, opModeIsActive(), dashTele);

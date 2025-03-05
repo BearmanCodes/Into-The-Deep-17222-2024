@@ -40,6 +40,7 @@ public class MainDrive extends LinearOpMode {
             dashTele.addData("backLeft: ", drivetrainCore.backleft.getCurrentPosition());
             dashTele.addData("backRight: ", drivetrainCore.backright.getCurrentPosition());
             dashTele.addData("frontRight: ", drivetrainCore.frontright.getCurrentPosition());
+            dashTele.addData("MODE: ", modeCore.MODE);
             dashTele.update();
             int armCurrPos = armCore.pvtArm.getCurrentPosition(); //Keeps var of arm pos for ref
             int viperCurrPos = intakeCore.viper.getCurrentPosition();
@@ -74,15 +75,17 @@ public class MainDrive extends LinearOpMode {
                 case VIP_MOVE:
                     if (ModeCore.isChain) modeCore.chainRefresh(ModeCore.CHAIN);
                     armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
-                    int direction = (viperCurrPos > ModeCore.vipTarget) ? 1 : -1;
+                    intakeCore.viper.setTargetPosition(ModeCore.vipTarget);
+                    intakeCore.viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    intakeCore.viper.setVelocity(ModeCore.vipVelocity);
                     int vipErr = Math.abs(viperCurrPos - ModeCore.vipTarget);
-                    intakeCore.viper.setPower(0.2 * direction);
                     boolean VIPFREE = Math.abs((gamepad1.right_trigger - gamepad1.left_trigger)) >= freedomPower;
+                    boolean SPIT_ESCAPE = spit_escape();
                     dashTele.addData("Viper Mode Pos: ", viperCurrPos);
                     dashTele.addData("Viper Mode Err: ", vipErr);
                     dashTele.update();
-                    if (vipErr <= errTolerance || VIPFREE){
-                        intakeCore.viper.setPower(0);
+                    if (vipErr <= errTolerance || VIPFREE || SPIT_ESCAPE){
+                        intakeCore.viper.setVelocity(0);
                         intakeCore.viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                         if (ModeCore.isChain){
                             modeCore.MODE = ModeCore.nextMode;
@@ -94,9 +97,10 @@ public class MainDrive extends LinearOpMode {
                     break;
                 case VIP_SUCK:
                     if (ModeCore.isChain) modeCore.chainRefresh(ModeCore.CHAIN);
+                    armCore.pvtArm.setPower(0);
                     intakeCore.viperControl(gamepad1, viperCurrPos, dashTele);
+                    modeCore.modeHandler(servoCore.currentGamepad, servoCore.previousGamepad, servoCore.currentGamepad2, servoCore.previousGamepad2, servoCore, intakeCore);
                     //armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
-                    //intakeCore.vipWrist.setPosition(ModeCore.vipWristTarget);
                     intakeCore.updateColor(dashTele);
                     boolean takenIn = intakeCore.vipSuckHandler();
                     boolean spitting = intakeCore.spitting;
@@ -117,6 +121,17 @@ public class MainDrive extends LinearOpMode {
                     break;
             }
         }
+    }
+
+    public boolean spit_escape(){
+        if (servoCore.currentGamepad.x && !servoCore.previousGamepad.x){
+            intakeCore.vipWrist.setPosition(0.15);
+            intakeCore.spit();
+            intakeCore.viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
+            return true;
+        }
+        return false;
     }
 
     public boolean suck_failsafe(){

@@ -67,7 +67,7 @@ public class BLUE_LEFT_SPECI extends LinearOpMode {
                             .setTicks(armBarPos)
                             .setVelocity(armVel)
                             .setPeriod(450));
-            servoCore.pincer.setPosition(servoCore.openPincer);
+            servoCore.pincer.setPosition(servoCore.pincerOpen);
             action.run(opModeIsActive(), new Action.Arm(armCore)
                             .setVelocity(armVel)
                             .setTicks(armBackPos),

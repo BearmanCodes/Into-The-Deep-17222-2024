@@ -37,7 +37,7 @@ public class IntakeCore {
     public static boolean greenthresh;
     public double viperPower;
     public double vipPos;
-    public double vipReducer = 0.05;
+    public static double vipReducer = 1;
     public void init(HardwareMap hwMap){
         viper = hwMap.get(DcMotorEx.class, "viper");
         vipWrist = hwMap.get(Servo.class, "vWrist");
@@ -121,10 +121,10 @@ public class IntakeCore {
             }
         }
         if (greenthresh && redthresh && (green > red)){
-            spitting = false;
-            stop();
-            spitting = false;
-            return true;
+            spitting = true;
+            spit();
+            spitting = true;
+            return false;
         }
         if (!greenthresh && !redthresh && !bluethresh){
             spitting = false;
@@ -135,17 +135,19 @@ public class IntakeCore {
     }
 
     public void viperControl(Gamepad gamepad1, int vipPos, Telemetry tele){
-        viperPower = (gamepad1.left_trigger - gamepad1.right_trigger) * vipReducer;
-        viper.setPower(viperPower);
-        if (vipPos >= 1500){
-            if (viperPower > 0){
+        viperPower = (gamepad1.right_trigger - gamepad1.left_trigger) * vipReducer;
+        if (vipPos >= 1400){
+            if (viperPower < 0){
                 viper.setPower(viperPower);
-            } else {
+            } else if (viperPower >= 0) {
                 viper.setPower(0);
             }
+        } else if (vipPos < 1400){
+            viper.setPower(viperPower);
         }
         tele.addData("vipPower: ", viperPower);
-        tele.addData("vipPos: ", viper.getCurrentPosition());
+        tele.addData("vipPos: ", vipPos);
+        tele.addData("vip Vel: ", viper.getVelocity());
         tele.update();
     }
     public void vipWristControl(Gamepad currentGamepad1, Gamepad previousGamepad1, Telemetry tele){
@@ -156,6 +158,10 @@ public class IntakeCore {
         if (currentGamepad1.b && !previousGamepad1.b && !currentGamepad1.start) {
             double currPos = Math.round(vipWrist.getPosition() * 100.00) / 100.00;
             vipWrist.setPosition(currPos - wristIncrementer);
+        }
+        if (currentGamepad1.x && !previousGamepad1.x){
+            vipWrist.setPosition(0.15);
+            spit();
         }
         tele.addData("vipWristPos: ", vipWrist.getPosition());
         tele.update();
