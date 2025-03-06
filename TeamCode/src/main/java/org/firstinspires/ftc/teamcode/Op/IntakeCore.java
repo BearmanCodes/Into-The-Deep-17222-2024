@@ -66,11 +66,13 @@ public class IntakeCore {
     }
 
     public void suck(){
+        timingSpit = false;
         suckR.setPower(1);
         suckL.setPower(1);
     }
 
     public void spit(){
+        timingSpit = false;
         suckR.setPower(-1);
         suckL.setPower(-1);
     }
@@ -81,6 +83,7 @@ public class IntakeCore {
     }
 
     public void stop(){
+        timingSpit = false;
         suckR.setPower(0);
         suckL.setPower(0);
     }

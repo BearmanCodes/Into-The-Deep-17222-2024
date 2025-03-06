@@ -137,6 +137,7 @@ public class MainDrive extends LinearOpMode {
     public void check_spit_time(){
         if (IntakeCore.timingSpit && timer.seconds() >= 2){
             intakeCore.stop();
+            IntakeCore.timingSpit = false;
             intakeCore.vipWrist.setPosition(0);
         }
     }
