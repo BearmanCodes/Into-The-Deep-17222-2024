@@ -39,6 +39,7 @@ public class ModeCore {
     public static int rearHangArm = 5045;
     public static int rearHangWrist = 1400;
     public static double rearHangWristPos = 0.23;
+    public static double currPincerPos;
     public static int rearGrabArm = 5;
     public static int rearGrabWrist = 5300;
     public static double rearGrabWristPos = 0.6;
@@ -61,8 +62,9 @@ public class ModeCore {
             armVelocity = armVel;
             wristTarget = fwdGrabWrist;
             wristVelocity = 2000; //change this
-            if (servoCore.pincerStat) servoCore.pincerStat = !servoCore.pincerStat;
             pincerPos = 0.06;
+            currPincerPos = Math.round(servoCore.pincer.getPosition() * 100.00) / 100.00;
+            if (currPincerPos != pincerPos) servoCore.pincerStat = !servoCore.pincerStat;
             //SHAAAWN ADD THE WRISTPOS YOU WANT HERE
             MODE = RUNNING_MODE.ARM_MOVE;
         }
@@ -73,6 +75,8 @@ public class ModeCore {
             wristTarget = fwdHangWrist; //change this
             wristVelocity = 2000; //change this
             pincerPos = 0;
+            currPincerPos = Math.round(servoCore.pincer.getPosition() * 100.00) / 100.00;
+            if (currPincerPos != pincerPos) servoCore.pincerStat = !servoCore.pincerStat;
             MODE = RUNNING_MODE.ARM_MOVE;
             //SHAAAWN ADD THE WRISTPOS YOU WANT HERE
 
@@ -84,6 +88,8 @@ public class ModeCore {
             armVelocity = armVel;
             wristVelocity = 2000; //change this
             pincerPos = pincerClose;
+            currPincerPos = Math.round(servoCore.pincer.getPosition() * 100.00) / 100.00;
+            if (currPincerPos != pincerPos) servoCore.pincerStat = !servoCore.pincerStat;
             MODE = RUNNING_MODE.ARM_MOVE;
             //SHAAAWN ADD THE WRISTPOS YOU WANT HERE
         }
@@ -93,6 +99,8 @@ public class ModeCore {
             armVelocity = armVel;
             wristPos = rearGrabWristPos; //change this
             pincerPos = pincerOpen;
+            currPincerPos = Math.round(servoCore.pincer.getPosition() * 100.00) / 100.00;
+            if (currPincerPos != pincerPos) servoCore.pincerStat = !servoCore.pincerStat;
             MODE = RUNNING_MODE.ARM_MOVE;
             //SHAAAWN ADD THE WRISTPOS YOU WANT HERE
         }

@@ -48,6 +48,7 @@ public class MainDrive extends LinearOpMode {
             int viperCurrPos = intakeCore.viper.getCurrentPosition();
             drivetrainCore.run(gamepad1, dashTele);
             intakeCore.vipWristControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
+            check_spit_time();
             servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
             switch (modeCore.MODE){ //Based on the mode set the arm to be in control or moving auto
                 case NORMAL_MODE:
@@ -101,7 +102,15 @@ public class MainDrive extends LinearOpMode {
                     if (ModeCore.isChain) modeCore.chainRefresh(ModeCore.CHAIN);
                     armCore.pvtArm.setPower(0);
                     intakeCore.viperControl(gamepad1, viperCurrPos, dashTele);
-                    modeCore.modeHandler(servoCore.currentGamepad, servoCore.previousGamepad, servoCore.currentGamepad2, servoCore.previousGamepad2, servoCore, intakeCore);
+                    if (servoCore.currentGamepad.left_stick_button && !servoCore.previousGamepad.left_stick_button){
+                        ModeCore.isChain = false;
+                        intakeCore.stop();
+                        intakeCore.vipWrist.setPosition(0);
+                        ModeCore.vipVelocity = ModeCore.vipVel;
+                        ModeCore.vipTarget = ModeCore.vipHome;
+                        modeCore.MODE = ModeCore.RUNNING_MODE.VIP_MOVE;
+                        break;
+                    }
                     //armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
                     intakeCore.updateColor(dashTele);
                     boolean takenIn = intakeCore.vipSuckHandler();
@@ -125,10 +134,17 @@ public class MainDrive extends LinearOpMode {
         }
     }
 
+    public void check_spit_time(){
+        if (IntakeCore.timingSpit && timer.seconds() >= 2){
+            intakeCore.stop();
+            intakeCore.vipWrist.setPosition(0);
+        }
+    }
+
     public boolean spit_escape(){
         if (servoCore.currentGamepad.x && !servoCore.previousGamepad.x){
             intakeCore.vipWrist.setPosition(0.15);
-            intakeCore.spit();
+            intakeCore.timedSpit(timer);
             intakeCore.viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
             return true;

@@ -27,6 +27,7 @@ public class IntakeCore {
     public static boolean suckLDir = false;
     public static boolean alliance = true; //true = blue false = red
     public static boolean suckToggle = false;
+    public static boolean timingSpit = false;
     public boolean spitting = false;
     public ElapsedTime timer = new ElapsedTime();
     public static double colorDeterminer = 1000;
@@ -72,6 +73,11 @@ public class IntakeCore {
     public void spit(){
         suckR.setPower(-1);
         suckL.setPower(-1);
+    }
+
+    public void timedSpit(ElapsedTime elapsedTime){
+        timingSpit = true;
+        elapsedTime.reset();
     }
 
     public void stop(){
@@ -163,7 +169,7 @@ public class IntakeCore {
         }
         if (currentGamepad1.x && !previousGamepad1.x){
             vipWrist.setPosition(0.15);
-            spit();
+            timedSpit(timer);
         }
         tele.addData("vipWristPos: ", vipWrist.getPosition());
         tele.update();
