@@ -79,6 +79,7 @@ public class IntakeCore {
 
     public void timedSpit(ElapsedTime elapsedTime){
         timingSpit = true;
+        spit();
         elapsedTime.reset();
     }
 

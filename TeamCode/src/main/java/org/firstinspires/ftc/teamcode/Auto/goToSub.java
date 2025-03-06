@@ -16,6 +16,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
+import java.util.concurrent.TimeUnit;
+
 @Config
 @Autonomous(name="Example Auto")
 public class goToSub extends LinearOpMode {
@@ -24,12 +26,15 @@ public class goToSub extends LinearOpMode {
     public static int armVelocity = 4000;
     public static int armBack = 5;
     public static int armBar = 3555;
-    public static int armScore = 4650;
+    public static int armScore = 3555;
+    public static double wristScore = 0.5;
+    public static double wristGrab = 0.6;
     ServoAutoCore servoCore = new ServoAutoCore();
     ArmAutoCore armCore = new ArmAutoCore();
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashTele = dashboard.getTelemetry();
     ElapsedTime timer = new ElapsedTime();
+    double timeOffset;
     CRServo leftSuck;
 
     @Override
@@ -42,81 +47,38 @@ public class goToSub extends LinearOpMode {
         drive.setPoseEstimate(testPose);
         timer.reset();
 
-        TrajectorySequence trajectory0 = drive.trajectorySequenceBuilder(startPose)
-                .splineToConstantHeading(new Vector2d(-49, 55), Math.toRadians(90))
-                .setTangent(0)
-                .addTemporalMarker(0.25, () -> {
-                    servoCore.wrist.setPosition(servoCore.hangWrist);
-                    servoCore.pincer.setPosition(servoCore.pincerOpen);
-                    //open pincer and set wrist to grab
-                })
-                .lineToConstantHeading(new Vector2d(-49, 68.5))
-                .addDisplacementMarker(() -> {
-                    servoCore.pincer.setPosition(servoCore.pincerClose);
-                })
-                .waitSeconds(1)
-                .addTemporalMarker(1.25, () -> {
-                    armCore.pvtMove(armVelocity, armScore, opModeIsActive(), dashTele);
-                })
-                .setTangent(270)
-                .splineToConstantHeading(new Vector2d(-3, 65), Math.toRadians(0))
-                .addDisplacementMarker(() -> {
-                    while (ArmAutoCore.running){
-                        drive.setMotorPowers(0, 0, 0,0);
-                        armCore.checkArm();
-                    };
-                    //wait for arm to finish in case it hasn't
-                })
-                .lineToConstantHeading(new Vector2d(-3, 59))
-                .addTemporalMarker(3, () -> {
-                    armCore.pvtArm.setPower(1);
-                })
-                .addTemporalMarker(3.5, () -> {
-                    armCore.pvtArm.setPower(0);
-                })
-                .addTemporalMarker(4, () -> {
-                    servoCore.pincer.setPosition(servoCore.pincerOpen);
-                    armCore.pvtMove(armVelocity, armBack, opModeIsActive(), dashTele);
-                })
-                .setTangent(180)
-                .splineToConstantHeading(new Vector2d(-49, 55), Math.toRadians(90))
-                .setTangent(0)
-                .addDisplacementMarker(() -> {
-                    while (ArmAutoCore.running){
-                        drive.update();
-                        armCore.checkArm();
-                    }
-                    servoCore.pincer.setPosition(servoCore.pincerOpen);
-                    servoCore.wrist.setPosition(servoCore.hangWrist);
-                    //open pincer and set wrist to grab also move arm back
-                })
-                .lineToConstantHeading(new Vector2d(-49, 67.5))
-                .build();
-
         TrajectorySequence firstTrajectory = drive.trajectorySequenceBuilder(testPose)
-                .addTemporalMarker(0.25, () -> {
+                .addTemporalMarker(0.1, () -> {
                     armCore.pvtMove(armVelocity, armBar, opModeIsActive(), dashTele);
                 })
                 .splineToConstantHeading(new Vector2d(-3, 49), Math.toRadians(0))
-                .addDisplacementMarker(() -> {
+                .addTemporalMarker(1.4, () -> {
+                    double enterTime = timer.now(TimeUnit.MILLISECONDS);
                     while (ArmAutoCore.running){
                         drive.setMotorPowers(0, 0, 0, 0);
                         armCore.checkArm();
                     };
+                    double exitTimeMs = Math.round((timer.now(TimeUnit.MILLISECONDS) - enterTime) * 100.00) / 100.00;
+                    double exitTimeSec = Math.round((exitTimeMs / 1000) * 100.00) / 100.00;
+
+                    timeOffset += exitTimeSec;
+                    dashTele.addData("Exit Time Sec", exitTimeSec);
+                    dashTele.addData("Time Offset: ", timeOffset);
+                    dashTele.update();
                 })
-                .addTemporalMarker(2, () -> {
-                    servoCore.wrist.setPosition(0.8);
+                .addTemporalMarker(1.5 + timeOffset, () -> {
+                    servoCore.wrist.setPosition(0.85);
                 })
-                .addTemporalMarker(2.5, () -> {
+                .addTemporalMarker(2 + timeOffset, () -> {
                     servoCore.pincer.setPosition(servoCore.pincerOpen);
                     armCore.pvtMove(armVelocity, armBack, opModeIsActive(), dashTele);
                 })
-                .waitSeconds(1)
+                .waitSeconds(.75 + timeOffset)
                 //move the arm ALL the way up here, then let it out and move back
                 .setTangent(90)
-                .splineToConstantHeading(new Vector2d(-43, 56), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(-38.2, 46), Math.toRadians(270))
                 //-41 15
-                .setTangent(270)
+                //.setTangent(270)
                 .splineToConstantHeading(new Vector2d(-47, 15), Math.toRadians(90))
                 .splineToConstantHeading(new Vector2d(-47, 60), Math.toRadians(270))
                 .setTangent(270)
@@ -127,37 +89,84 @@ public class goToSub extends LinearOpMode {
                 //.splineToConstantHeading(new Vector2d(-62, 60), Math.toRadians(90))
                 .splineToConstantHeading(new Vector2d(-49, 55), Math.toRadians(90))
                 .setTangent(0)
-                .addTemporalMarker(11, () -> {
-                    servoCore.wrist.setPosition(servoCore.hangWrist);
+                .addTemporalMarker(9.5 + timeOffset, () -> {
+                    servoCore.wrist.setPosition(wristGrab);
                     servoCore.pincer.setPosition(servoCore.pincerOpen);
                     //open pincer and set wrist to grab
                 })
                 .lineToConstantHeading(new Vector2d(-49, 69))
-                .addTemporalMarker(12.5, () -> {
+                .addTemporalMarker(10.55 + timeOffset, () -> {
                     servoCore.pincer.setPosition(servoCore.pincerClose);
                 })
-                .waitSeconds(1)
-                .addTemporalMarker(14, () -> {
+                .waitSeconds(1 + timeOffset)
+                .addTemporalMarker(11.55 + timeOffset, () -> {
                     armCore.pvtMove(armVelocity, armScore, opModeIsActive(), dashTele);
                 })
-                .setTangent(270)
-                .splineToConstantHeading(new Vector2d(-3, 65), Math.toRadians(0))
-                .addDisplacementMarker(() -> {
+                .setTangent(0)
+                .splineToConstantHeading(new Vector2d(-3, 49), Math.toRadians(270))
+                .addTemporalMarker(13.5 + timeOffset, () -> {
+                    double enterTime = timer.now(TimeUnit.MILLISECONDS);
                     while (ArmAutoCore.running){
-                        drive.setMotorPowers(0, 0, 0,0);
+                        drive.setMotorPowers(0, 0, 0, 0);
                         armCore.checkArm();
                     };
-                    //wait for arm to finish in case it hasn't
+                    double exitTimeMs = Math.round((timer.now(TimeUnit.MILLISECONDS) - enterTime) * 100.00) / 100.00;
+                    double exitTimeSec = Math.round((exitTimeMs / 1000) * 100.00) / 100.00;
+
+                    timeOffset += exitTimeSec;
+                    dashTele.addData("Exit Time Sec", exitTimeSec);
+                    dashTele.addData("Time Offset: ", timeOffset);
+                    dashTele.update();
                 })
-                .forward(5)
+                .addTemporalMarker(13.75 + timeOffset, () -> {
+                    servoCore.wrist.setPosition(0.85);
+                })
+                .addTemporalMarker(14.5 + timeOffset, () -> {
+                    servoCore.pincer.setPosition(servoCore.pincerOpen);
+                    servoCore.wrist.setPosition(wristGrab);
+                    armCore.pvtMove(armVelocity, armBack, opModeIsActive(), dashTele);
+                })
+                .waitSeconds(.8 + timeOffset)
+                .setTangent(90)
+                .splineToConstantHeading(new Vector2d(-49, 55), Math.toRadians(180))
+                .setTangent(0)
+                .lineToConstantHeading(new Vector2d(-49, 69))
+                .addTemporalMarker(17.5 + timeOffset, () -> {
+                    servoCore.pincer.setPosition(servoCore.pincerClose);
+                })
+                .waitSeconds(1 + timeOffset)
+                .addTemporalMarker(18.5 + timeOffset, () -> {
+                    armCore.pvtMove(armVelocity, armScore, opModeIsActive(), dashTele);
+                })
+                //
+                .setTangent(0)
+                .splineToConstantHeading(new Vector2d(-3, 49), Math.toRadians(270))
+                .addTemporalMarker(20.5 + timeOffset, () -> {
+                    double enterTime = timer.now(TimeUnit.MILLISECONDS);
+                    while (ArmAutoCore.running){
+                        drive.setMotorPowers(0, 0, 0, 0);
+                        armCore.checkArm();
+                    };
+                    double exitTimeMs = Math.round((timer.now(TimeUnit.MILLISECONDS) - enterTime) * 100.00) / 100.00;
+                    double exitTimeSec = Math.round((exitTimeMs / 1000) * 100.00) / 100.00;
+
+                    timeOffset += exitTimeSec;
+                    dashTele.addData("Exit Time Sec", exitTimeSec);
+                    dashTele.addData("Time Offset: ", timeOffset);
+                    dashTele.update();
+                })
+                .addTemporalMarker(21 + timeOffset, () -> {
+                    servoCore.wrist.setPosition(0.85);
+                })
+                .build();
+                /*
                 //.lineToConstantHeading(new Vector2d(-3, 59))
-                .addTemporalMarker(17.5, () -> {
+                .waitSeconds(1.85 + timeOffset)
+                .addTemporalMarker(13.55 + timeOffset, () -> {
                     armCore.pvtArm.setPower(-1);
                 })
-                .addTemporalMarker(19.5, () -> {
+                .addTemporalMarker(15.25 + timeOffset, () -> {
                     armCore.pvtArm.setPower(0);
-                })
-                .addTemporalMarker(21, () -> {
                     servoCore.pincer.setPosition(servoCore.pincerOpen);
                     servoCore.wrist.setPosition(servoCore.hangWrist);
                     armCore.pvtMove(armVelocity, armBack, opModeIsActive(), dashTele);
@@ -166,15 +175,17 @@ public class goToSub extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(-49, 55), Math.toRadians(90))
                 .setTangent(0)
                 .lineToConstantHeading(new Vector2d(-49, 69))
-                .addTemporalMarker(23, () -> {
+                .addTemporalMarker(18.25 +timeOffset, () -> {
                     servoCore.pincer.setPosition(servoCore.pincerClose);
                 })
-                .waitSeconds(1)
-                .addTemporalMarker(24, () -> {
+                .waitSeconds(1 + timeOffset)
+                .addTemporalMarker(19.25, () -> {
                     armCore.pvtMove(armVelocity, armScore, opModeIsActive(), dashTele);
                 })
+                        .build();
+
                 .setTangent(270)
-                .splineToConstantHeading(new Vector2d(-3, 65), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-3, 60), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     while (ArmAutoCore.running){
                         drive.setMotorPowers(0, 0, 0,0);
@@ -182,7 +193,6 @@ public class goToSub extends LinearOpMode {
                     };
                     //wait for arm to finish in case it hasn't
                 })
-                .forward(5)
                 //.lineToConstantHeading(new Vector2d(-3, 59))
                 .addTemporalMarker(27.5, () -> {
                     armCore.pvtArm.setPower(-1);
@@ -190,12 +200,13 @@ public class goToSub extends LinearOpMode {
                 .addTemporalMarker(29.5, () -> {
                     armCore.pvtArm.setPower(0);
                 })
-                .addTemporalMarker(21, () -> {
+                .addTemporalMarker(30 , () -> {
                     servoCore.pincer.setPosition(servoCore.pincerOpen);
                     servoCore.wrist.setPosition(servoCore.hangWrist);
                     armCore.pvtMove(armVelocity, armBack, opModeIsActive(), dashTele);
                 })
                 .build();
+        */
 
         /*
         .addDisplacementMarker(() -> {
