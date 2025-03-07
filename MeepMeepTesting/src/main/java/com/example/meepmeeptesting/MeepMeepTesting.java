@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MeepMeepTesting {
 
-    public static Pose2d startPose = new Pose2d(16.5, -72, Math.toRadians(270));
+    public static Pose2d startPose = new Pose2d(16.5, -71.75, Math.toRadians(90));
     //static Pose2d startPose =  new Pose2d(-63.25, 72, Math.toRadians(270));
 
 
@@ -25,7 +25,7 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(startPose)
                         .addTemporalMarker(0.1, () -> {
                         })
-                        .splineToConstantHeading(new Vector2d(3, -49), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(3, -50), Math.toRadians(90))
                         .addTemporalMarker(1.4, () -> {
                         })
                         .addTemporalMarker(1.5 , () -> {
@@ -35,14 +35,14 @@ public class MeepMeepTesting {
                         .waitSeconds(.75 )
                         //move the arm ALL the way up here, then let it out and move back
                         .setTangent(270)
-                        .splineToConstantHeading(new Vector2d(38.2, -46), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(37.5, -46), Math.toRadians(90))
                         //-41 15
                         //.setTangent(270)
-                        .splineToConstantHeading(new Vector2d(47, -15), Math.toRadians(270))
-                        .splineToConstantHeading(new Vector2d(47, -60), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(43.25, -15), Math.toRadians(270))
+                        .splineToConstantHeading(new Vector2d(43.25, -60), Math.toRadians(90))
                         .setTangent(90)
-                        .splineToConstantHeading(new Vector2d(55, -15), Math.toRadians(270))
-                        .splineToConstantHeading(new Vector2d(55, -60), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(51.25, -15), Math.toRadians(270))
+                        .splineToConstantHeading(new Vector2d(51.25, -60), Math.toRadians(90))
                         //.setTangent(270)
                         //.splineToConstantHeading(new Vector2d(-62, 15), Math.toRadians(90))
                         //.splineToConstantHeading(new Vector2d(-62, 60), Math.toRadians(90))
@@ -55,19 +55,18 @@ public class MeepMeepTesting {
                         //+3.45 seconds
                         .addTemporalMarker(10.55 , () -> {
                         })
-                        .waitSeconds(2 )
-                        .addTemporalMarker(11.55 , () -> {
-
+                        .waitSeconds(1.5 )
+                        .addTemporalMarker(11.05 , () -> {
                         })
-                        .setTangent(90)
-                        .splineToConstantHeading(new Vector2d(3, -50.5), Math.toRadians(90))
-                        .addTemporalMarker(15 , () -> {
+                        .setTangent(160)
+                        .splineToConstantHeading(new Vector2d(3, -51.5), Math.toRadians(90))
+                        .addTemporalMarker(14.5 , () -> {
+                        })
+                        .addTemporalMarker(14.1 , () -> {
                         })
                         .addTemporalMarker(14.6 , () -> {
                         })
-                        .addTemporalMarker(15.1 , () -> {
-                        })
-                        .addTemporalMarker(15.65 , () -> {
+                        .addTemporalMarker(15.15 , () -> {
                         })
                         .waitSeconds(2.05 )
                         .setTangent(270)
@@ -76,21 +75,21 @@ public class MeepMeepTesting {
                         .lineToConstantHeading(new Vector2d(49, -69))
                         .addTemporalMarker(20.5 , () -> {
                         })
-                        .waitSeconds(2.75 )
-                        .addTemporalMarker(21.5 , () -> {
+                        .waitSeconds(2.5 )
+                        .addTemporalMarker(19.85 , () -> {
                         })
                         //
-                        .setTangent(90)
-                        .splineToConstantHeading(new Vector2d(3, -50.5), Math.toRadians(90))
-                        .addTemporalMarker(24 , () -> {
+                        .setTangent(160)
+                        .splineToConstantHeading(new Vector2d(3, -51.5), Math.toRadians(90))
+                        .addTemporalMarker(23.35 , () -> {
                         })
-                        .addTemporalMarker(24.15 , () -> {
+                        .addTemporalMarker(23.5 , () -> {
                         })
-                        .addTemporalMarker(24.75 , () -> {
+                        .addTemporalMarker(24.1 , () -> {
                         })
-                        .addTemporalMarker(25 , () -> {
+                        .addTemporalMarker(24.35 , () -> {
                         })
-                        .waitSeconds(2)
+                        .waitSeconds(2 )
                         .strafeRight(72)
                         .build());
 

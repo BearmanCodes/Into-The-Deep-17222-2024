@@ -28,9 +28,9 @@ public class goToSub extends LinearOpMode {
     public static double firstWristScore = 0.75;
     public static int armBack = 5;
     public static int armBar = 3555;
-    public static int armScore = 4650;
+    public static int armScore = 4525;
     public static double wristScore = 0.2;
-    public static double wristBar = 0.55;
+    public static double wristBar = 0.6;
     public static double wristGrab = 0.6;
     ServoAutoCore servoCore = new ServoAutoCore();
     ArmAutoCore armCore = new ArmAutoCore();
@@ -82,11 +82,11 @@ public class goToSub extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(-38.2, 46), Math.toRadians(270))
                 //-41 15
                 //.setTangent(270)
-                .splineToConstantHeading(new Vector2d(-47, 15), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(-47, 60), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(-46.25, 15), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(-46.25, 60), Math.toRadians(270))
                 .setTangent(270)
-                .splineToConstantHeading(new Vector2d(-55, 15), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(-55, 60), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(-54.25, 15), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(-54.25, 60), Math.toRadians(270))
                 //.setTangent(270)
                 //.splineToConstantHeading(new Vector2d(-62, 15), Math.toRadians(90))
                 //.splineToConstantHeading(new Vector2d(-62, 60), Math.toRadians(90))

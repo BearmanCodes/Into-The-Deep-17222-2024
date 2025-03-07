@@ -34,7 +34,7 @@ public class ModeCore {
     public static int vipVel = 4000;
     public static int fwdGrabArm = 6550;
     public static int fwdGrabWrist = 3010;
-    public static int fwdHangArm = 4625;
+    public static int fwdHangArm = 4425;
     public static int fwdHangWrist = 4000;
     public static int rearHangArm = 5045;
     public static int rearHangWrist = 1400;
@@ -43,7 +43,7 @@ public class ModeCore {
     public static int rearGrabArm = 5;
     public static int rearGrabWrist = 5300;
     public static double rearGrabWristPos = 0.6;
-    public static double pincerOpen = 0.21;
+    public static double pincerOpen = 0.23;
     public static double pincerClose = 0;
     public static int vipHome = 10;
 

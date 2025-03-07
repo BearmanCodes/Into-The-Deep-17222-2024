@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @TeleOp(name="Main Drive", group="Critical")
 @Config
-public class MainDrive extends LinearOpMode {
+public class RED_MainDrive extends LinearOpMode {
     ArmCore armCore = new ArmCore();
     ServoCore servoCore = new ServoCore();
     DrivetrainCore drivetrainCore = new DrivetrainCore();
