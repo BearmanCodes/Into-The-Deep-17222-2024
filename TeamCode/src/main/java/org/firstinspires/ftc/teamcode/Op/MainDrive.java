@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Op;
 
+import android.view.Display;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -48,7 +50,6 @@ public class MainDrive extends LinearOpMode {
             int viperCurrPos = intakeCore.viper.getCurrentPosition();
             drivetrainCore.run(gamepad1, dashTele);
             intakeCore.vipWristControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
-            check_spit_time();
             servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
             switch (modeCore.MODE){ //Based on the mode set the arm to be in control or moving auto
                 case NORMAL_MODE:
@@ -134,19 +135,15 @@ public class MainDrive extends LinearOpMode {
         }
     }
 
-    public void check_spit_time(){
-        if (IntakeCore.timingSpit && timer.seconds() >= 2){
-            intakeCore.stop();
-            IntakeCore.timingSpit = false;
-            intakeCore.vipWrist.setPosition(0);
-        }
-    }
-
     public boolean spit_escape(){
         if (servoCore.currentGamepad.x && !servoCore.previousGamepad.x){
             intakeCore.vipWrist.setPosition(0.15);
-            intakeCore.timedSpit(timer);
+            intakeCore.spit();
             intakeCore.viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
+            return true;
+        }
+        if (servoCore.currentGamepad2.left_stick_button && !servoCore.previousGamepad.left_stick_button){
             modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
             return true;
         }

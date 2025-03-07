@@ -36,7 +36,7 @@ public class DrivetrainCore{
     TrajectorySequence trajectorySequence;
     SampleMecanumDrive drive;
     public static Pose2d startPose = new Pose2d(-63.25, 72, Math.toRadians(270));
-    public static Pose2d testPose = new Pose2d(-16.5, 72, Math.toRadians(270));
+    public static Pose2d testPose = new Pose2d(-16.5, 71.75, Math.toRadians(270));
 
     public void init(HardwareMap hwMap){
         frontleft = hwMap.get(DcMotorEx.class, "frontleft");  //change these motor names depending on the config
