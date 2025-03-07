@@ -45,7 +45,7 @@ public class ModeCore {
     public static double rearGrabWristPos = 0.6;
     public static double pincerOpen = 0.21;
     public static double pincerClose = 0;
-    public static int vipHome = 5;
+    public static int vipHome = 10;
 
     RUNNING_MODE[] modes;
     int[] vipTargets;
