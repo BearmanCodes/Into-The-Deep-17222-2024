@@ -139,7 +139,9 @@ public class MainDrive extends LinearOpMode {
         if (servoCore.currentGamepad.x && !servoCore.previousGamepad.x){
             intakeCore.vipWrist.setPosition(0.15);
             intakeCore.spit();
-            intakeCore.viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            intakeCore.viper.setVelocity(0);
+            intakeCore.viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            ModeCore.vipHome += 5;
             modeCore.MODE = ModeCore.RUNNING_MODE.NORMAL_MODE;
             return true;
         }
