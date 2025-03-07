@@ -176,6 +176,6 @@ public class MainDrive extends LinearOpMode {
         servoCore.init(hardwareMap);
         drivetrainCore.init(hardwareMap);
         intakeCore.init(hardwareMap);
-        intakeCore.alliance = false;
+        IntakeCore.alliance = false;
     }
 }
