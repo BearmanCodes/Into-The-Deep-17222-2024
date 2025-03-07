@@ -42,7 +42,7 @@ public class ModeCore {
     public static double currPincerPos;
     public static int rearGrabArm = 5;
     public static int rearGrabWrist = 5300;
-    public static double rearGrabWristPos = 0.7;
+    public static double rearGrabWristPos = 0.65;
     public static double pincerOpen = 0.23;
     public static double pincerClose = 0;
     public static int vipHome = 10;
