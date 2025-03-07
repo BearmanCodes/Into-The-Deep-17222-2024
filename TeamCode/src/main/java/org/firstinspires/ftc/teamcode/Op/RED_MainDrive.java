@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@TeleOp(name="Main Drive", group="Critical")
+@TeleOp(name="Red Main Drive", group="Critical")
 @Config
 public class RED_MainDrive extends LinearOpMode {
     ArmCore armCore = new ArmCore();
