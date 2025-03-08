@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MeepMeepTesting {
 
-    public static Pose2d startPose = new Pose2d(16.5, 71.75, Math.toRadians(270));
+    public static Pose2d startPose = new Pose2d(-16.5, -71.75, Math.toRadians(90));
     //static Pose2d startPose =  new Pose2d(-63.25, 72, Math.toRadians(270));
 
 
@@ -24,19 +24,21 @@ public class MeepMeepTesting {
                 .setConstraints(56.855292234154874, 56.855292234154874, Math.toRadians(183.88477629466686), Math.toRadians(188.84453843478258), 17.24)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(startPose)
                         .waitSeconds(5)
-                        .addTemporalMarker(0.1, () -> {
+                        .addTemporalMarker(5.1, () -> {
                         })
-                        .splineToConstantHeading(new Vector2d(-1, 49), Math.toRadians(270))
-                        .addTemporalMarker(1.4, () -> {
+                        .splineToConstantHeading(new Vector2d(-3, -50), Math.toRadians(90))
+                        .addTemporalMarker(6.4, () -> {
+
                         })
-                        .addTemporalMarker(1.5 , () -> {
+                        .addTemporalMarker(6.5, () -> {
                         })
-                        .addTemporalMarker(2 , () -> {
+                        .addTemporalMarker(7.5, () -> {
+
                         })
                         .waitSeconds(1.45)
                         //move the arm ALL the way up here, then let it out and move back
-                        .setTangent(270)
-                        .splineToConstantHeading(new Vector2d(55,55), Math.toRadians(90))
+                        .setTangent(180)
+                        .splineToConstantHeading(new Vector2d(-55, -55), Math.toRadians(270))
                         .build());
 
 

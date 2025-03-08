@@ -67,7 +67,7 @@ public class goToLeftSubBlue extends LinearOpMode {
                 })
                 .waitSeconds(1.45)
                 //move the arm ALL the way up here, then let it out and move back
-                .setTangent(180)
+                .setTangent(-75)
                 .splineToConstantHeading(new Vector2d(55,55), Math.toRadians(90))
                 .build();
                 /*
