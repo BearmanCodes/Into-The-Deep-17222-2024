@@ -80,6 +80,13 @@ public class IntakeCore {
         suckL.setPower(0);
     }
 
+    public void allianceSwap(Gamepad currGamepad1, Gamepad prevGamepad1, Telemetry telemetry){
+        String allianceStr = IntakeCore.alliance ? "BLUE" : "RED";
+        if ((currGamepad1.y && currGamepad1.start) && (!prevGamepad1.y || !prevGamepad1.start)) alliance = !alliance;
+        telemetry.addData("Alliance: ", allianceStr);
+        telemetry.update();
+    }
+
     public void updateColor(Telemetry dashtele){
         blue = color.blue();
         red = color.red();

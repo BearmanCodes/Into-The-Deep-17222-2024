@@ -30,8 +30,8 @@ public class goToSubRed extends LinearOpMode {
     public static int armBar = 3555;
     public static int armScore = 4525;
     public static double wristScore = 0.2;
-    public static double wristBar = 0.6;
-    public static double wristGrab = 0.6;
+    public static double wristBar = 0.65;
+    public static double wristGrab = 0.65;
     ServoAutoCore servoCore = new ServoAutoCore();
     ArmAutoCore armCore = new ArmAutoCore();
     FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -152,7 +152,7 @@ public class goToSubRed extends LinearOpMode {
                 })
                 //
                 .setTangent(160)
-                .splineToConstantHeading(new Vector2d(3, -51.5), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(-1, -51.5), Math.toRadians(90))
                 .addTemporalMarker(23.35 + timeOffset, () -> {
                     double enterTime = timer.now(TimeUnit.MILLISECONDS);
                     while (ArmAutoCore.running){

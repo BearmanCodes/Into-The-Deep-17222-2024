@@ -33,7 +33,11 @@ public class MainDrive extends LinearOpMode {
     public static long suckSleep = 1000;
     @Override
     public void runOpMode() throws InterruptedException {
-        Init();
+        try {
+            Init();
+        } catch (RobotCoreException e) {
+            throw new RuntimeException(e);
+        }
         waitForStart();
         while (opModeIsActive()) {
             try {
@@ -51,6 +55,7 @@ public class MainDrive extends LinearOpMode {
             drivetrainCore.run(gamepad1, dashTele);
             intakeCore.vipWristControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
             servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
+            intakeCore.allianceSwap(servoCore.currentGamepad, servoCore.previousGamepad, telemetry);
             switch (modeCore.MODE){ //Based on the mode set the arm to be in control or moving auto
                 case NORMAL_MODE:
                     armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
@@ -171,10 +176,14 @@ public class MainDrive extends LinearOpMode {
         return false;
     }
 
-    private void Init(){
+    private void Init() throws RobotCoreException {
         armCore.init(hardwareMap);
         servoCore.init(hardwareMap);
         drivetrainCore.init(hardwareMap);
         intakeCore.init(hardwareMap);
+        while (!isStarted()){
+            servoCore.edgeDetector(gamepad1, gamepad2);
+            intakeCore.allianceSwap(servoCore.currentGamepad, servoCore.previousGamepad, telemetry);
+        }
     }
 }

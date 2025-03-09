@@ -36,6 +36,7 @@ public class ServoCore {
     public static double pincerClose = 0;
     public static double pincerOpen = 0.23;
     public static double wristIterator = 0.05;
+    public static double downWrist = 0;
 
     public void init(HardwareMap hwMap) {
         pincer = hwMap.get(Servo.class, "pincer".toLowerCase());
@@ -80,6 +81,9 @@ public class ServoCore {
             wrist.setPosition(currPos - wristIterator);
             dashTele.addData("Wrist Pos: ", wrist.getPosition());
             dashTele.update();
+        }
+        if (currentGamepad2.a && !previousGamepad2.a) {
+            wrist.setPosition(downWrist);
         }
     }
 
