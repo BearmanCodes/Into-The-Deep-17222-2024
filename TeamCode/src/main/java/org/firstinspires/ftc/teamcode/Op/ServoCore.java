@@ -52,10 +52,13 @@ public class ServoCore {
         else wrist.setDirection(Servo.Direction.REVERSE);
         //wrist.setDirection(Servo.Direction.REVERSE);
         //brake.setDirection(Servo.Direction.FORWARD);
-        pincer.setPosition(0);
         //wrist.setPosition(upWrist);
         //hook.setPosition(hookClose);
         //brake.setPosition(0);
+    }
+
+    public void init_motion(){
+        pincer.setPosition(0);
         wrist.setPosition(upWrist);
     }
 

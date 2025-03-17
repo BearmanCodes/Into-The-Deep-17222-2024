@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -31,6 +32,7 @@ public class MainDrive extends LinearOpMode {
     public static int servoActionTol = 3000;
     public static boolean fwd = true;
     public static long suckSleep = 1000;
+
     @Override
     public void runOpMode() throws InterruptedException {
         try {
@@ -38,7 +40,9 @@ public class MainDrive extends LinearOpMode {
         } catch (RobotCoreException e) {
             throw new RuntimeException(e);
         }
+
         waitForStart();
+        motion_start();
         while (opModeIsActive()) {
             try {
                 servoCore.edgeDetector(gamepad1, gamepad2);
@@ -174,6 +178,11 @@ public class MainDrive extends LinearOpMode {
             return true;
         }
         return false;
+    }
+
+    void motion_start(){
+        servoCore.init_motion();
+        intakeCore.init_motion();
     }
 
     private void Init() throws RobotCoreException {

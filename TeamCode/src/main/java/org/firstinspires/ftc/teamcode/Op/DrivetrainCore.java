@@ -55,7 +55,6 @@ public class DrivetrainCore{
         imu.resetYaw(); //Reset the robot's current perceived position after initalizing the imu specifications.
 
         motorSetUp(); //Assigns all needed motor modes and settings out of view
-
     }
 
     public void run(Gamepad gamepad1, Telemetry tele){ //Main running function, TeleOp's will use this function.

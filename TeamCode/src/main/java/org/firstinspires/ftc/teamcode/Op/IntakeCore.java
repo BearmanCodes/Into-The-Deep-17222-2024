@@ -59,9 +59,10 @@ public class IntakeCore {
 
         viper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void init_motion(){
         vipWrist.setPosition(0);
-        suckR.setPower(0);
-        suckL.setPower(0);
     }
 
     public void suck(){
