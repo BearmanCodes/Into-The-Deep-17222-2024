@@ -28,17 +28,20 @@ import java.util.List;
 @Config
 public class DrivetrainCore{
 
-    public DcMotorEx frontleft, frontright, backleft, backright; //Declare the drivetrian motors
+    public static DcMotorEx frontleft;
+    public static DcMotorEx frontright;
+    public static DcMotorEx backleft;
+    public static DcMotorEx backright; //Declare the drivetrian motors
     public static double reducer = 1; //Change for reducing drive power
     YawPitchRollAngles robotOrientation; //IMU YPR Angles
-    IMU imu; //Declare the IMU
-    IMU.Parameters imuparams; //Declare the IMU's settingsx
+    static IMU imu; //Declare the IMU
+    static IMU.Parameters imuparams; //Declare the IMU's settingsx
     TrajectorySequence trajectorySequence;
-    SampleMecanumDrive drive;
+    static SampleMecanumDrive drive;
     public static Pose2d startPose = new Pose2d(-63.25, 72, Math.toRadians(270));
     public static Pose2d testPose = new Pose2d(-16.5, 71.75, Math.toRadians(270));
 
-    public void init(HardwareMap hwMap){
+    public static void init(HardwareMap hwMap){
         frontleft = hwMap.get(DcMotorEx.class, "frontleft");  //change these motor names depending on the config
         frontright = hwMap.get(DcMotorEx.class, "frontright");
         backleft = hwMap.get(DcMotorEx.class, "backleft");
@@ -87,7 +90,7 @@ public class DrivetrainCore{
         backright.setPower(power);
     }
 
-    public void motorSetUp(){ //Background work for declaring motor modes and settings
+    public static void motorSetUp(){ //Background work for declaring motor modes and settings
         frontleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

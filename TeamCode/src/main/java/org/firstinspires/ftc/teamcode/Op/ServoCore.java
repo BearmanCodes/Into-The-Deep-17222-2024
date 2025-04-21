@@ -23,7 +23,7 @@ public class ServoCore {
     Gamepad currentGamepad2 = new Gamepad();
     Gamepad previousGamepad2 = new Gamepad(); //Set up gamepad variables allowing for rising edge detector
 
-    public Servo claw1, pincer, wrist, brake; //Declare servo variables
+    public static  Servo claw1, pincer, wrist, brake; //Declare servo variables
     public static boolean fwd = true;
     public static boolean pincerfwd = true;
 
@@ -38,7 +38,7 @@ public class ServoCore {
     public static double wristIterator = 0.05;
     public static double downWrist = 0;
 
-    public void init(HardwareMap hwMap) {
+    public static void init(HardwareMap hwMap) {
         pincer = hwMap.get(Servo.class, "pincer".toLowerCase());
         wrist = hwMap.get(Servo.class, "wrist".toLowerCase());
         //hook = hwMap.get(Servo.class, "hook".toLowerCase());

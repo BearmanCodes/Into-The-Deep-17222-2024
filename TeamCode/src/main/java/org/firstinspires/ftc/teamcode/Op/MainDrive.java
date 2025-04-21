@@ -44,22 +44,18 @@ public class MainDrive extends LinearOpMode {
         waitForStart();
         motion_start();
         while (opModeIsActive()) {
-            try {
-                servoCore.edgeDetector(gamepad1, gamepad2);
-            } catch (RobotCoreException e) {
-                throw new RuntimeException(e);
-            }
-            dashTele.addData("backLeft: ", drivetrainCore.backleft.getCurrentPosition());
-            dashTele.addData("backRight: ", drivetrainCore.backright.getCurrentPosition());
-            dashTele.addData("frontRight: ", drivetrainCore.frontright.getCurrentPosition());
-            dashTele.addData("MODE: ", modeCore.MODE);
-            dashTele.update();
-            int armCurrPos = armCore.pvtArm.getCurrentPosition(); //Keeps var of arm pos for ref
-            int viperCurrPos = intakeCore.viper.getCurrentPosition();
+            updateGpadStatus();
+//            try {
+//                servoCore.edgeDetector(gamepad1, gamepad2);
+//            } catch (RobotCoreException e) {
+//                throw new RuntimeException(e);
+//            }
+            int armCurrPos = ArmCore.pvtArm.getCurrentPosition(); //Keeps var of arm pos for ref
+            int viperCurrPos = IntakeCore.viper.getCurrentPosition();
             drivetrainCore.run(gamepad1, dashTele);
             intakeCore.vipWristControl(servoCore.currentGamepad, servoCore.previousGamepad, dashTele);
             servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
-            intakeCore.allianceSwap(servoCore.currentGamepad, servoCore.previousGamepad, telemetry);
+            IntakeCore.allianceSwap(telemetry);
             switch (modeCore.MODE){ //Based on the mode set the arm to be in control or moving auto
                 case NORMAL_MODE:
                     armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
@@ -185,14 +181,20 @@ public class MainDrive extends LinearOpMode {
         intakeCore.init_motion();
     }
 
+    void updateGpadStatus(){
+        GamepadCore.gpad1 = gamepad1;
+        GamepadCore.gpad2 = gamepad2;
+        GamepadCore.edgeDetector();
+    }
+
     private void Init() throws RobotCoreException {
-        armCore.init(hardwareMap);
-        servoCore.init(hardwareMap);
-        drivetrainCore.init(hardwareMap);
-        intakeCore.init(hardwareMap);
+        ArmCore.init(hardwareMap);
+        ServoCore.init(hardwareMap);
+        DrivetrainCore.init(hardwareMap);
+        IntakeCore.init(hardwareMap);
         while (!isStarted()){
-            servoCore.edgeDetector(gamepad1, gamepad2);
-            intakeCore.allianceSwap(servoCore.currentGamepad, servoCore.previousGamepad, telemetry);
+            updateGpadStatus();
+            IntakeCore.allianceSwap(telemetry);
         }
     }
 }

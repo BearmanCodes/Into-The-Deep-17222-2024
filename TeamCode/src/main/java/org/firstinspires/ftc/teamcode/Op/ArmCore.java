@@ -13,9 +13,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 //This is the core arm class every single TeleOp uses to access functions pertaining to the arm
 public class ArmCore {
 
-    public DcMotorEx fndtlArm;
-    public DcMotorEx pvtArm; //Declare the 2 arm motors, this one is the extender
-    public DcMotorEx hangArm;
+    static public DcMotorEx fndtlArm;
+    static public DcMotorEx pvtArm; //Declare the 2 arm motors, this one is the extender
+    static  public DcMotorEx hangArm;
     public static double wristReducer = 0.8;
     public static double kF = 0.0025;
     public double reducerActualArm = 0.45; //Change this depending on how much you want to reduce your arm
@@ -33,7 +33,7 @@ public class ArmCore {
     private final double TICKS_PER_DEGREE = TICKS_PER_GEARS / 360;
 
 
-    public void init(HardwareMap hwMap){
+    public static void init(HardwareMap hwMap){
         pvtArm = hwMap.get(DcMotorEx.class, "pvt");
         hangArm = hwMap.get(DcMotorEx.class, "hang");
 

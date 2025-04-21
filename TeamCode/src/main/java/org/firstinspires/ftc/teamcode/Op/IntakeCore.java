@@ -17,18 +17,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class IntakeCore {
-    public DcMotorEx viper;
-    public Servo vipWrist;
-    public CRServo suckL, suckR;
-    public ColorSensor color;
+    public static DcMotorEx viper;
+    public static Servo vipWrist;
+    public static CRServo suckL, suckR;
+    public static ColorSensor color;
     public static boolean vipDir = false;
     public static boolean vipWristDir = false;
     public static boolean suckRDir = true;
     public static boolean suckLDir = false;
     public static boolean alliance = true; //true = blue false = red
     public static boolean suckToggle = false;
-    public boolean spitting = false;
-    public ElapsedTime timer = new ElapsedTime();
+    public static  boolean spitting = false;
+    public static ElapsedTime timer = new ElapsedTime();
     public static double colorDeterminer = 1000;
     public static double wristIncrementer = 0.05;
     public static double blue;
@@ -40,7 +40,7 @@ public class IntakeCore {
     public double viperPower;
     public double vipPos;
     public static double vipReducer = 1;
-    public void init(HardwareMap hwMap){
+    public static void init(HardwareMap hwMap){
         viper = hwMap.get(DcMotorEx.class, "viper");
         vipWrist = hwMap.get(Servo.class, "vWrist");
         suckL = hwMap.get(CRServo.class, "suckL");
@@ -81,9 +81,9 @@ public class IntakeCore {
         suckL.setPower(0);
     }
 
-    public void allianceSwap(Gamepad currGamepad1, Gamepad prevGamepad1, Telemetry telemetry){
+    public static void allianceSwap(Telemetry telemetry){
         String allianceStr = IntakeCore.alliance ? "BLUE" : "RED";
-        if ((currGamepad1.y && currGamepad1.start) && (!prevGamepad1.y || !prevGamepad1.start)) alliance = !alliance;
+        if ((GamepadCore.currGamepad1.y && GamepadCore.currGamepad1.start) && (!GamepadCore.prevGamepad1.y || !GamepadCore.prevGamepad1.start)) alliance = !alliance;
         telemetry.addData("Alliance: ", allianceStr);
         telemetry.update();
     }
