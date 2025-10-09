@@ -103,7 +103,7 @@ public class IntakeCore {
     }
 
     public boolean vipSuckHandler(){
-        if (alliance){
+        /*if (alliance){
             if (bluethresh){
                 spitting = false;
                 stop();
@@ -136,13 +136,13 @@ public class IntakeCore {
             spit();
             spitting = true;
             return false;
-        }
+        }*/
         if (!greenthresh && !redthresh && !bluethresh){
             spitting = false;
             suck();
             return false;
         }
-        return false;
+        else return true;
     }
 
     public void viperControl(Gamepad gamepad1, int vipPos, Telemetry tele){

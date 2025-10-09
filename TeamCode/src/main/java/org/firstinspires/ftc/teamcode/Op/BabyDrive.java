@@ -1,0 +1,178 @@
+package org.firstinspires.ftc.teamcode.Op;
+
+import android.view.Display;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.exception.RobotCoreException;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+@TeleOp(name="Baby Drive", group="Critical")
+@Config
+public class BabyDrive extends LinearOpMode {
+    ArmCore armCore = new ArmCore();
+    ServoCore servoCore = new ServoCore();
+    DrivetrainCore drivetrainCore = new DrivetrainCore();
+    IntakeCore intakeCore = new IntakeCore();
+    BabyModeCore modeCore = new BabyModeCore();
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+    Telemetry dashTele = dashboard.getTelemetry();
+
+    DoubleTele doubleTele = new DoubleTele(telemetry, dashTele);
+    public ElapsedTime timer = new ElapsedTime();
+    public static int errTolerance = 5;
+    public static double freedomPower = 0.01;
+    public static int servoActionTol = 3000;
+    public static boolean fwd = true;
+    public static long suckSleep = 1000;
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        try {
+            Init();
+        } catch (RobotCoreException e) {
+            throw new RuntimeException(e);
+        }
+
+        waitForStart();
+        motion_start();
+        while (opModeIsActive()) {
+            try {
+                servoCore.edgeDetector(gamepad1, gamepad2);
+            } catch (RobotCoreException e) {
+                throw new RuntimeException(e);
+            }
+            dashTele.addData("backLeft: ", drivetrainCore.backleft.getCurrentPosition());
+            dashTele.addData("backRight: ", drivetrainCore.backright.getCurrentPosition());
+            dashTele.addData("frontRight: ", drivetrainCore.frontright.getCurrentPosition());
+            dashTele.addData("MODE: ", modeCore.MODE);
+            dashTele.update();
+            int armCurrPos = armCore.pvtArm.getCurrentPosition(); //Keeps var of arm pos for ref
+            int viperCurrPos = intakeCore.viper.getCurrentPosition();
+            drivetrainCore.run(gamepad1, dashTele);
+            intakeCore.vipWristControl(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
+            //servoCore.dpadRun(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
+            //intakeCore.allianceSwap(servoCore.currentGamepad2, servoCore.previousGamepad2, telemetry);
+            switch (modeCore.MODE){ //Based on the mode set the arm to be in control or moving auto
+                case NORMAL_MODE:
+                    //armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
+                    intakeCore.viperControl(gamepad2, viperCurrPos, dashTele);
+                    intakeCore.vipSuckControl(servoCore.currentGamepad2, servoCore.previousGamepad2, dashTele);
+                    modeCore.modeHandler(servoCore.currentGamepad, servoCore.previousGamepad, servoCore.currentGamepad2, servoCore.previousGamepad2, servoCore, intakeCore); //Handle variables for reaching the top bar position (X)
+                    break; //Why I picked switch statements. Keeps you out of while loop hell
+                case VIP_MOVE:
+                    if (BabyModeCore.isChain) modeCore.chainRefresh(BabyModeCore.CHAIN);
+                    intakeCore.viper.setTargetPosition(ModeCore.vipTarget);
+                    intakeCore.viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    intakeCore.viper.setVelocity(ModeCore.vipVelocity);
+                    int vipErr = Math.abs(viperCurrPos - ModeCore.vipTarget);
+                    boolean VIPFREE = Math.abs((gamepad1.right_trigger - gamepad1.left_trigger)) >= freedomPower;
+                    boolean SPIT_ESCAPE = spit_escape();
+                    dashTele.addData("Viper Mode Pos: ", viperCurrPos);
+                    dashTele.addData("Viper Mode Err: ", vipErr);
+                    dashTele.update();
+                    if (vipErr <= errTolerance || VIPFREE || SPIT_ESCAPE){
+                        intakeCore.viper.setVelocity(0);
+                        intakeCore.viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        if (ModeCore.isChain){
+                            modeCore.MODE = BabyModeCore.nextMode;
+                            ModeCore.chainIterator += 1;
+                        } else {
+                            modeCore.MODE = BabyModeCore.RUNNING_MODE.NORMAL_MODE;
+                        }
+                    }
+                    break;
+                case VIP_SUCK:
+                    if (ModeCore.isChain) modeCore.chainRefresh(BabyModeCore.CHAIN);
+                    intakeCore.viperControl(gamepad2, viperCurrPos, dashTele);
+                    if (servoCore.currentGamepad2.left_stick_button && !servoCore.previousGamepad2.left_stick_button){
+                        ModeCore.isChain = false;
+                        intakeCore.stop();
+                        intakeCore.vipWrist.setPosition(0);
+                        ModeCore.vipVelocity = ModeCore.vipVel;
+                        ModeCore.vipTarget = ModeCore.vipHome;
+                        modeCore.MODE = BabyModeCore.RUNNING_MODE.VIP_MOVE;
+                        break;
+                    }
+                    //armCore.trigger(gamepad2, armCurrPos); //Give arm control to driver
+                    intakeCore.updateColor(dashTele);
+                    boolean takenIn = intakeCore.vipSuckHandler();
+                    boolean spitting = intakeCore.spitting;
+                    boolean SUCKESCAPE = suck_failsafe();
+                    if (SUCKESCAPE) break;
+                    dashTele.addData("Taken In? ", takenIn);
+                    if (takenIn){
+                        intakeCore.vipWrist.setPosition(0);
+                        if (ModeCore.isChain){
+                            modeCore.MODE = BabyModeCore.nextMode;
+                            ModeCore.chainIterator += 1;
+                        } else {
+                            modeCore.MODE = BabyModeCore.RUNNING_MODE.NORMAL_MODE;
+                        }
+                    } else {
+
+                    }
+                    break;
+            }
+        }
+    }
+
+    public boolean spit_escape(){
+        if (servoCore.currentGamepad2.x && !servoCore.previousGamepad2.x){
+            intakeCore.vipWrist.setPosition(0.15);
+            intakeCore.spit();
+            intakeCore.viper.setVelocity(0);
+            intakeCore.viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            ModeCore.vipHome += 5;
+            modeCore.MODE = BabyModeCore.RUNNING_MODE.NORMAL_MODE;
+            return true;
+        }
+        if (servoCore.currentGamepad2.left_stick_button && !servoCore.previousGamepad.left_stick_button){
+            modeCore.MODE = BabyModeCore.RUNNING_MODE.NORMAL_MODE;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean suck_failsafe(){
+        if (servoCore.currentGamepad.dpad_up && !servoCore.previousGamepad.dpad_up){
+            intakeCore.suck();
+            modeCore.MODE = BabyModeCore.RUNNING_MODE.NORMAL_MODE;
+            return true;
+        }
+        if (servoCore.currentGamepad.dpad_down && !servoCore.previousGamepad.dpad_down){
+            intakeCore.spit();
+            modeCore.MODE = BabyModeCore.RUNNING_MODE.NORMAL_MODE;
+            return true;
+        }
+        if (servoCore.currentGamepad.y && !servoCore.previousGamepad.y){
+            intakeCore.stop();
+            modeCore.MODE = BabyModeCore.RUNNING_MODE.NORMAL_MODE;
+            return true;
+        }
+        return false;
+    }
+
+    void motion_start(){
+        servoCore.init_motion();
+        intakeCore.init_motion();
+    }
+
+    private void Init() throws RobotCoreException {
+        armCore.init(hardwareMap);
+        servoCore.init(hardwareMap);
+        drivetrainCore.init(hardwareMap);
+        intakeCore.init(hardwareMap);
+        while (!isStarted()){
+            servoCore.edgeDetector(gamepad1, gamepad2);
+            intakeCore.allianceSwap(servoCore.currentGamepad, servoCore.previousGamepad, telemetry);
+        }
+    }
+}
